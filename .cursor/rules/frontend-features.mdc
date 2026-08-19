@@ -1,0 +1,13 @@
+---
+description: Frontend organizado por feature (telas do painel Balcão)
+globs: apps/frontend/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Frontend por feature
+
+Telas em `apps/frontend/src/features/<feature>/`. Shell compartilhado em `features/shell/`. Peças visuais reutilizáveis em `shared/ui/`.
+
+Não criar pastas globais `components/` ou `hooks/` na raiz de `src` como ímã. Estado da tela fica na feature.
+
+Animação de lista: `flap-in` (split-flap) nas células ao mudar de view, filtro ou seleção — ver `shared/ui/FlapCell.tsx`.

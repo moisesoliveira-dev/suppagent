@@ -1,0 +1,50 @@
+import { useState } from 'react'
+import { ClientsView } from '../clients/ClientsView'
+import { DashboardView } from '../dashboard/DashboardView'
+import { CannedView, KnowledgeView, UserChatView } from '../inbox/InboxViews'
+import { AutomationsView, ReportsView, SlaView, TeamView } from '../ops/OpsViews'
+import {
+  AiChatView,
+  AiConfigView,
+  AiOverviewView,
+  AiRepliesView,
+  AiRoutingView,
+  CatalogView,
+  SettingsView,
+} from '../system/SystemViews'
+import { TicketsView } from '../tickets/TicketsView'
+import { Sidebar } from './Sidebar'
+import { Topbar } from './Topbar'
+import type { ViewId } from './nav'
+
+export function AppShell() {
+  const [view, setView] = useState<ViewId>('chamados')
+
+  return (
+    <div className="flex h-full bg-bg font-display text-ink">
+      <Sidebar active={view} onNavigate={setView} />
+      <main className="flex min-w-0 flex-1 flex-col">
+        <Topbar />
+        <div className="flex min-h-0 flex-1 [perspective:900px]" key={view}>
+          {view === 'painel' ? <DashboardView /> : null}
+          {view === 'chamados' ? <TicketsView /> : null}
+          {view === 'clientes' ? <ClientsView /> : null}
+          {view === 'chatusuarios' ? <UserChatView /> : null}
+          {view === 'baseconhecimento' ? <KnowledgeView /> : null}
+          {view === 'respostasprontas' ? <CannedView /> : null}
+          {view === 'sla' ? <SlaView /> : null}
+          {view === 'automacoes' ? <AutomationsView /> : null}
+          {view === 'equipe' ? <TeamView /> : null}
+          {view === 'relatorios' ? <ReportsView /> : null}
+          {view === 'cadastros' ? <CatalogView /> : null}
+          {view === 'iachat' ? <AiChatView /> : null}
+          {view === 'iaagente' ? <AiOverviewView /> : null}
+          {view === 'iaroteamento' ? <AiRoutingView /> : null}
+          {view === 'iarespostas' ? <AiRepliesView /> : null}
+          {view === 'iaconfig' ? <AiConfigView /> : null}
+          {view === 'configuracoes' ? <SettingsView /> : null}
+        </div>
+      </main>
+    </div>
+  )
+}

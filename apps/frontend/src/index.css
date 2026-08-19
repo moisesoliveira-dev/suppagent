@@ -1,1 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
 @import "tailwindcss";
+
+@theme {
+  --color-bg: #0f0f13;
+  --color-panel: #15151b;
+  --color-board: #181820;
+  --color-tile: #1f1f29;
+  --color-seam: #0b0b0f;
+  --color-stroke: #26262f;
+  --color-amber: #f2a93b;
+  --color-ink: #ededf0;
+  --color-dim: #5c5c68;
+  --color-red: #e2564f;
+  --color-green: #4cb57e;
+  --color-blue: #5b8fe0;
+  --color-amber-ink: #251a05;
+  --font-display: "Space Mono", ui-monospace, monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-display);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-stroke) var(--color-board);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-board);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-stroke);
+  border-radius: 5px;
+  border: 2px solid var(--color-board);
+}
+
+@keyframes flap-reveal {
+  0% {
+    transform: rotateX(-90deg);
+    opacity: 0;
+  }
+  60% {
+    transform: rotateX(18deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+.flap-in {
+  transform-origin: top center;
+  animation: flap-reveal 0.42s ease forwards;
+  backface-visibility: hidden;
+}
