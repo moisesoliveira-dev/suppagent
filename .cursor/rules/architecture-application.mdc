@@ -1,0 +1,25 @@
+---
+description: Padrões de aplicação no backend — DI, repo, services, factories, ACL, middleware
+globs: apps/backend/**/*.ts
+alwaysApply: false
+---
+
+# Aplicação e domínio (backend)
+
+- **DI**: todo port injetado pelo Nest (`@Injectable`). Application/domain **não** dão `new` em adapter concreto.
+- **Repository**: interface no `domain/` (ex. `TicketRepository`); implementação Prisma/SQL em `infrastructure/`.
+- **Unit of Work**: uma transação por use case; o UoW/outbox vive no adapter, não na entidade.
+- **Service layer**: orquestração em application services/use cases. Entity guarda invariantes. Controller não contém regra de negócio.
+- **Specification**: regras de consulta/validação compostas e reutilizáveis (`estaAberto()`, `doTenant(id)`), não `if` espalhado.
+- **Strategy**: famílias de algoritmo (sla, roteamento, canal). **Factory / Abstract Factory**: criar famílias de adapters (ex. provedor de chat). Sem factory para um único `new`.
+- **Adapter + Facade + ACL**: integração externa atrás de port; Facade simplifica API interna; ACL traduz modelo de terceiro → modelo de domínio (nunca vazar DTO externo no domain).
+- **Command**: intenção de escrita = comando (handler = use case).
+- **Chain of Responsibility + Middleware**: pipeline Nest (middleware, guards, interceptors, pipes) e cadeias de política. Não misturar auth/tenant/validação no controller.
+
+```ts
+// ❌ BAD — controller + Prisma
+this.prisma.ticket.create({ data: dto })
+
+// ✅ GOOD — controller → use case → port
+await this.createTicket.execute(cmd)
+```

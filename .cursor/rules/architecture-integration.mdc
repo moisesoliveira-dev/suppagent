@@ -1,0 +1,21 @@
+---
+description: Quando usar eventos, CQRS, outbox, saga, resiliência, gateway e webhooks
+alwaysApply: true
+---
+
+# Integração, eventos e resiliência
+
+Catálogo **aprovado**. Não empilhar tudo em feature simples. Usar quando o problema existir.
+
+| Padrão | Quando |
+|---|---|
+| Observer / Pub-Sub | efeitos no mesmo processo (domínio notifica). |
+| Event-Driven | fato de domínio relevante a outro módulo (`TicketCreated`). Módulos **não** importam services uns dos outros. |
+| Outbox | persistir evento na **mesma transação** da escrita; publisher lê outbox. Sem “salva e depois emite” solto. |
+| CQRS | modelo de leitura claramente diferente do de escrita (filas, dashboards). Sem CQRS em CRUD simétrico. |
+| Saga | processo longo entre módulos (compensações). Sem saga para um único aggregate. |
+| Circuit Breaker + Retry | I/O externo. Retry com backoff; circuit no adapter. Sem retry em regra de domínio. |
+| API Gateway | borda HTTP única do backend (Nest + guards). BFF/gateway extra só com pedido explícito. |
+| Webhook | entrada/saída assíncrona com sistemas externos; validar assinatura no adapter; ACL para o payload. |
+
+Fluxo de escrita típico: command → use case → aggregate → UoW + outbox → evento → outros módulos.

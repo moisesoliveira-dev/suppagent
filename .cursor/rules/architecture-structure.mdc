@@ -1,0 +1,26 @@
+---
+description: Estrutura sempre válida — modular monolith, DDD, hexagonal, features, shared kernel
+alwaysApply: true
+---
+
+# Arquitetura (sempre)
+
+SuppAgent é um **modular monolith** (um deploy de backend Nest), não microsserviços. Módulos por **feature/bounded context**, não por tipo técnico (`controllers/`, `services/` globais).
+
+## Camadas (Clean + Hexagonal)
+
+Dentro de `apps/backend/src/modules/<feature>/`:
+
+- `domain/` — entidades, VOs, eventos de domínio, **ports** (interfaces). Zero Nest HTTP, Prisma, Axios.
+- `application/` — use cases / application services, commands/queries.
+- `infrastructure/` — **adapters**: repositórios, ACL, outbox, clientes HTTP, filas.
+- `presentation/` — controllers, DTOs HTTP, webhooks inbound, consumers.
+
+Dependência só para dentro: `presentation → application → domain ← infrastructure`.
+
+## Shared Kernel e plugins
+
+- Código estável cruzado: `packages/*` (shared kernel). Só o que **dois contextos** realmente compartilham. Sem “utils” genérico virando ímã.
+- Extensões (provedores, canais): **plugin** = adapter que implementa um port; o core não importa o plugin concreto.
+
+Frontend (`apps/frontend`): organização **por feature** quando houver telas. Hexágono/DDD aplica-se ao backend.

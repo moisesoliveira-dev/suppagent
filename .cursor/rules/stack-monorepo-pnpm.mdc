@@ -8,7 +8,7 @@ alwaysApply: true
 - Um único git repo na raiz (`suppagent`). Sem repo git dentro de `apps/` ou `packages/`.
 - Gerenciador: **somente pnpm**. Não usar npm, yarn ou bun (nem `package-lock.json` / `yarn.lock`).
 - Instalar e scripts sempre via pnpm, de preferência na raiz: `pnpm install`, `pnpm --filter <nome> <script>`.
-- Workspace: `apps/*` (aplicações) e `packages/*` (código compartilhado).
+- Workspace: `apps/*` (aplicações) e `packages/*` (**shared kernel** e libs internas).
 - Apps atuais: `apps/backend` (NestJS, pacote `backend`) e `apps/frontend` (Vite + React + TS, pacote `frontend`).
 - Sempre instalar na **raiz** (`pnpm install`). Nunca `npm install` / `npm.cmd` dentro de `apps/*`.
 - Dev: `pnpm dev:backend` e `pnpm dev:frontend` (ou `pnpm --filter backend start:dev`).
