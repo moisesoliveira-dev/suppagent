@@ -16,5 +16,5 @@ alwaysApply: true
 - `package.json` da raiz: `"private": true`. Commitar `pnpm-lock.yaml`.
 - Config do pnpm 11 (`allowBuilds`, `engineStrict`) fica em `pnpm-workspace.yaml`.
 - Testes: no pacote tocado, com `pnpm --filter <nome> test` (ou o script de teste desse pacote).
-- Persistência: PostgreSQL. ORM Prisma no adapter (`shared/infrastructure/persistence`). `DATABASE_URL` no `.env` (ver `.env.example`). Generator: `moduleFormat = "cjs"` (Nest emite CommonJS).
+- Persistência: PostgreSQL. ORM Prisma no adapter (`shared/infrastructure/persistence`). `DATABASE_URL` no `.env` (ver `.env.example`). Generator: `moduleFormat = "cjs"` (Nest emite CommonJS). CLI Prisma é **dependency** (migrate no container). Start Docker: `apps/backend/scripts/docker-start.cjs` (`require.resolve`, não `node_modules/.bin` da raiz).
 - Docker na raiz (`compose.yaml`): `postgres`, `backend`, `frontend`. Subir tudo: `pnpm docker:up`. Só o banco (dev local): `pnpm docker:up:db`.
