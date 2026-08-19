@@ -57,6 +57,10 @@ Docker Desktop precisa estar **aberto**.
 pnpm docker:up
 ```
 
+Na **primeira** subida, o Postgres imprime `initdb` (bootstrap, `CREATE DATABASE`, shutdown e start de novo). Isso é normal. O Compose só segue quando o healthcheck marca o banco como healthy.
+
+Se o backend falhar com `Cannot find module dist/main.js`, reconstrua as imagens: `pnpm docker:up` (já usa `--build`).
+
 | Serviço | URL |
 |---|---|
 | Frontend | http://localhost:5173 |
