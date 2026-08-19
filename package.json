@@ -1,0 +1,11 @@
+{
+  "name": "suppagent",
+  "private": true,
+  "packageManager": "pnpm@11.21.0",
+  "scripts": {
+    "test": "pnpm -r --if-present test"
+  },
+  "engines": {
+    "pnpm": ">=11"
+  }
+}

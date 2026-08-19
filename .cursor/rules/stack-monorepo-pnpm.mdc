@@ -1,0 +1,14 @@
+---
+description: Monorepo pnpm — workspace, comandos e o que a IA não cria sozinha
+alwaysApply: true
+---
+
+# Monorepo com pnpm
+
+- Um único git repo na raiz (`suppagent`). Sem repo git dentro de `apps/` ou `packages/`.
+- Gerenciador: **somente pnpm**. Não usar npm, yarn ou bun (nem `package-lock.json` / `yarn.lock`).
+- Instalar e scripts sempre via pnpm, de preferência na raiz: `pnpm install`, `pnpm --filter <nome> <script>`.
+- Workspace: `apps/*` (aplicações) e `packages/*` (código compartilhado).
+- **Front e back**: o usuário cria com o comando manual. A IA **não** faz scaffold (`create-*`, `nest new`, etc.) sem pedido explícito. Depois de existirem, só encaixa no workspace e segue as regras.
+- `package.json` da raiz: `"private": true`. Commitar `pnpm-lock.yaml`.
+- Testes: no pacote tocado, com `pnpm --filter <nome> test` (ou o script de teste desse pacote).

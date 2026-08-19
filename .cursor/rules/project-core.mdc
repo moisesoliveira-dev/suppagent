@@ -1,0 +1,30 @@
+---
+description: Padrão mestre do projeto — captura, persistência e fidelidade às convenções
+alwaysApply: true
+---
+
+# Padrão mestre (SuppAgent)
+
+Este é um projeto grande. A IA **não inventa** stack, layout, pastas, libs ou padrões. Só usa o que estiver nestas regras ou o que o usuário acabou de definir.
+
+## Protocolo de captura (obrigatório)
+
+Quando o usuário definir algo importante sobre stack, layout/estilo, arquitetura, padrões de projeto, nomenclatura, pastas, APIs, banco, testes ou o que **não** se deve fazer:
+
+1. Aplicar na hora no código.
+2. Persistir em `.cursor/rules/*.mdc` (um assunto por arquivo, conteúdo curto e acionável, com exemplo ✅/❌ se couber).
+3. **Globais** (`alwaysApply: true`): stack, arquitetura, estilo visual, nomenclatura, restrições.
+4. **Por arquivo** (`globs`, `alwaysApply: false`): convenções de React/TSX, API, Prisma, testes, etc.
+5. Atualizar a regra existente em vez de criar outra que contradiz.
+6. Não duplicar o mesmo conteúdo em várias regras.
+
+## Fidelidade
+
+- Seguir as regras em `.cursor/rules/` antes de improvisar.
+- Reutilizar componentes, tokens e pastas já existentes.
+- Se algo não estiver definido, perguntar em vez de escolher sozinho (exceto detalhes triviais de implementação).
+- Mudança de padrão só com pedido explícito do usuário; aí atualizar a regra correspondente.
+
+## Idioma
+
+Conversar e comentar código no idioma que o usuário estiver usando (hoje: pt-BR). Nomes de código (arquivos, símbolos, rotas) seguem a regra de nomenclatura do projeto, quando existir.

@@ -1,0 +1,31 @@
+---
+description: Sempre testar e, se passar, gerar commit Conventional Commits
+alwaysApply: true
+---
+
+# Fluxo: testar → commit
+
+Depois de qualquer alteração de código neste projeto, a IA **sempre**:
+
+1. Roda os testes relevantes (suite do pacote/área tocada; se não houver teste, criar o mínimo que cubra o comportamento).
+2. Só gera o commit se os testes passarem.
+3. Se falharem: corrigir e retestar. **Não** commit com testes quebrados.
+
+Não pedir permissão extra para testar nem para o commit desse fluxo. Não fazer `push` a menos que o usuário peça. Não usar `--no-verify` nem force push.
+
+## Mensagem (Conventional Commits)
+
+Formato: `tipo(escopo): descrição`
+
+- `tipo`: `feat` | `fix` | `docs` | `style` | `refactor` | `test` | `chore` | `perf`
+- `escopo`: área curta em inglês (`auth`, `api`, `ui`, `db`)
+- `descrição`: pt-BR, minúscula, objetiva, no que mudou (não no “o que eu fiz”)
+
+```
+✅ feat(auth): alteração no fluxo de login com refresh token
+✅ fix(api): corrige timeout na listagem de tickets
+❌ Updated auth files
+❌ feat: Alteração no...
+```
+
+Um commit por unidade lógica. Não commitar `.env`, secrets nem artefatos gerados.
