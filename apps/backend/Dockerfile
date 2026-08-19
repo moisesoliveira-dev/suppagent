@@ -29,4 +29,4 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/apps/backend/node_modules ./apps/backend/node_modules
 WORKDIR /app/apps/backend
 EXPOSE 3000
-CMD ["node", "dist/main.js"]
+CMD ["sh", "-c", "../../node_modules/.bin/prisma migrate deploy && ../../node_modules/.bin/ts-node --transpile-only prisma/seed.ts && node dist/main.js"]

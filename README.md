@@ -43,11 +43,27 @@ Não commitar `.env`.
 pnpm install
 pnpm docker:up:db
 pnpm --filter backend prisma:generate
+pnpm --filter backend prisma:migrate
+pnpm --filter backend build
+pnpm --filter backend prisma:seed
 pnpm dev:backend    # http://localhost:3000
 pnpm dev:frontend   # http://localhost:5173
 ```
 
 Health do backend (inclui ping no PostgreSQL): `GET http://localhost:3000/health`
+
+API de chamados (sem auth ainda; agente atual via `?agent=`, padrão `c.reis`):
+
+| Método | Rota | Uso |
+|---|---|---|
+| `GET` | `/tickets?filter=todos\|meus\|naoatribuidos\|urgentes` | lista + `counts` |
+| `GET` | `/tickets/:id` | detalhe |
+| `POST` | `/tickets` | abre chamado |
+| `POST` | `/tickets/:id/replies` | `{ "text", "note"? }` |
+| `POST` | `/tickets/:id/transfer` | `{ "agent": "b.alves" \| null }` |
+| `POST` | `/tickets/:id/close` | encerra |
+
+O seed (`pnpm --filter backend prisma:seed`) grava os chamados de exemplo do painel. No Docker isso roda na subida.
 
 ### Stack completa (Docker)
 
@@ -83,7 +99,7 @@ Parar: `pnpm docker:down`
 | `pnpm docker:up:db` | Só PostgreSQL |
 | `pnpm docker:down` | Derruba o Compose |
 
-No backend: `pnpm --filter backend prisma:generate` e `pnpm --filter backend prisma:migrate` (quando houver migrations).
+No backend: `pnpm --filter backend prisma:generate`, `pnpm --filter backend prisma:migrate`, `pnpm --filter backend build` e `pnpm --filter backend prisma:seed` (o seed usa o client compilado em `dist/`).
 
 ## Arquitetura (resumo)
 
