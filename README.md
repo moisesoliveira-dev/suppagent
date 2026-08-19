@@ -12,7 +12,8 @@ Monorepo do SuppAgent: backend NestJS, frontend Vite (React + TypeScript) e Post
 
 ```
 apps/backend     NestJS (hexagonal / features em src/modules)
-apps/frontend    Vite + React
+apps/frontend    Vite + React + Tailwind (espaçamento/layout)
+
 packages/        shared kernel (quando existir)
 compose.yaml     postgres + backend + frontend
 ```
@@ -82,4 +83,5 @@ No backend: `pnpm --filter backend prisma:generate` e `pnpm --filter backend pri
 
 ## Arquitetura (resumo)
 
-Modular monolith, DDD + Clean/Hexagonal, features em `apps/backend/src/modules/<feature>/{domain,application,infrastructure,presentation}`. Persistência: Prisma no adapter, PostgreSQL. Convenções detalhadas estão em `.cursor/rules/`.
+Modular monolith, DDD + Clean/Hexagonal, features em `apps/backend/src/modules/<feature>/{domain,application,infrastructure,presentation}`. Persistência: Prisma no adapter, PostgreSQL. UI: Tailwind para espaçamento e layout (beleza livre). Convenções detalhadas em `.cursor/rules/`.
+

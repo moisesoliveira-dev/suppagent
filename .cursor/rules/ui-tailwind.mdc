@@ -1,0 +1,26 @@
+---
+description: Tailwind no frontend — espaçamento e layout padronizados; beleza livre
+globs: apps/frontend/**/*.{tsx,ts,css}
+alwaysApply: false
+---
+
+# UI com Tailwind
+
+Espaçamento, tamanho e layout dos componentes vêm da **escala Tailwind** (`p-4`, `gap-6`, `m-2`, `max-w-lg`, `min-h-svh`). Assim nada se sobrepõe nem “vaza” por CSS solto.
+
+Beleza (cor, tipografia, sombra, radius, motion) pode ser livre — preferir utility do Tailwind quando existir.
+
+## Layout (obrigatório)
+
+- Empilhar com `flex` / `grid` + `gap-*` ou `space-y-*`. Não usar `position: absolute` para fluxo normal.
+- Overlay (modal, dropdown, toast): `absolute`/`fixed` + `z-*`, nunca empurrar o layout.
+- Filhos de flex: `min-w-0` se o conteúdo puder estourar.
+- Evitar `p-[13px]` / CSS custom de margin. Exceção: valor que a escala não cobre.
+
+```tsx
+// ❌ BAD
+<div style={{ padding: 13, marginTop: 7 }} className="absolute top-4">...</div>
+
+// ✅ GOOD
+<div className="flex flex-col gap-4 p-6 max-w-lg">...</div>
+```
