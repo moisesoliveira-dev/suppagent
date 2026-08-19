@@ -6,3 +6,5 @@ engineStrict: true
 
 allowBuilds:
   unrs-resolver: true
+  prisma: true
+  '@prisma/engines': true
