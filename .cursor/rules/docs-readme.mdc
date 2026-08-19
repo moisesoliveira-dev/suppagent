@@ -1,0 +1,18 @@
+---
+description: Manter o README da raiz alinhado a como o sistema funciona e como rodar
+alwaysApply: true
+---
+
+# README da raiz
+
+O `README.md` da raiz é o guia de onboarding e de execução. **Não** deixar o jeito de rodar só em chat, regra ou script sem documentar.
+
+Atualizar o README no **mesmo** conjunto de mudanças (e no mesmo commit, se for a mesma unidade) quando alterar:
+
+- como instalar, subir, testar, buildar ou parar o sistema
+- Docker, Compose, portas, variáveis de ambiente, banco
+- scripts da raiz (`package.json`)
+- estrutura de pastas relevante para quem chega no repo
+- URLs de health/API/front que alguém precisa para validar
+
+Manter curto e acionável (comandos copiáveis). Detalhe de padrão de código fica em `.cursor/rules/`, não duplicar o catálogo inteiro no README.
