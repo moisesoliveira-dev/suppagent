@@ -3,7 +3,12 @@
   "private": true,
   "packageManager": "pnpm@11.21.0",
   "scripts": {
-    "test": "pnpm -r --if-present test"
+    "dev:backend": "pnpm --filter backend start:dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "build": "pnpm -r --if-present build",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test",
+    "test:e2e": "pnpm --filter backend test:e2e"
   },
   "engines": {
     "pnpm": ">=11"

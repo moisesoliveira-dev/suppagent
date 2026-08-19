@@ -1,6 +1,7 @@
 node_modules
 dist
 build
+coverage
 .next
 .turbo
 .cache
@@ -9,3 +10,7 @@ build
 .env.*
 !.env.example
 .DS_Store
+package-lock.json
+yarn.lock
+bun.lock
+bun.lockb

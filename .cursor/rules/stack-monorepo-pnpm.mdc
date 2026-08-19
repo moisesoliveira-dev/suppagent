@@ -9,6 +9,10 @@ alwaysApply: true
 - Gerenciador: **somente pnpm**. Não usar npm, yarn ou bun (nem `package-lock.json` / `yarn.lock`).
 - Instalar e scripts sempre via pnpm, de preferência na raiz: `pnpm install`, `pnpm --filter <nome> <script>`.
 - Workspace: `apps/*` (aplicações) e `packages/*` (código compartilhado).
-- **Front e back**: o usuário cria com o comando manual. A IA **não** faz scaffold (`create-*`, `nest new`, etc.) sem pedido explícito. Depois de existirem, só encaixa no workspace e segue as regras.
+- Apps atuais: `apps/backend` (NestJS, pacote `backend`) e `apps/frontend` (Vite + React + TS, pacote `frontend`).
+- Sempre instalar na **raiz** (`pnpm install`). Nunca `npm install` / `npm.cmd` dentro de `apps/*`.
+- Dev: `pnpm dev:backend` e `pnpm dev:frontend` (ou `pnpm --filter backend start:dev`).
+- **Front e back**: o usuário cria com o comando manual. A IA **não** faz scaffold (`create-*`, `nest new`, etc.) sem pedido explícito. Depois de existirem, só encaixa no workspace e segue as regras. Sem `.git` dentro de `apps/` ou `packages/`.
 - `package.json` da raiz: `"private": true`. Commitar `pnpm-lock.yaml`.
+- Config do pnpm 11 (`allowBuilds`, `engineStrict`) fica em `pnpm-workspace.yaml`.
 - Testes: no pacote tocado, com `pnpm --filter <nome> test` (ou o script de teste desse pacote).
