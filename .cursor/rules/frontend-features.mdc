@@ -14,3 +14,5 @@ Usuários (`features/users/`): cadastro em Cadastros → usuários, perfis `usua
 Não criar pastas globais `components/` ou `hooks/` na raiz de `src` como ímã. Estado da tela fica na feature.
 
 Animação de lista: `flap-in` (split-flap) nas células ao mudar de view, filtro ou seleção — ver `shared/ui/FlapCell.tsx`.
+
+Feedback e confirmação: usar `toast` de `shared/ui/toast` (`toast.success` / `error` / `confirm` / `prompt`). Não usar `window.alert`, `confirm` nem `prompt`.

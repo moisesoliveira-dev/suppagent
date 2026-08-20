@@ -24,6 +24,7 @@ import {
   type TicketCounts,
   type TicketFilter,
 } from './tickets'
+import { toast } from '../../shared/ui/toast'
 
 const FILTERS: { id: TicketFilter; label: string }[] = [
   { id: 'todos', label: 'todos' },
@@ -84,7 +85,10 @@ export function TicketsView() {
     setWave((value) => value + 1)
   }
 
-  async function runAction(action: () => Promise<Ticket>) {
+  async function runAction(
+    action: () => Promise<Ticket>,
+    successMessage?: string,
+  ) {
     if (!selected || busy) return
     setBusy(true)
     setError(null)
@@ -92,8 +96,11 @@ export function TicketsView() {
       const updated = await action()
       setDraft('')
       await load(filter, updated.id)
+      if (successMessage) toast.success(successMessage)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'falha na ação')
+      const message = err instanceof Error ? err.message : 'falha na ação'
+      setError(message)
+      toast.error(message)
     } finally {
       setBusy(false)
     }
@@ -102,24 +109,35 @@ export function TicketsView() {
   function onReply() {
     const text = draft.trim()
     if (!text || !selected) return
-    void runAction(() => replyToTicket(selected.id, text))
+    void runAction(() => replyToTicket(selected.id, text), 'resposta enviada')
   }
 
-  function onTransfer() {
+  async function onTransfer() {
     if (!selected) return
-    const next = window.prompt(
-      'transferir para agente (vazio = desatribuir)',
-      selected.agent === 'livre' ? CURRENT_AGENT : selected.agent,
-    )
+    const next = await toast.prompt({
+      title: 'transferir chamado',
+      message: 'informe o agente (deixe vazio para desatribuir)',
+      defaultValue: selected.agent === 'livre' ? CURRENT_AGENT : selected.agent,
+      placeholder: 'ex.: c.reis',
+      confirmLabel: 'transferir',
+    })
     if (next === null) return
     const agent = next.trim() ? next.trim() : null
-    void runAction(() => transferTicket(selected.id, agent))
+    void runAction(
+      () => transferTicket(selected.id, agent),
+      agent ? `transferido para ${agent}` : 'chamado desatribuído',
+    )
   }
 
-  function onClose() {
+  async function onClose() {
     if (!selected) return
-    if (!window.confirm(`encerrar chamado #${selected.id}?`)) return
-    void runAction(() => closeTicket(selected.id))
+    const ok = await toast.confirm({
+      title: 'encerrar chamado',
+      message: `encerrar o chamado nº ${selected.id}?`,
+      confirmLabel: 'encerrar',
+    })
+    if (!ok) return
+    void runAction(() => closeTicket(selected.id), 'chamado encerrado')
   }
 
   return (

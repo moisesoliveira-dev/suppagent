@@ -14,6 +14,7 @@ Beleza (cor, tipografia, sombra, radius, motion) pode ser livre — preferir uti
 
 - Empilhar com `flex` / `grid` + `gap-*` ou `space-y-*`. Não usar `position: absolute` para fluxo normal.
 - Overlay (modal, dropdown, toast): `absolute`/`fixed` + `z-*`, nunca empurrar o layout.
+- Confirmações e avisos: `toast` em `shared/ui/toast` — não `window.confirm` / `prompt` / `alert`.
 - Filhos de flex: `min-w-0` se o conteúdo puder estourar.
 - Evitar `p-[13px]` / CSS custom de margin. Exceção: valor que a escala não cobre.
 

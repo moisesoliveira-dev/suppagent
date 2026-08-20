@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { toast } from '../../shared/ui/toast'
 import { createUser, deleteUser, listUsers } from './users-api'
 import { USER_ROLE_OPTIONS, type User, type UserRole } from './users'
 
@@ -42,22 +43,33 @@ export function UsersCatalogPanel() {
       setRole('usuario')
       setShowForm(false)
       await load()
+      toast.success('usuário cadastrado')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'falha ao cadastrar')
+      const message = err instanceof Error ? err.message : 'falha ao cadastrar'
+      setError(message)
+      toast.error(message)
     } finally {
       setBusy(false)
     }
   }
 
   async function onRemove(user: User) {
-    if (!window.confirm(`remover ${user.name}?`)) return
+    const ok = await toast.confirm({
+      title: 'remover usuário',
+      message: `remover ${user.name} do cadastro?`,
+      confirmLabel: 'remover',
+    })
+    if (!ok) return
     setBusy(true)
     setError(null)
     try {
       await deleteUser(user.id)
       await load()
+      toast.success('usuário removido')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'falha ao remover')
+      const message = err instanceof Error ? err.message : 'falha ao remover'
+      setError(message)
+      toast.error(message)
     } finally {
       setBusy(false)
     }
