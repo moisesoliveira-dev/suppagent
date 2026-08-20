@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { FlapCell } from '../../shared/ui/FlapCell'
 import { Toggle } from '../../shared/ui/Toggle'
 import {
-  ActionBar,
-  ActionButton,
   DetailPanel,
   PassLabel,
   PassSub,
@@ -86,110 +84,6 @@ export function AutomationsView() {
           <RelTicket key={label} label={label} status={status} />
         ))}
       </div>
-    </div>
-  )
-}
-
-const TEAM = [
-  { id: 'camila', initials: 'CR', name: 'camila reis', role: 'coordenadora · online', status: 'online', cap: '5/8', pct: '62%', fill: 'mid', resolved: '12', csat: '96%', contact: 'camila.reis@balcao.com · desde jan/2022', avg: '18min', week: '58', tickets: [['#4465 — cobrança duplicada — agosto', 'aguardando'], ['#4460 — botão de salvar — safari', 'andamento'], ['#4430 — senha resetada com sucesso', 'resolvido']] as [string, string][] },
-  { id: 'bruno', initials: 'BA', name: 'bruno alves', role: 'agente · online', status: 'online', cap: '7/8', pct: '87%', fill: 'high', resolved: '9', csat: '91%', contact: 'bruno.alves@balcao.com · desde mar/2023', avg: '24min', week: '41', tickets: [['#4470 — não consigo acessar o painel', 'andamento'], ['#4452 — alterar e-mail de cobrança', 'resolvido']] as [string, string][] },
-  { id: 'rafael', initials: 'RS', name: 'rafael souza', role: 'agente · ausente', status: 'ausente', cap: '3/8', pct: '37%', fill: 'low', resolved: '4', csat: '88%', contact: 'rafael.souza@balcao.com · desde ago/2023', avg: '31min', week: '22', tickets: [['#4438 — duplicidade de registro de cliente', 'aberto']] as [string, string][] },
-  { id: 'fernanda', initials: 'FL', name: 'fernanda lima', role: 'agente jr · offline', status: 'offline', cap: '0/8', pct: '0%', fill: 'low', resolved: '0', csat: '—', contact: 'fernanda.lima@balcao.com · desde jul/2025', avg: '—', week: '3', tickets: [] as [string, string][] },
-]
-
-export function TeamView() {
-  const [selectedId, setSelectedId] = useState('camila')
-  const agent = TEAM.find((item) => item.id === selectedId) ?? TEAM[0]
-  const fillClass = agent.fill === 'high' ? 'bg-red' : agent.fill === 'mid' ? 'bg-amber' : 'bg-green'
-
-  return (
-    <div className="flex min-h-0 flex-1">
-      <div className="grid min-w-0 flex-1 auto-rows-min grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-3 overflow-y-auto px-6 py-4">
-        {TEAM.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => setSelectedId(item.id)}
-            className={`rounded border bg-tile px-4 py-3.5 text-left ${
-              selectedId === item.id ? 'border-amber' : 'border-stroke'
-            }`}
-          >
-            <div className="mb-3 flex items-center gap-2.5">
-              <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[3px] border border-stroke bg-board text-xs font-bold text-amber">
-                {item.initials}
-              </div>
-              <div>
-                <div className="text-[12.5px] font-bold">{item.name}</div>
-                <div className="flex items-center gap-1.5 text-[10.5px] text-dim">
-                  <span className={`h-1.5 w-1.5 rounded-full ${item.status === 'online' ? 'bg-green' : item.status === 'ausente' ? 'bg-amber' : 'bg-dim'}`} />
-                  {item.role}
-                </div>
-              </div>
-            </div>
-            <div className="mb-1 flex justify-between text-[10px] text-dim">
-              <span>carga atual</span>
-              <span>{item.cap}</span>
-            </div>
-            <div className="mb-3 h-1.5 overflow-hidden rounded-[3px] bg-board">
-              <div
-                className={`h-full rounded-[3px] ${item.fill === 'high' ? 'bg-red' : item.fill === 'mid' ? 'bg-amber' : 'bg-green'}`}
-                style={{ width: item.pct }}
-              />
-            </div>
-            <div className="flex justify-between text-[10.5px] text-dim">
-              <span>
-                resolvidos hoje <b className="text-ink">{item.resolved}</b>
-              </span>
-              <span>
-                csat <b className="text-ink">{item.csat}</b>
-              </span>
-            </div>
-          </button>
-        ))}
-      </div>
-      <DetailPanel>
-        <PassLabel>{agent.role}</PassLabel>
-        <PassTitle>{agent.name}</PassTitle>
-        <PassSub>{agent.contact}</PassSub>
-        <StubBar />
-        <div className="mb-5">
-          <div className="mb-1 flex justify-between text-[10px] text-dim">
-            <span>carga de trabalho</span>
-            <span>{agent.cap} chamados</span>
-          </div>
-          <div className="h-2 overflow-hidden rounded-[3px] bg-board">
-            <div className={`h-full rounded-[3px] ${fillClass}`} style={{ width: agent.pct }} />
-          </div>
-        </div>
-        <div className="mb-5 grid grid-cols-2 gap-3">
-          <div>
-            <PassLabel>resolvidos hoje</PassLabel>
-            <div className="text-[12.5px]">{agent.resolved}</div>
-          </div>
-          <div>
-            <PassLabel>tempo médio</PassLabel>
-            <div className="text-[12.5px]">{agent.avg}</div>
-          </div>
-          <div>
-            <PassLabel>csat</PassLabel>
-            <div className="text-[12.5px] text-green">{agent.csat}</div>
-          </div>
-          <div>
-            <PassLabel>resolvidos na semana</PassLabel>
-            <div className="text-[12.5px]">{agent.week}</div>
-          </div>
-        </div>
-        <div className="mb-2 text-[10.5px] tracking-widest text-dim uppercase">chamados atribuídos</div>
-        {agent.tickets.length ? (
-          agent.tickets.map(([label, status]) => <RelTicket key={label} label={label} status={status} />)
-        ) : (
-          <div className="border-b border-stroke py-2 text-xs text-dim">nenhum chamado atribuído</div>
-        )}
-        <ActionBar>
-          <ActionButton primary>atribuir chamado</ActionButton>
-          <ActionButton>ver perfil completo</ActionButton>
-        </ActionBar>
-      </DetailPanel>
     </div>
   )
 }

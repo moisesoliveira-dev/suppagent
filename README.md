@@ -91,6 +91,8 @@ API de usuários (Cadastros → usuários):
 
 Perfis por enquanto: **usuário** (normal) e **técnico** (com identificador de agente, ex. `c.reis`).
 
+Aba **equipe** (frontend): lista técnicos via `/users?role=tecnico` e carga de chamados via `/tickets?filter=meus&agent=…`. Cadastro de pessoas continua em Cadastros → usuários.
+
 Chamados — ações extras:
 
 | Método | Rota | Uso |
