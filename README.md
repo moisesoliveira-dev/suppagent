@@ -103,7 +103,7 @@ No backend: `pnpm --filter backend prisma:generate`, `pnpm --filter backend pris
 
 ## Arquitetura (resumo)
 
-O frontend (`pnpm dev:frontend`) abre o **painel Balcão**: shell com sidebar, lista split-flap e telas por feature em `apps/frontend/src/features/`.
+O frontend (`pnpm dev:frontend`) abre o **painel Balcão**: shell com sidebar, lista split-flap e telas por feature em `apps/frontend/src/features/`. A lista de **chamados** lê e altera só o PostgreSQL via `GET/POST /tickets` (`VITE_API_URL`).
 
 Modular monolith, DDD + Clean/Hexagonal, features em `apps/backend/src/modules/<feature>/{domain,application,infrastructure,presentation}`. Persistência: Prisma no adapter, PostgreSQL. UI: Tailwind para espaçamento e layout (beleza livre). Convenções detalhadas em `.cursor/rules/`.
 
