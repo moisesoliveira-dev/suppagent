@@ -1,0 +1,17 @@
+---
+description: Botão direito como identidade do Balcão
+globs: apps/frontend/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Menu de contexto (botão direito)
+
+- Um clique com o botão direito: menu do Balcão (`shared/ui/context-menu`), nunca o do browser.
+- Dois cliques seguidos com o botão direito: libera o menu nativo do browser.
+- Em listagens/bolhas/ações de item: preferir `showContextMenu` + `data-ctx` em vez de ⋮.
+- Host global: `ContextMenuHost` no `App`.
+
+```tsx
+✅ showContextMenu(event, [{ id: 'x', label: 'ação', onSelect: ... }])
+❌ botão ⋮ em cada linha/mensagem para as mesmas ações
+```

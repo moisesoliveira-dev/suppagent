@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HealthModule } from './modules/health/health.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
+import { TeamChatModule } from './modules/team-chat/team-chat.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { UsersModule } from './modules/users/users.module';
 
@@ -21,6 +22,7 @@ import { UsersModule } from './modules/users/users.module';
     TicketsModule,
     UsersModule,
     KnowledgeModule,
+    TeamChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

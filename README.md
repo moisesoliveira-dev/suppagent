@@ -68,6 +68,17 @@ API de chamados (sem auth ainda; agente atual via `?agent=`, padrão `c.reis`):
 | `POST` | `/tickets/:id/messages/:messageId/pin` | fixa / desafixa |
 | `POST` | `/tickets/:id/messages/:messageId/forward` | `{ "targetTicketId" }` encaminha |
 
+API de bate-papo da equipe:
+
+| Método | Rota | Uso |
+|---|---|---|
+| `GET` | `/team-chats` | lista canais |
+| `GET` | `/team-chats/:id` | detalhe + mensagens |
+| `POST` | `/team-chats/:id/messages` | envia `{ text, replyToId? }` |
+| `PATCH` / `DELETE` / `POST …/pin` | `/team-chats/:id/messages/:messageId` | edita / apaga / fixa |
+| `POST` | `/team-chats/:id/messages/:messageId/forward` | encaminha para chat ou chamado |
+| `POST` | `/team-chats/:id/forward-from-ticket` | recebe mensagem de um chamado |
+
 API de usuários (Cadastros → usuários):
 
 | Método | Rota | Uso |

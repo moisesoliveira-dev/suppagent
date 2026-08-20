@@ -103,3 +103,39 @@ model KnowledgeArticle {
   @@index([published])
   @@map("knowledge_articles")
 }
+
+enum TeamChatKind {
+  CHANNEL
+  DIRECT
+}
+
+model TeamChat {
+  id        String            @id @default(uuid())
+  name      String
+  kind      TeamChatKind      @default(CHANNEL)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  messages  TeamChatMessage[]
+
+  @@map("team_chats")
+}
+
+model TeamChatMessage {
+  id                String    @id @default(uuid())
+  chatId            String
+  chat              TeamChat  @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  occurredAt        DateTime  @default(now())
+  text              String
+  authorHandle      String
+  authorName        String
+  deletedAt         DateTime?
+  editedAt          DateTime?
+  pinnedAt          DateTime?
+  replyToId         String?
+  forwardedFromName String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([chatId])
+  @@map("team_chat_messages")
+}

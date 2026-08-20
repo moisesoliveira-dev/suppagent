@@ -37,5 +37,6 @@ import { TicketsController } from './presentation/tickets.controller';
       useClass: PrismaTicketRepository,
     },
   ],
+  exports: [TICKET_REPOSITORY],
 })
 export class TicketsModule {}

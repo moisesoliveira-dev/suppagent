@@ -12,6 +12,9 @@ Chamados (`features/tickets/`): dados só via API (`VITE_API_URL`). Abrir / resp
 Usuários (`features/users/`): cadastro em Cadastros → usuários, perfis `usuario` | `tecnico` (técnico exige `handle` de agente).
 Base de conhecimento (`features/knowledge/`): artigos via API; criar a partir do chat só com chamado encerrado.
 Feedback: `toast` em `shared/ui/toast` — sem `window.confirm` / `prompt`.
+Menu de contexto: botão direito abre opções do Balcão (`shared/ui/context-menu`); **dois** cliques seguidos com o botão direito liberam o menu nativo do browser. Preferir `showContextMenu` / `data-ctx` em vez de ⋮ em itens.
+
+Chat (`features/chat/`): categorias **chamados** (tickets) e **equipe** (team-chats); encaminhar via `ForwardChatModal`.
 
 Não criar pastas globais `components/` ou `hooks/` na raiz de `src` como ímã. Estado da tela fica na feature.
 

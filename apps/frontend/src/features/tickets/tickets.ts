@@ -12,6 +12,7 @@ export type TicketHistoryEntry = {
   deleted?: boolean
   edited?: boolean
   pinned?: boolean
+  pinnedTime?: string
   replyToId?: string
   replyToText?: string
   replyToAuthorName?: string

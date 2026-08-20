@@ -66,7 +66,12 @@ export function toTicketHttp(ticket: Ticket, now = new Date()): TicketHttp {
         ...(entry.isInternalNote ? { note: true } : {}),
         ...(entry.deletedAt ? { deleted: true } : {}),
         ...(entry.editedAt && !entry.deletedAt ? { edited: true } : {}),
-        ...(entry.pinnedAt && !entry.deletedAt ? { pinned: true } : {}),
+        ...(entry.pinnedAt && !entry.deletedAt
+          ? {
+              pinned: true,
+              pinnedTime: formatHistoryTime(entry.pinnedAt),
+            }
+          : {}),
         ...(entry.replyToId ? { replyToId: entry.replyToId } : {}),
         ...(reply && !reply.deletedAt
           ? {

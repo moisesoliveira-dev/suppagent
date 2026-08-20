@@ -398,6 +398,64 @@ async function main() {
         },
       });
     }
+
+    const teamChats = [
+      {
+        id: 'seed-team-geral',
+        name: 'geral',
+        kind: 'CHANNEL' as const,
+        createdAt: new Date('2026-08-01T09:00:00'),
+        messages: [
+          {
+            id: 'seed-team-geral-1',
+            occurredAt: new Date('2026-08-19T09:00:00'),
+            text: 'bom dia equipe — usem este canal para alinhamentos rápidos.',
+            authorHandle: 'c.reis',
+            authorName: 'camila reis',
+          },
+          {
+            id: 'seed-team-geral-2',
+            occurredAt: new Date('2026-08-19T09:15:00'),
+            text: 'hoje priorizamos os urgentes de login.',
+            authorHandle: 'b.alves',
+            authorName: 'bruno alves',
+          },
+        ],
+      },
+      {
+        id: 'seed-team-plantao',
+        name: 'plantão',
+        kind: 'CHANNEL' as const,
+        createdAt: new Date('2026-08-01T09:00:00'),
+        messages: [
+          {
+            id: 'seed-team-plantao-1',
+            occurredAt: new Date('2026-08-19T12:00:00'),
+            text: 'plantão da tarde coberto.',
+            authorHandle: 'r.souza',
+            authorName: 'rafael souza',
+          },
+        ],
+      },
+    ];
+
+    for (const chat of teamChats) {
+      const { messages, ...data } = chat;
+      await prisma.teamChat.upsert({
+        where: { id: data.id },
+        update: {},
+        create: {
+          ...data,
+          updatedAt: data.createdAt,
+          messages: {
+            create: messages.map((message) => ({
+              ...message,
+              updatedAt: message.occurredAt,
+            })),
+          },
+        },
+      });
+    }
   } finally {
     await prisma.$disconnect();
   }
