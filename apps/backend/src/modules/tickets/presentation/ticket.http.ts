@@ -7,6 +7,23 @@ import {
   statusToHttp,
 } from './ticket-format';
 
+export type TicketMessageHttp = {
+  id: string;
+  time: string;
+  text: string;
+  author: 'requester' | 'agent';
+  authorName: string;
+  note?: boolean;
+  deleted?: boolean;
+  edited?: boolean;
+  pinned?: boolean;
+  replyToId?: string;
+  replyToText?: string;
+  replyToAuthorName?: string;
+  forwarded?: boolean;
+  forwardedFromName?: string;
+};
+
 export type TicketHttp = {
   id: string;
   subject: string;
@@ -19,11 +36,13 @@ export type TicketHttp = {
   requester: string;
   email: string;
   openedAt: string;
-  history: { time: string; text: string; note?: boolean; author: 'requester' | 'agent' }[];
+  history: TicketMessageHttp[];
 };
 
 export function toTicketHttp(ticket: Ticket, now = new Date()): TicketHttp {
   const agent = ticket.agentId ?? 'livre';
+  const byId = new Map(ticket.history.map((entry) => [entry.id, entry]));
+
   return {
     id: String(ticket.id),
     subject: ticket.subject,
@@ -36,11 +55,37 @@ export function toTicketHttp(ticket: Ticket, now = new Date()): TicketHttp {
     requester: ticket.requesterName,
     email: ticket.requesterEmail,
     openedAt: formatOpenedAt(ticket.createdAt, now),
-    history: ticket.history.map((entry) => ({
-      time: formatHistoryTime(entry.occurredAt),
-      text: entry.text,
-      author: entry.author,
-      ...(entry.isInternalNote ? { note: true } : {}),
-    })),
+    history: ticket.history.map((entry) => {
+      const reply = entry.replyToId ? byId.get(entry.replyToId) : undefined;
+      return {
+        id: entry.id,
+        time: formatHistoryTime(entry.occurredAt),
+        text: entry.deletedAt ? '' : entry.text,
+        author: entry.author,
+        authorName: ticket.authorDisplayName(entry),
+        ...(entry.isInternalNote ? { note: true } : {}),
+        ...(entry.deletedAt ? { deleted: true } : {}),
+        ...(entry.editedAt && !entry.deletedAt ? { edited: true } : {}),
+        ...(entry.pinnedAt && !entry.deletedAt ? { pinned: true } : {}),
+        ...(entry.replyToId ? { replyToId: entry.replyToId } : {}),
+        ...(reply && !reply.deletedAt
+          ? {
+              replyToText: reply.text,
+              replyToAuthorName: ticket.authorDisplayName(reply),
+            }
+          : reply
+            ? {
+                replyToText: 'mensagem apagada',
+                replyToAuthorName: ticket.authorDisplayName(reply),
+              }
+            : {}),
+        ...(entry.forwardedFromName
+          ? {
+              forwarded: true,
+              forwardedFromName: entry.forwardedFromName,
+            }
+          : {}),
+      };
+    }),
   };
 }

@@ -3,10 +3,20 @@ export type TicketPriority = 'urgente' | 'alta' | 'media' | 'baixa'
 export type TicketFilter = 'todos' | 'meus' | 'naoatribuidos' | 'urgentes'
 
 export type TicketHistoryEntry = {
+  id: string
   time: string
   text: string
   note?: boolean
   author: 'requester' | 'agent'
+  authorName: string
+  deleted?: boolean
+  edited?: boolean
+  pinned?: boolean
+  replyToId?: string
+  replyToText?: string
+  replyToAuthorName?: string
+  forwarded?: boolean
+  forwardedFromName?: string
 }
 
 export type Ticket = {

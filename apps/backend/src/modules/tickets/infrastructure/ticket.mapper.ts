@@ -24,6 +24,11 @@ type TicketRecord = {
     text: string;
     isInternalNote: boolean;
     author: PrismaTicketEventAuthor;
+    deletedAt: Date | null;
+    editedAt: Date | null;
+    pinnedAt: Date | null;
+    replyToId: string | null;
+    forwardedFromName: string | null;
   }[];
 };
 
@@ -101,6 +106,11 @@ export function toDomainTicket(record: TicketRecord): Ticket {
         text: event.text,
         isInternalNote: event.isInternalNote,
         author: AUTHOR_FROM_PRISMA[event.author],
+        deletedAt: event.deletedAt,
+        editedAt: event.editedAt,
+        pinnedAt: event.pinnedAt,
+        replyToId: event.replyToId,
+        forwardedFromName: event.forwardedFromName,
       })),
   });
 }

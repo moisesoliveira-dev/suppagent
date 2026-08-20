@@ -41,10 +41,15 @@ export function replyToTicket(
   id: string,
   text: string,
   note = false,
+  replyToId?: string | null,
 ): Promise<Ticket> {
   return apiRequest<Ticket>(`/tickets/${id}/replies`, {
     method: 'POST',
-    body: JSON.stringify({ text, note }),
+    body: JSON.stringify({
+      text,
+      note,
+      ...(replyToId ? { replyToId } : {}),
+    }),
   })
 }
 
@@ -78,6 +83,49 @@ export function closeTicket(id: string): Promise<Ticket> {
   return apiRequest<Ticket>(`/tickets/${id}/close`, {
     method: 'POST',
   })
+}
+
+export function editTicketMessage(
+  ticketId: string,
+  messageId: string,
+  text: string,
+): Promise<Ticket> {
+  return apiRequest<Ticket>(`/tickets/${ticketId}/messages/${messageId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ text }),
+  })
+}
+
+export function deleteTicketMessage(
+  ticketId: string,
+  messageId: string,
+): Promise<Ticket> {
+  return apiRequest<Ticket>(`/tickets/${ticketId}/messages/${messageId}`, {
+    method: 'DELETE',
+  })
+}
+
+export function pinTicketMessage(
+  ticketId: string,
+  messageId: string,
+): Promise<Ticket> {
+  return apiRequest<Ticket>(`/tickets/${ticketId}/messages/${messageId}/pin`, {
+    method: 'POST',
+  })
+}
+
+export function forwardTicketMessage(
+  ticketId: string,
+  messageId: string,
+  targetTicketId: string,
+): Promise<Ticket> {
+  return apiRequest<Ticket>(
+    `/tickets/${ticketId}/messages/${messageId}/forward`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ targetTicketId: Number(targetTicketId) }),
+    },
+  )
 }
 
 export function reopenTicket(id: string, reason: string): Promise<Ticket> {

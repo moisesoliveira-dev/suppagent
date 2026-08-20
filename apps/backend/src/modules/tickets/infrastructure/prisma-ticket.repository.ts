@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '../../../generated/client';
 import { PrismaService } from '../../../shared/infrastructure/persistence/prisma.service';
-import type { TicketFilter } from '../domain/ticket-filter';
 import type { Ticket } from '../domain/ticket';
 import type {
   TicketCounts,
@@ -15,6 +13,7 @@ import {
   toPrismaPriority,
   toPrismaStatus,
 } from './ticket.mapper';
+import { buildTicketWhere } from './ticket-search';
 
 const eventInclude = {
   events: { orderBy: { occurredAt: 'asc' as const } },
@@ -33,7 +32,7 @@ export class PrismaTicketRepository implements TicketRepository {
   }
 
   async findMany(options: TicketListOptions): Promise<TicketListResult> {
-    const where = this.where(
+    const where = buildTicketWhere(
       options.filter,
       options.currentAgent,
       options.search,
@@ -86,6 +85,11 @@ export class PrismaTicketRepository implements TicketRepository {
       text: event.text,
       isInternalNote: event.isInternalNote,
       author: toPrismaAuthor(event.author),
+      deletedAt: event.deletedAt,
+      editedAt: event.editedAt,
+      pinnedAt: event.pinnedAt,
+      replyToId: event.replyToId,
+      forwardedFromName: event.forwardedFromName,
     }));
 
     if (ticket.isNew) {
@@ -115,37 +119,5 @@ export class PrismaTicketRepository implements TicketRepository {
     });
 
     return toDomainTicket(saved);
-  }
-
-  private where(
-    filter: TicketFilter,
-    currentAgent: string,
-    search?: string,
-  ): Prisma.TicketWhereInput {
-    const base: Prisma.TicketWhereInput =
-      filter === 'meus'
-        ? { agentId: currentAgent }
-        : filter === 'naoatribuidos'
-          ? { agentId: null }
-          : filter === 'urgentes'
-            ? { priority: 'URGENT' }
-            : {};
-
-    const q = search?.trim();
-    if (!q) return base;
-
-    const searchOr: Prisma.TicketWhereInput[] = [
-      { subject: { contains: q, mode: 'insensitive' } },
-      { requesterName: { contains: q, mode: 'insensitive' } },
-      { requesterEmail: { contains: q, mode: 'insensitive' } },
-      { category: { contains: q, mode: 'insensitive' } },
-      { agentId: { contains: q, mode: 'insensitive' } },
-    ];
-    const asId = Number.parseInt(q.replace(/^#/, ''), 10);
-    if (Number.isFinite(asId) && String(asId) === q.replace(/^#/, '')) {
-      searchOr.push({ id: asId });
-    }
-
-    return { AND: [base, { OR: searchOr }] };
   }
 }

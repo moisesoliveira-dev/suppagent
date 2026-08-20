@@ -2,9 +2,13 @@ import { Module } from '@nestjs/common';
 import { ClaimTicketService } from './application/claim-ticket.service';
 import { CloseTicketService } from './application/close-ticket.service';
 import { CreateTicketService } from './application/create-ticket.service';
+import { DeleteTicketMessageService } from './application/delete-ticket-message.service';
+import { EditTicketMessageService } from './application/edit-ticket-message.service';
+import { ForwardTicketMessageService } from './application/forward-ticket-message.service';
 import { GetTicketService } from './application/get-ticket.service';
 import { ListTicketsService } from './application/list-tickets.service';
 import { MarkTicketWaitingService } from './application/mark-ticket-waiting.service';
+import { PinTicketMessageService } from './application/pin-ticket-message.service';
 import { ReopenTicketService } from './application/reopen-ticket.service';
 import { ReplyToTicketService } from './application/reply-to-ticket.service';
 import { TransferTicketService } from './application/transfer-ticket.service';
@@ -24,6 +28,10 @@ import { TicketsController } from './presentation/tickets.controller';
     MarkTicketWaitingService,
     CloseTicketService,
     ReopenTicketService,
+    EditTicketMessageService,
+    DeleteTicketMessageService,
+    PinTicketMessageService,
+    ForwardTicketMessageService,
     {
       provide: TICKET_REPOSITORY,
       useClass: PrismaTicketRepository,

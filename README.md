@@ -59,10 +59,14 @@ API de chamados (sem auth ainda; agente atual via `?agent=`, padrão `c.reis`):
 | `GET` | `/tickets?filter=…&search=&page=&pageSize=` | lista + `counts` + paginação |
 | `GET` | `/tickets/:id` | detalhe (`history[].author`: `requester` \| `agent`) |
 | `POST` | `/tickets` | abre chamado |
-| `POST` | `/tickets/:id/replies` | `{ "text", "note"? }` |
+| `POST` | `/tickets/:id/replies` | `{ "text", "note"?, "replyToId"? }` |
 | `POST` | `/tickets/:id/transfer` | `{ "agent": "b.alves" \| null }` |
 | `POST` | `/tickets/:id/close` | encerra |
 | `POST` | `/tickets/:id/reopen` | `{ "reason" }` reabre com justificativa |
+| `PATCH` | `/tickets/:id/messages/:messageId` | edita `{ "text" }` |
+| `DELETE` | `/tickets/:id/messages/:messageId` | apaga (soft delete) |
+| `POST` | `/tickets/:id/messages/:messageId/pin` | fixa / desafixa |
+| `POST` | `/tickets/:id/messages/:messageId/forward` | `{ "targetTicketId" }` encaminha |
 
 API de usuários (Cadastros → usuários):
 

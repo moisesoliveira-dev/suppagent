@@ -84,6 +84,28 @@ describe('Ticket', () => {
     expect(() => ticket.reopen('  ', NOW)).toThrow('justificativa');
   });
 
+  it('edita, fixa, apaga e encaminha mensagem', () => {
+    const ticket = openTicket().withId(40);
+    ticket.claim('c.reis', NOW);
+    ticket.reply('oi marina', false, NOW);
+    const messageId = ticket.history.at(-1)!.id;
+    ticket.editMessage(messageId, 'oi marina, atualizado', NOW);
+    expect(ticket.history.at(-1)?.editedAt).toBeTruthy();
+    ticket.togglePinMessage(messageId, NOW);
+    expect(ticket.history.at(-1)?.pinnedAt).toBeTruthy();
+
+    const target = openTicket().withId(41);
+    target.receiveForwarded({
+      text: 'oi marina, atualizado',
+      fromName: ticket.authorDisplayName(ticket.history.at(-1)!),
+      at: NOW,
+    });
+    expect(target.history.at(-1)?.forwardedFromName).toBe('c.reis');
+
+    ticket.deleteMessage(messageId, NOW);
+    expect(ticket.history.at(-1)?.deletedAt).toBeTruthy();
+  });
+
   it('não altera chamado já encerrado', () => {
     const ticket = openTicket().withId(1);
     ticket.close(NOW);

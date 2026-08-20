@@ -6,20 +6,15 @@ import {
 } from '../domain/ticket.repository';
 
 @Injectable()
-export class ReplyToTicketService {
+export class PinTicketMessageService {
   constructor(
     @Inject(TICKET_REPOSITORY) private readonly tickets: TicketRepository,
   ) {}
 
-  async execute(
-    id: number,
-    text: string,
-    isInternalNote: boolean,
-    replyToId?: string | null,
-  ) {
-    const ticket = await this.tickets.findById(id);
-    if (!ticket) throw new TicketNotFoundError(id);
-    ticket.reply(text, isInternalNote, new Date(), replyToId);
+  async execute(ticketId: number, messageId: string) {
+    const ticket = await this.tickets.findById(ticketId);
+    if (!ticket) throw new TicketNotFoundError(ticketId);
+    ticket.togglePinMessage(messageId);
     return this.tickets.save(ticket);
   }
 }

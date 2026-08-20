@@ -14,7 +14,29 @@ export type TicketHistoryEntry = {
   text: string;
   isInternalNote: boolean;
   author: TicketEventAuthor;
+  deletedAt: Date | null;
+  editedAt: Date | null;
+  pinnedAt: Date | null;
+  replyToId: string | null;
+  forwardedFromName: string | null;
 };
+
+function emptyMeta(): Pick<
+  TicketHistoryEntry,
+  | 'deletedAt'
+  | 'editedAt'
+  | 'pinnedAt'
+  | 'replyToId'
+  | 'forwardedFromName'
+> {
+  return {
+    deletedAt: null,
+    editedAt: null,
+    pinnedAt: null,
+    replyToId: null,
+    forwardedFromName: null,
+  };
+}
 
 export type OpenTicketInput = {
   subject: string;
@@ -64,6 +86,7 @@ export class Ticket {
           text: message,
           isInternalNote: false,
           author: 'requester',
+          ...emptyMeta(),
         },
       ],
     );
@@ -139,20 +162,91 @@ export class Ticket {
     return [...this._history];
   }
 
-  reply(text: string, isInternalNote: boolean, at = new Date()): void {
+  reply(
+    text: string,
+    isInternalNote: boolean,
+    at = new Date(),
+    replyToId?: string | null,
+  ): void {
     this.assertOpen();
     const trimmed = text.trim();
     if (!trimmed) throw new Error('texto da resposta é obrigatório');
+    let replyRef: string | null = null;
+    if (replyToId) {
+      const target = this.requireMessage(replyToId);
+      if (target.deletedAt) throw new Error('não é possível responder mensagem apagada');
+      replyRef = target.id;
+    }
     this._history.push({
       id: randomUUID(),
       occurredAt: at,
       text: trimmed,
       isInternalNote,
       author: 'agent',
+      ...emptyMeta(),
+      replyToId: replyRef,
     });
     if (this._status === 'open') {
       this._status = 'in_progress';
     }
+  }
+
+  editMessage(messageId: string, text: string, at = new Date()): void {
+    this.assertOpen();
+    const entry = this.requireMessage(messageId);
+    if (entry.deletedAt) throw new Error('mensagem apagada não pode ser editada');
+    if (entry.isInternalNote) throw new Error('nota interna não pode ser editada pelo chat');
+    const trimmed = text.trim();
+    if (!trimmed) throw new Error('texto da mensagem é obrigatório');
+    entry.text = trimmed;
+    entry.editedAt = at;
+  }
+
+  deleteMessage(messageId: string, at = new Date()): void {
+    this.assertOpen();
+    const entry = this.requireMessage(messageId);
+    if (entry.deletedAt) throw new Error('mensagem já está apagada');
+    if (entry.isInternalNote) throw new Error('nota interna não pode ser apagada pelo chat');
+    entry.deletedAt = at;
+    entry.pinnedAt = null;
+  }
+
+  togglePinMessage(messageId: string, at = new Date()): void {
+    this.assertOpen();
+    const entry = this.requireMessage(messageId);
+    if (entry.deletedAt) throw new Error('mensagem apagada não pode ser fixada');
+    if (entry.isInternalNote) throw new Error('nota interna não pode ser fixada');
+    entry.pinnedAt = entry.pinnedAt ? null : at;
+  }
+
+  receiveForwarded(input: {
+    text: string;
+    fromName: string;
+    at?: Date;
+  }): void {
+    this.assertOpen();
+    const trimmed = input.text.trim();
+    const fromName = input.fromName.trim();
+    if (!trimmed) throw new Error('texto da mensagem é obrigatório');
+    if (!fromName) throw new Error('nome de origem do encaminhamento é obrigatório');
+    const at = input.at ?? new Date();
+    this._history.push({
+      id: randomUUID(),
+      occurredAt: at,
+      text: trimmed,
+      isInternalNote: false,
+      author: 'agent',
+      ...emptyMeta(),
+      forwardedFromName: fromName,
+    });
+    if (this._status === 'open') {
+      this._status = 'in_progress';
+    }
+  }
+
+  authorDisplayName(entry: TicketHistoryEntry): string {
+    if (entry.author === 'requester') return this._requesterName;
+    return this._agentId ?? 'agente';
   }
 
   transfer(agentId: string | null, at = new Date()): void {
@@ -167,6 +261,7 @@ export class Ticket {
         : 'chamado desatribuído.',
       isInternalNote: true,
       author: 'agent',
+      ...emptyMeta(),
     });
     if (next && this._status === 'open') {
       this._status = 'in_progress';
@@ -187,6 +282,7 @@ export class Ticket {
       text: `chamado assumido por ${next}.`,
       isInternalNote: true,
       author: 'agent',
+      ...emptyMeta(),
     });
   }
 
@@ -199,6 +295,7 @@ export class Ticket {
       text: 'aguardando resposta do solicitante.',
       isInternalNote: true,
       author: 'agent',
+      ...emptyMeta(),
     });
   }
 
@@ -211,6 +308,7 @@ export class Ticket {
       text: 'chamado encerrado.',
       isInternalNote: false,
       author: 'agent',
+      ...emptyMeta(),
     });
   }
 
@@ -227,6 +325,7 @@ export class Ticket {
       text: `chamado reaberto: ${trimmed}`,
       isInternalNote: false,
       author: 'agent',
+      ...emptyMeta(),
     });
   }
 
@@ -243,6 +342,12 @@ export class Ticket {
       createdAt: this._createdAt,
       history: this._history,
     });
+  }
+
+  private requireMessage(messageId: string): TicketHistoryEntry {
+    const entry = this._history.find((item) => item.id === messageId);
+    if (!entry) throw new Error('mensagem não encontrada');
+    return entry;
   }
 
   private assertOpen(): void {

@@ -497,11 +497,11 @@ export function TicketsView() {
           ) : (
             recentHistory.map((line) => (
               <div
-                key={`${line.time}-${line.text}`}
+                key={line.id ?? `${line.time}-${line.text}`}
                 className={`mb-2 text-xs leading-relaxed ${line.note ? 'text-amber' : 'text-ink'}`}
               >
                 <span className="mr-2 text-dim">{line.time}</span>
-                {line.text}
+                {line.deleted ? 'mensagem apagada' : line.text}
               </div>
             ))
           )}
