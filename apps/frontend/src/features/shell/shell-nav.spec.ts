@@ -6,6 +6,8 @@ import {
   consumeChatDraft,
   openTicketFocus,
   consumeTicketFocus,
+  openKnowledgeFocus,
+  consumeKnowledgeFocus,
   resetShellNav,
 } from '../shell/shell-nav'
 
@@ -27,6 +29,13 @@ describe('shell-nav', () => {
     expect(getShellNav().view).toBe('chamados')
     expect(consumeTicketFocus()).toBe('4468')
     expect(getShellNav().ticketFocusId).toBeNull()
+  })
+
+  it('foca artigo na base de conhecimento', () => {
+    openKnowledgeFocus('seed-kb-senha')
+    expect(getShellNav().view).toBe('baseconhecimento')
+    expect(consumeKnowledgeFocus()).toBe('seed-kb-senha')
+    expect(getShellNav().knowledgeFocusId).toBeNull()
   })
 
   it('navega entre abas', () => {

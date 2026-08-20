@@ -80,6 +80,16 @@ Chamados — ações extras:
 | `POST` | `/tickets/:id/claim` | `{ "agent" }` assume o chamado |
 | `POST` | `/tickets/:id/waiting` | marca aguardando cliente |
 
+API da base de conhecimento:
+
+| Método | Rota | Uso |
+|---|---|---|
+| `GET` | `/knowledge?category=&q=` | lista artigos |
+| `GET` | `/knowledge/:id` | detalhe (incrementa visualizações) |
+| `POST` | `/knowledge` | `{ title, category, body, author, tags?, published? }` |
+| `POST` | `/knowledge/from-ticket` | cria a partir de chamado **encerrado** (`ticketId`, `author`, …) |
+| `PATCH` | `/knowledge/:id` | atualiza título/corpo/tags/publicação |
+
 O seed (`pnpm --filter backend prisma:seed`) grava os chamados de exemplo do painel. No Docker, o start do backend resolve o CLI do Prisma pelo `node_modules` do pacote (não pelo `.bin` da raiz do workspace), aplica `migrate deploy`, roda o seed compilado e sobe o Nest.
 
 ### Stack completa (Docker)

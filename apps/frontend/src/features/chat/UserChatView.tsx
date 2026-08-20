@@ -30,6 +30,7 @@ import {
   selectChatTicket,
   useShellNav,
 } from '../shell/shell-nav'
+import { CreateKnowledgeFromTicketDialog } from '../knowledge/CreateKnowledgeFromTicketDialog'
 
 function initials(name: string) {
   return name
@@ -64,10 +65,12 @@ export function UserChatView() {
   const [busy, setBusy] = useState(false)
   const [technicians, setTechnicians] = useState<User[]>([])
   const [transferOpen, setTransferOpen] = useState(false)
+  const [kbOpen, setKbOpen] = useState(false)
   const threadRef = useRef<HTMLDivElement>(null)
 
   const openRows = rows.filter((ticket) => ticket.status !== 'resolvido')
-  const chatRows = openRows.length > 0 ? openRows : rows
+  const closedRows = rows.filter((ticket) => ticket.status === 'resolvido')
+  const chatRows = [...openRows, ...closedRows]
   const selected =
     chatRows.find((ticket) => ticket.id === selectedId) ?? chatRows[0] ?? null
   const resolved = selected?.status === 'resolvido'
@@ -266,6 +269,16 @@ export function UserChatView() {
                 >
                   encerrar conversa
                 </button>
+                {resolved ? (
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => setKbOpen(true)}
+                    className="rounded-full border border-amber px-2.5 py-1.5 text-[10.5px] tracking-wide text-amber uppercase hover:bg-amber hover:text-amber-ink disabled:opacity-50"
+                  >
+                    criar na base
+                  </button>
+                ) : null}
               </div>
             </div>
 
@@ -390,16 +403,28 @@ export function UserChatView() {
             <ActionButton primary onClick={() => openTicketFocus(selected.id)}>
               ver chamado vinculado
             </ActionButton>
-            <ActionButton
-              onClick={() => {
-                if (unassigned) onClaim()
-                else setTransferOpen(true)
-              }}
-            >
-              {unassigned ? 'assumir chamado' : 'encaminhar para outro agente'}
-            </ActionButton>
+            {resolved ? (
+              <ActionButton onClick={() => setKbOpen(true)}>
+                criar na base de conhecimento
+              </ActionButton>
+            ) : (
+              <ActionButton
+                onClick={() => {
+                  if (unassigned) onClaim()
+                  else setTransferOpen(true)
+                }}
+              >
+                {unassigned ? 'assumir chamado' : 'encaminhar para outro agente'}
+              </ActionButton>
+            )}
           </ActionBar>
         </DetailPanel>
+      ) : null}
+      {kbOpen && selected && resolved ? (
+        <CreateKnowledgeFromTicketDialog
+          ticket={selected}
+          onClose={() => setKbOpen(false)}
+        />
       ) : null}
     </div>
   )

@@ -6,6 +6,7 @@ export type ShellNavState = {
   chatTicketId: string | null
   chatDraft: string
   ticketFocusId: string | null
+  knowledgeFocusId: string | null
 }
 
 let state: ShellNavState = {
@@ -13,6 +14,7 @@ let state: ShellNavState = {
   chatTicketId: null,
   chatDraft: '',
   ticketFocusId: null,
+  knowledgeFocusId: null,
 }
 
 const listeners = new Set<() => void>()
@@ -74,6 +76,19 @@ export function consumeTicketFocus(): string | null {
   return id
 }
 
+export function openKnowledgeFocus(articleId: string) {
+  setState({
+    view: 'baseconhecimento',
+    knowledgeFocusId: articleId,
+  })
+}
+
+export function consumeKnowledgeFocus(): string | null {
+  const id = state.knowledgeFocusId
+  if (id) setState({ knowledgeFocusId: null })
+  return id
+}
+
 /** só para testes */
 export function resetShellNav() {
   state = {
@@ -81,6 +96,7 @@ export function resetShellNav() {
     chatTicketId: null,
     chatDraft: '',
     ticketFocusId: null,
+    knowledgeFocusId: null,
   }
   emit()
 }

@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HealthModule } from './modules/health/health.module';
+import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { UsersModule } from './modules/users/users.module';
 
@@ -19,6 +20,7 @@ import { UsersModule } from './modules/users/users.module';
     HealthModule,
     TicketsModule,
     UsersModule,
+    KnowledgeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

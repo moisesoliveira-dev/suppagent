@@ -1,7 +1,8 @@
 import { ClientsView } from '../clients/ClientsView'
 import { DashboardView } from '../dashboard/DashboardView'
 import { UserChatView } from '../chat/UserChatView'
-import { CannedView, KnowledgeView } from '../inbox/InboxViews'
+import { CannedView } from '../inbox/InboxViews'
+import { KnowledgeView } from '../knowledge/KnowledgeView'
 import { AutomationsView, ReportsView, SlaView, TeamView } from '../ops/OpsViews'
 import {
   AiChatView,

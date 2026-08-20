@@ -78,3 +78,23 @@ model TicketEvent {
   @@index([ticketId])
   @@map("ticket_events")
 }
+
+model KnowledgeArticle {
+  id             String   @id @default(uuid())
+  title          String
+  category       String
+  body           String
+  tags           String[] @default([])
+  published      Boolean  @default(false)
+  authorName     String
+  views          Int      @default(0)
+  usefulPercent  Int      @default(0)
+  ticketsAvoided Int      @default(0)
+  sourceTicketId Int?     @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([category])
+  @@index([published])
+  @@map("knowledge_articles")
+}

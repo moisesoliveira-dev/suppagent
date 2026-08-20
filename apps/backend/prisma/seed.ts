@@ -300,6 +300,104 @@ async function main() {
     await prisma.$executeRawUnsafe(
       `SELECT setval(pg_get_serial_sequence('tickets', 'id'), COALESCE((SELECT MAX(id) FROM tickets), 1))`,
     );
+
+    const articles = [
+      {
+        id: 'seed-kb-senha',
+        title: 'Como resetar a senha da sua conta',
+        category: 'acesso',
+        body: 'Peça ao cliente para acessar "esqueci minha senha" na tela de login. O link de redefinição expira em 30 minutos.',
+        tags: ['login', 'e-mail', 'segurança'],
+        published: true,
+        authorName: 'bruno alves',
+        views: 1204,
+        usefulPercent: 91,
+        ticketsAvoided: 64,
+        sourceTicketId: 4430,
+        createdAt: new Date('2026-08-17T10:00:00'),
+      },
+      {
+        id: 'seed-kb-cobranca',
+        title: 'Entendendo a cobrança recorrente',
+        category: 'financeiro',
+        body: 'A cobrança ocorre sempre no dia 5 de cada mês. Cobranças duplicadas geralmente vêm de troca de cartão no meio do ciclo.',
+        tags: ['fatura', 'cartão', 'reembolso'],
+        published: true,
+        authorName: 'camila reis',
+        views: 856,
+        usefulPercent: 78,
+        ticketsAvoided: 31,
+        sourceTicketId: null as number | null,
+        createdAt: new Date('2026-08-12T10:00:00'),
+      },
+      {
+        id: 'seed-kb-relatorio',
+        title: 'Erros comuns ao gerar relatório mensal',
+        category: 'relatórios',
+        body: 'Relatórios com mais de 10 mil linhas podem ficar presos em "gerando…" por até 5 minutos.',
+        tags: ['relatório mensal', 'exportação', 'fila'],
+        published: true,
+        authorName: 'camila reis',
+        views: 340,
+        usefulPercent: 86,
+        ticketsAvoided: 27,
+        sourceTicketId: null,
+        createdAt: new Date('2026-08-18T10:00:00'),
+      },
+      {
+        id: 'seed-kb-csv',
+        title: 'Exportando relatórios em CSV',
+        category: 'relatórios',
+        body: 'Rascunho: descrever o passo a passo para exportação em CSV.',
+        tags: ['csv', 'exportação'],
+        published: false,
+        authorName: 'helena duarte',
+        views: 0,
+        usefulPercent: 0,
+        ticketsAvoided: 0,
+        sourceTicketId: null,
+        createdAt: new Date('2026-08-19T10:00:00'),
+      },
+      {
+        id: 'seed-kb-permissoes',
+        title: 'Configurando permissões de equipe',
+        category: 'acesso',
+        body: 'Apenas administradores podem alterar permissões de outros agentes.',
+        tags: ['permissões', 'equipe', 'admin'],
+        published: true,
+        authorName: 'bruno alves',
+        views: 512,
+        usefulPercent: 88,
+        ticketsAvoided: 19,
+        sourceTicketId: null,
+        createdAt: new Date('2026-08-05T10:00:00'),
+      },
+      {
+        id: 'seed-kb-safari',
+        title: 'Integração com Safari — problemas conhecidos',
+        category: 'bug',
+        body: 'O botão de salvar não responde em versões antigas do Safari (< 16).',
+        tags: ['safari', 'bug', 'salvar'],
+        published: false,
+        authorName: 'camila reis',
+        views: 12,
+        usefulPercent: 0,
+        ticketsAvoided: 2,
+        sourceTicketId: null,
+        createdAt: new Date('2026-08-19T07:00:00'),
+      },
+    ];
+
+    for (const article of articles) {
+      await prisma.knowledgeArticle.upsert({
+        where: { id: article.id },
+        update: {},
+        create: {
+          ...article,
+          updatedAt: article.createdAt,
+        },
+      });
+    }
   } finally {
     await prisma.$disconnect();
   }
