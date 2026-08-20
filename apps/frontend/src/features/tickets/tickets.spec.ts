@@ -23,7 +23,7 @@ describe('tickets-api', () => {
     const data = await listTickets('meus')
 
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:3000/tickets?filter=meus&agent=c.reis',
+      'http://localhost:3000/tickets?filter=meus&agent=c.reis&page=1&pageSize=10',
       expect.objectContaining({
         headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
       }),

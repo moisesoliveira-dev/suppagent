@@ -42,12 +42,26 @@ export class TicketsController {
   async list(
     @Query('filter') filter?: string,
     @Query('agent') agent?: string,
+    @Query('search') search?: string,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
   ) {
     try {
-      const result = await this.listTickets.execute({ filter, agent });
+      const result = await this.listTickets.execute({
+        filter,
+        agent,
+        search,
+        page,
+        pageSize,
+      });
       return {
         filter: result.filter,
         agent: result.agent,
+        search: result.search,
+        page: result.page,
+        pageSize: result.pageSize,
+        total: result.total,
+        totalPages: result.totalPages,
         counts: result.counts,
         items: result.items.map((ticket) => toTicketHttp(ticket)),
       };

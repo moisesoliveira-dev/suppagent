@@ -56,7 +56,7 @@ API de chamados (sem auth ainda; agente atual via `?agent=`, padrão `c.reis`):
 
 | Método | Rota | Uso |
 |---|---|---|
-| `GET` | `/tickets?filter=todos\|meus\|naoatribuidos\|urgentes` | lista + `counts` |
+| `GET` | `/tickets?filter=…&search=&page=&pageSize=` | lista + `counts` + paginação |
 | `GET` | `/tickets/:id` | detalhe (`history[].author`: `requester` \| `agent`) |
 | `POST` | `/tickets` | abre chamado |
 | `POST` | `/tickets/:id/replies` | `{ "text", "note"? }` |

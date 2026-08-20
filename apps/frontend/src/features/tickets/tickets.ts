@@ -35,8 +35,21 @@ export type TicketCounts = {
 export type TicketListResponse = {
   filter: TicketFilter
   agent: string
+  search: string
+  page: number
+  pageSize: number
+  total: number
+  totalPages: number
   counts: TicketCounts
   items: Ticket[]
+}
+
+export type ListTicketsParams = {
+  filter?: TicketFilter
+  agent?: string
+  search?: string
+  page?: number
+  pageSize?: number
 }
 
 export type CreateTicketInput = {
@@ -49,6 +62,7 @@ export type CreateTicketInput = {
 }
 
 export const CURRENT_AGENT = 'c.reis'
+export const TICKETS_PAGE_SIZE = 10
 
 export const EMPTY_COUNTS: TicketCounts = {
   todos: 0,

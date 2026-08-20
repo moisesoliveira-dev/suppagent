@@ -64,15 +64,19 @@ export function UserChatView() {
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [technicians, setTechnicians] = useState<User[]>([])
+  const [menuOpen, setMenuOpen] = useState(false)
   const [transferOpen, setTransferOpen] = useState(false)
   const [kbOpen, setKbOpen] = useState(false)
   const threadRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const selectedIdRef = useRef(selectedId)
+  selectedIdRef.current = selectedId
 
   const openRows = rows.filter((ticket) => ticket.status !== 'resolvido')
   const closedRows = rows.filter((ticket) => ticket.status === 'resolvido')
   const chatRows = [...openRows, ...closedRows]
   const selected =
-    chatRows.find((ticket) => ticket.id === selectedId) ?? chatRows[0] ?? null
+    chatRows.find((ticket) => ticket.id === selectedId) ?? null
   const resolved = selected?.status === 'resolvido'
   const unassigned = selected?.agent === 'livre'
 
@@ -80,9 +84,13 @@ export function UserChatView() {
     setLoading(true)
     setError(null)
     try {
-      const data = await listTickets('todos')
+      const data = await listTickets({
+        filter: 'todos',
+        page: 1,
+        pageSize: 100,
+      })
       setRows(data.items)
-      const want = preferredId ?? chatTicketId ?? selectedId
+      const want = preferredId ?? chatTicketId ?? selectedIdRef.current
       const next =
         data.items.find((ticket) => ticket.id === want)?.id ??
         data.items.find((ticket) => ticket.status !== 'resolvido')?.id ??
@@ -105,7 +113,7 @@ export function UserChatView() {
       .then((data) => setTechnicians(data.items.filter((user) => user.handle)))
       .catch(() => setTechnicians([]))
     return onTicketsChanged(() => {
-      void load(selectedId)
+      void load(selectedIdRef.current)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -126,10 +134,22 @@ export function UserChatView() {
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: 'smooth' })
   }, [selected?.history.length, selectedId])
 
+  useEffect(() => {
+    if (!menuOpen) return
+    function onPointerDown(event: MouseEvent) {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onPointerDown)
+    return () => document.removeEventListener('mousedown', onPointerDown)
+  }, [menuOpen])
+
   function pickChat(ticket: Ticket) {
     setSelectedId(ticket.id)
     selectChatTicket(ticket.id)
     setDraft('')
+    setMenuOpen(false)
     setTransferOpen(false)
   }
 
@@ -140,6 +160,7 @@ export function UserChatView() {
     try {
       const updated = await action()
       setDraft('')
+      setMenuOpen(false)
       setTransferOpen(false)
       await load(updated.id)
       notifyTicketsChanged()
@@ -241,43 +262,75 @@ export function UserChatView() {
                   #{selected.id} · {statusLabel(selected.status)} · {selected.subject}
                 </div>
               </div>
-              <div className="flex gap-1.5">
-                {unassigned && !resolved ? (
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={onClaim}
-                    className="rounded-full border border-stroke px-2.5 py-1.5 text-[10.5px] tracking-wide text-dim uppercase hover:border-amber hover:text-amber disabled:opacity-50"
-                  >
-                    assumir
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    disabled={busy || resolved}
-                    onClick={() => setTransferOpen((value) => !value)}
-                    className="rounded-full border border-stroke px-2.5 py-1.5 text-[10.5px] tracking-wide text-dim uppercase hover:border-amber hover:text-amber disabled:opacity-50"
-                  >
-                    transferir
-                  </button>
-                )}
+              <div className="relative" ref={menuRef}>
                 <button
                   type="button"
-                  disabled={busy || resolved}
-                  onClick={() => void onClose()}
-                  className="rounded-full border border-stroke px-2.5 py-1.5 text-[10.5px] tracking-wide text-dim uppercase hover:border-amber hover:text-amber disabled:opacity-50"
+                  aria-label="mais opções"
+                  disabled={busy}
+                  onClick={() => {
+                    setMenuOpen((value) => !value)
+                    setTransferOpen(false)
+                  }}
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-dim hover:bg-tile hover:text-ink disabled:opacity-50"
                 >
-                  encerrar conversa
+                  <span className="flex flex-col gap-[3px]" aria-hidden>
+                    <span className="block h-[3px] w-[3px] rounded-full bg-current" />
+                    <span className="block h-[3px] w-[3px] rounded-full bg-current" />
+                    <span className="block h-[3px] w-[3px] rounded-full bg-current" />
+                  </span>
                 </button>
-                {resolved ? (
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={() => setKbOpen(true)}
-                    className="rounded-full border border-amber px-2.5 py-1.5 text-[10.5px] tracking-wide text-amber uppercase hover:bg-amber hover:text-amber-ink disabled:opacity-50"
-                  >
-                    criar na base
-                  </button>
+                {menuOpen ? (
+                  <div className="absolute top-full right-0 z-20 mt-1 min-w-[200px] rounded-[3px] border border-stroke bg-panel py-1 shadow-lg">
+                    {!resolved && unassigned ? (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={onClaim}
+                        className="block w-full px-3.5 py-2.5 text-left text-[12px] hover:bg-tile"
+                      >
+                        assumir
+                      </button>
+                    ) : null}
+                    {!resolved && !unassigned ? (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => {
+                          setTransferOpen(true)
+                          setMenuOpen(false)
+                        }}
+                        className="block w-full px-3.5 py-2.5 text-left text-[12px] hover:bg-tile"
+                      >
+                        transferir
+                      </button>
+                    ) : null}
+                    {!resolved ? (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => {
+                          setMenuOpen(false)
+                          void onClose()
+                        }}
+                        className="block w-full px-3.5 py-2.5 text-left text-[12px] hover:bg-tile"
+                      >
+                        encerrar conversa
+                      </button>
+                    ) : null}
+                    {resolved ? (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => {
+                          setMenuOpen(false)
+                          setKbOpen(true)
+                        }}
+                        className="block w-full px-3.5 py-2.5 text-left text-[12px] hover:bg-tile"
+                      >
+                        criar na base
+                      </button>
+                    ) : null}
+                  </div>
                 ) : null}
               </div>
             </div>
@@ -299,6 +352,14 @@ export function UserChatView() {
                       {tech.handle}
                     </button>
                   ))}
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => void onTransferPick(null)}
+                    className="rounded-[3px] border border-dashed border-stroke px-2 py-1 text-[11px] text-dim hover:border-amber hover:text-amber"
+                  >
+                    desatribuir
+                  </button>
                 </div>
               </div>
             ) : null}
@@ -407,16 +468,7 @@ export function UserChatView() {
               <ActionButton onClick={() => setKbOpen(true)}>
                 criar na base de conhecimento
               </ActionButton>
-            ) : (
-              <ActionButton
-                onClick={() => {
-                  if (unassigned) onClaim()
-                  else setTransferOpen(true)
-                }}
-              >
-                {unassigned ? 'assumir chamado' : 'encaminhar para outro agente'}
-              </ActionButton>
-            )}
+            ) : null}
           </ActionBar>
         </DetailPanel>
       ) : null}

@@ -11,9 +11,22 @@ export type TicketCounts = {
   abertos: number;
 };
 
+export type TicketListOptions = {
+  filter: TicketFilter;
+  currentAgent: string;
+  search?: string;
+  page: number;
+  pageSize: number;
+};
+
+export type TicketListResult = {
+  items: Ticket[];
+  total: number;
+};
+
 export interface TicketRepository {
   findById(id: number): Promise<Ticket | null>;
-  findMany(filter: TicketFilter, currentAgent: string): Promise<Ticket[]>;
+  findMany(options: TicketListOptions): Promise<TicketListResult>;
   counts(currentAgent: string): Promise<TicketCounts>;
   save(ticket: Ticket): Promise<Ticket>;
 }

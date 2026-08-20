@@ -5,6 +5,8 @@ import type { TicketFilter } from '../domain/ticket-filter';
 import type { Ticket } from '../domain/ticket';
 import type {
   TicketCounts,
+  TicketListOptions,
+  TicketListResult,
   TicketRepository,
 } from '../domain/ticket.repository';
 import {
@@ -30,16 +32,26 @@ export class PrismaTicketRepository implements TicketRepository {
     return record ? toDomainTicket(record) : null;
   }
 
-  async findMany(
-    filter: TicketFilter,
-    currentAgent: string,
-  ): Promise<Ticket[]> {
-    const records = await this.prisma.ticket.findMany({
-      where: this.where(filter, currentAgent),
-      include: eventInclude,
-      orderBy: { id: 'desc' },
-    });
-    return records.map(toDomainTicket);
+  async findMany(options: TicketListOptions): Promise<TicketListResult> {
+    const where = this.where(
+      options.filter,
+      options.currentAgent,
+      options.search,
+    );
+    const [records, total] = await Promise.all([
+      this.prisma.ticket.findMany({
+        where,
+        include: eventInclude,
+        orderBy: { id: 'desc' },
+        skip: (options.page - 1) * options.pageSize,
+        take: options.pageSize,
+      }),
+      this.prisma.ticket.count({ where }),
+    ]);
+    return {
+      items: records.map(toDomainTicket),
+      total,
+    };
   }
 
   async counts(currentAgent: string): Promise<TicketCounts> {
@@ -108,10 +120,32 @@ export class PrismaTicketRepository implements TicketRepository {
   private where(
     filter: TicketFilter,
     currentAgent: string,
+    search?: string,
   ): Prisma.TicketWhereInput {
-    if (filter === 'meus') return { agentId: currentAgent };
-    if (filter === 'naoatribuidos') return { agentId: null };
-    if (filter === 'urgentes') return { priority: 'URGENT' };
-    return {};
+    const base: Prisma.TicketWhereInput =
+      filter === 'meus'
+        ? { agentId: currentAgent }
+        : filter === 'naoatribuidos'
+          ? { agentId: null }
+          : filter === 'urgentes'
+            ? { priority: 'URGENT' }
+            : {};
+
+    const q = search?.trim();
+    if (!q) return base;
+
+    const searchOr: Prisma.TicketWhereInput[] = [
+      { subject: { contains: q, mode: 'insensitive' } },
+      { requesterName: { contains: q, mode: 'insensitive' } },
+      { requesterEmail: { contains: q, mode: 'insensitive' } },
+      { category: { contains: q, mode: 'insensitive' } },
+      { agentId: { contains: q, mode: 'insensitive' } },
+    ];
+    const asId = Number.parseInt(q.replace(/^#/, ''), 10);
+    if (Number.isFinite(asId) && String(asId) === q.replace(/^#/, '')) {
+      searchOr.push({ id: asId });
+    }
+
+    return { AND: [base, { OR: searchOr }] };
   }
 }
