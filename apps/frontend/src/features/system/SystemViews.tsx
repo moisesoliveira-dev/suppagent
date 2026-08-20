@@ -10,6 +10,7 @@ import {
   PassTitle,
   StubBar,
 } from '../../shared/ui/chrome'
+import { UsersCatalogPanel } from '../users/UsersCatalogPanel'
 
 function SettingsShell({
   items,
@@ -194,6 +195,7 @@ export function CatalogView() {
   return (
     <SettingsShell
       items={[
+        { id: 'usuarios', label: 'usuários' },
         { id: 'setores', label: 'setores' },
         { id: 'cargos', label: 'cargos' },
         { id: 'canais', label: 'canais de atendimento' },
@@ -202,6 +204,8 @@ export function CatalogView() {
       ]}
     >
       {(id) => {
+        if (id === 'usuarios') return <UsersCatalogPanel />
+
         const data: Record<string, { title: string; sub: string; rows: { name: string; meta: string }[] }> = {
           setores: {
             title: 'setores',
