@@ -27,6 +27,11 @@ enum UserRole {
   TECHNICIAN
 }
 
+enum TicketEventAuthor {
+  REQUESTER
+  AGENT
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -60,14 +65,15 @@ model Ticket {
 }
 
 model TicketEvent {
-  id             String   @id @default(uuid())
+  id             String            @id @default(uuid())
   ticketId       Int
-  ticket         Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  occurredAt     DateTime @default(now())
+  ticket         Ticket            @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  occurredAt     DateTime          @default(now())
   text           String
-  isInternalNote Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  isInternalNote Boolean           @default(false)
+  author         TicketEventAuthor @default(REQUESTER)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
   @@index([ticketId])
   @@map("ticket_events")

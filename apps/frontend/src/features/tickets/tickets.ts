@@ -2,6 +2,13 @@ export type TicketStatus = 'aberto' | 'andamento' | 'aguardando' | 'resolvido'
 export type TicketPriority = 'urgente' | 'alta' | 'media' | 'baixa'
 export type TicketFilter = 'todos' | 'meus' | 'naoatribuidos' | 'urgentes'
 
+export type TicketHistoryEntry = {
+  time: string
+  text: string
+  note?: boolean
+  author: 'requester' | 'agent'
+}
+
 export type Ticket = {
   id: string
   subject: string
@@ -14,7 +21,7 @@ export type Ticket = {
   requester: string
   email: string
   openedAt: string
-  history: { time: string; text: string; note?: boolean }[]
+  history: TicketHistoryEntry[]
 }
 
 export type TicketCounts = {

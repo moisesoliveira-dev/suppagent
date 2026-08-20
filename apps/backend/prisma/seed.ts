@@ -25,6 +25,20 @@ const SEED = [
         text: 'camila.reis (nota interna) — já visto antes em relatórios grandes.',
         isInternalNote: true,
       },
+      {
+        id: 'seed-4471-3',
+        occurredAt: new Date('2026-08-19T12:12:00'),
+        text: 'Oi Marina! Estou verificando agora, pode aguardar mais um instante?',
+        isInternalNote: false,
+        author: 'AGENT' as const,
+      },
+      {
+        id: 'seed-4471-4',
+        occurredAt: new Date('2026-08-19T12:14:00'),
+        text: 'claro, obrigada!',
+        isInternalNote: false,
+        author: 'REQUESTER' as const,
+      },
     ],
   },
   {
@@ -43,6 +57,20 @@ const SEED = [
         occurredAt: new Date('2026-08-19T11:40:00'),
         text: 'rafael.nunes — login recusado no painel.',
         isInternalNote: false,
+      },
+      {
+        id: 'seed-4470-2',
+        occurredAt: new Date('2026-08-19T11:48:00'),
+        text: 'Rafael, tente limpar o cache do navegador e entrar novamente.',
+        isInternalNote: false,
+        author: 'AGENT' as const,
+      },
+      {
+        id: 'seed-4470-3',
+        occurredAt: new Date('2026-08-19T11:55:00'),
+        text: 'obrigado, já consegui acessar!',
+        isInternalNote: false,
+        author: 'REQUESTER' as const,
       },
     ],
   },
@@ -252,7 +280,16 @@ async function main() {
           updatedAt: data.createdAt,
           events: {
             create: events.map((event) => ({
-              ...event,
+              id: event.id,
+              occurredAt: event.occurredAt,
+              text: event.text,
+              isInternalNote: event.isInternalNote,
+              author:
+                'author' in event && event.author
+                  ? event.author
+                  : event.isInternalNote
+                    ? ('AGENT' as const)
+                    : ('REQUESTER' as const),
               updatedAt: event.occurredAt,
             })),
           },

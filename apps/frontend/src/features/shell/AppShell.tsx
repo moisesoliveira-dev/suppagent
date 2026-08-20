@@ -1,7 +1,7 @@
-import { useState } from 'react'
 import { ClientsView } from '../clients/ClientsView'
 import { DashboardView } from '../dashboard/DashboardView'
-import { CannedView, KnowledgeView, UserChatView } from '../inbox/InboxViews'
+import { UserChatView } from '../chat/UserChatView'
+import { CannedView, KnowledgeView } from '../inbox/InboxViews'
 import { AutomationsView, ReportsView, SlaView, TeamView } from '../ops/OpsViews'
 import {
   AiChatView,
@@ -15,17 +15,17 @@ import {
 import { TicketsView } from '../tickets/TicketsView'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
-import type { ViewId } from './nav'
+import { navigateTo, useShellNav } from './shell-nav'
 
 export function AppShell() {
-  const [view, setView] = useState<ViewId>('chamados')
+  const { view } = useShellNav()
 
   return (
     <div className="flex h-full bg-bg font-display text-ink">
-      <Sidebar active={view} onNavigate={setView} />
+      <Sidebar active={view} onNavigate={navigateTo} />
       <main className="flex min-w-0 flex-1 flex-col">
         <Topbar />
-        <div className="flex min-h-0 flex-1 [perspective:900px]" key={view}>
+        <div className="view-enter flex min-h-0 flex-1" key={view}>
           {view === 'painel' ? <DashboardView /> : null}
           {view === 'chamados' ? <TicketsView /> : null}
           {view === 'clientes' ? <ClientsView /> : null}

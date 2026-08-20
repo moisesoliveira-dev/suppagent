@@ -19,7 +19,7 @@ export type TicketHttp = {
   requester: string;
   email: string;
   openedAt: string;
-  history: { time: string; text: string; note?: boolean }[];
+  history: { time: string; text: string; note?: boolean; author: 'requester' | 'agent' }[];
 };
 
 export function toTicketHttp(ticket: Ticket, now = new Date()): TicketHttp {
@@ -39,6 +39,7 @@ export function toTicketHttp(ticket: Ticket, now = new Date()): TicketHttp {
     history: ticket.history.map((entry) => ({
       time: formatHistoryTime(entry.occurredAt),
       text: entry.text,
+      author: entry.author,
       ...(entry.isInternalNote ? { note: true } : {}),
     })),
   };

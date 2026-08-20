@@ -62,6 +62,13 @@ describe('Ticket', () => {
     expect(ticket.status).toBe('waiting');
   });
 
+  it('marca autor da mensagem inicial e da resposta', () => {
+    const ticket = openTicket().withId(20);
+    expect(ticket.history[0]?.author).toBe('requester');
+    ticket.reply('já estou vendo', false, NOW);
+    expect(ticket.history.at(-1)?.author).toBe('agent');
+  });
+
   it('não altera chamado já encerrado', () => {
     const ticket = openTicket().withId(1);
     ticket.close(NOW);

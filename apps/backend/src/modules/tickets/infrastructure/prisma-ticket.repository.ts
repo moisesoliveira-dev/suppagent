@@ -9,6 +9,7 @@ import type {
 } from '../domain/ticket.repository';
 import {
   toDomainTicket,
+  toPrismaAuthor,
   toPrismaPriority,
   toPrismaStatus,
 } from './ticket.mapper';
@@ -72,6 +73,7 @@ export class PrismaTicketRepository implements TicketRepository {
       occurredAt: event.occurredAt,
       text: event.text,
       isInternalNote: event.isInternalNote,
+      author: toPrismaAuthor(event.author),
     }));
 
     if (ticket.isNew) {

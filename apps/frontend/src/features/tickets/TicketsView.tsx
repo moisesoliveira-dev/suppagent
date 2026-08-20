@@ -38,6 +38,11 @@ import {
   type AnimPlan,
   type CellField,
 } from './tickets-anim'
+import {
+  consumeTicketFocus,
+  openChatForTicket,
+  useShellNav,
+} from '../shell/shell-nav'
 
 const FILTERS: { id: TicketFilter; label: string }[] = [
   { id: 'todos', label: 'todos' },
@@ -47,6 +52,7 @@ const FILTERS: { id: TicketFilter; label: string }[] = [
 ]
 
 export function TicketsView() {
+  const { ticketFocusId } = useShellNav()
   const [filter, setFilter] = useState<TicketFilter>('todos')
   const [rows, setRows] = useState<Ticket[]>([])
   const [counts, setCounts] = useState<TicketCounts>(EMPTY_COUNTS)
@@ -117,6 +123,15 @@ export function TicketsView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (!ticketFocusId) return
+    const id = consumeTicketFocus()
+    if (!id) return
+    setSelectedId(id)
+    void load(filterRef.current, { keepId: id, animMode: 'patch' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ticketFocusId])
+
   function applyFilter(next: TicketFilter) {
     setFilter(next)
     filterRef.current = next
@@ -156,12 +171,14 @@ export function TicketsView() {
   }
 
   function onReply() {
-    const text = draft.trim()
-    if (!text || !selected) return
-    void runAction(
-      () => replyToTicket(selected.id, text, asNote),
-      asNote ? 'nota registrada' : 'resposta enviada',
-    )
+    if (!selected) return
+    if (asNote) {
+      const text = draft.trim()
+      if (!text) return
+      void runAction(() => replyToTicket(selected.id, text, true), 'nota registrada')
+      return
+    }
+    openChatForTicket(selected.id, draft.trim())
   }
 
   function onClaim() {

@@ -3,11 +3,14 @@ import type { TicketPriority } from './ticket-priority';
 import { TicketAlreadyResolvedError } from './ticket.errors';
 import type { TicketStatus } from './ticket-status';
 
+export type TicketEventAuthor = 'requester' | 'agent';
+
 export type TicketHistoryEntry = {
   id: string;
   occurredAt: Date;
   text: string;
   isInternalNote: boolean;
+  author: TicketEventAuthor;
 };
 
 export type OpenTicketInput = {
@@ -57,6 +60,7 @@ export class Ticket {
           occurredAt: now,
           text: message,
           isInternalNote: false,
+          author: 'requester',
         },
       ],
     );
@@ -141,6 +145,7 @@ export class Ticket {
       occurredAt: at,
       text: trimmed,
       isInternalNote,
+      author: 'agent',
     });
     if (this._status === 'open') {
       this._status = 'in_progress';
@@ -158,6 +163,7 @@ export class Ticket {
         ? `chamado transferido para ${next}.`
         : 'chamado desatribuído.',
       isInternalNote: true,
+      author: 'agent',
     });
     if (next && this._status === 'open') {
       this._status = 'in_progress';
@@ -177,6 +183,7 @@ export class Ticket {
       occurredAt: at,
       text: `chamado assumido por ${next}.`,
       isInternalNote: true,
+      author: 'agent',
     });
   }
 
@@ -188,6 +195,7 @@ export class Ticket {
       occurredAt: at,
       text: 'aguardando resposta do solicitante.',
       isInternalNote: true,
+      author: 'agent',
     });
   }
 
@@ -199,6 +207,7 @@ export class Ticket {
       occurredAt: at,
       text: 'chamado encerrado.',
       isInternalNote: false,
+      author: 'agent',
     });
   }
 

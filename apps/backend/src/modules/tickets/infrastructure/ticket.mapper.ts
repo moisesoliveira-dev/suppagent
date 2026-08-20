@@ -1,8 +1,10 @@
 import {
+  TicketEventAuthor as PrismaTicketEventAuthor,
   TicketPriority as PrismaTicketPriority,
   TicketStatus as PrismaTicketStatus,
 } from '../../../generated/client';
 import { Ticket } from '../domain/ticket';
+import type { TicketEventAuthor } from '../domain/ticket';
 import type { TicketPriority } from '../domain/ticket-priority';
 import type { TicketStatus } from '../domain/ticket-status';
 
@@ -21,8 +23,25 @@ type TicketRecord = {
     occurredAt: Date;
     text: string;
     isInternalNote: boolean;
+    author: PrismaTicketEventAuthor;
   }[];
 };
+
+const AUTHOR_TO_PRISMA: Record<TicketEventAuthor, PrismaTicketEventAuthor> = {
+  requester: PrismaTicketEventAuthor.REQUESTER,
+  agent: PrismaTicketEventAuthor.AGENT,
+};
+
+const AUTHOR_FROM_PRISMA: Record<PrismaTicketEventAuthor, TicketEventAuthor> = {
+  REQUESTER: 'requester',
+  AGENT: 'agent',
+};
+
+export function toPrismaAuthor(
+  author: TicketEventAuthor,
+): PrismaTicketEventAuthor {
+  return AUTHOR_TO_PRISMA[author];
+}
 
 const STATUS_TO_PRISMA: Record<TicketStatus, PrismaTicketStatus> = {
   open: PrismaTicketStatus.OPEN,
@@ -81,6 +100,7 @@ export function toDomainTicket(record: TicketRecord): Ticket {
         occurredAt: event.occurredAt,
         text: event.text,
         isInternalNote: event.isInternalNote,
+        author: AUTHOR_FROM_PRISMA[event.author],
       })),
   });
 }
