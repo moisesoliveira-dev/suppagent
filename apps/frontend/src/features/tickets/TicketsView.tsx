@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FlapCell } from '../../shared/ui/FlapCell'
 import {
   ActionBar,
@@ -29,6 +29,15 @@ import {
   type TicketFilter,
 } from './tickets'
 import { onTicketsChanged, notifyTicketsChanged } from './tickets-ui'
+import {
+  EMPTY_ANIM,
+  buildPatchAnim,
+  mergeAnimPlan,
+  nextAnimToken,
+  snapshotTickets,
+  type AnimPlan,
+  type CellField,
+} from './tickets-anim'
 
 const FILTERS: { id: TicketFilter; label: string }[] = [
   { id: 'todos', label: 'todos' },
@@ -42,7 +51,7 @@ export function TicketsView() {
   const [rows, setRows] = useState<Ticket[]>([])
   const [counts, setCounts] = useState<TicketCounts>(EMPTY_COUNTS)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [wave, setWave] = useState(0)
+  const [anim, setAnim] = useState<AnimPlan>(EMPTY_ANIM)
   const [draft, setDraft] = useState('')
   const [asNote, setAsNote] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -50,29 +59,47 @@ export function TicketsView() {
   const [busy, setBusy] = useState(false)
   const [technicians, setTechnicians] = useState<User[]>([])
   const [transferOpen, setTransferOpen] = useState(false)
+  const previousRows = useRef<Map<string, Ticket>>(new Map())
+  const filterRef = useRef(filter)
 
   const selected = rows.find((ticket) => ticket.id === selectedId) ?? rows[0] ?? null
   const resolved = selected?.status === 'resolvido'
   const unassigned = selected?.agent === 'livre'
 
-  async function load(nextFilter = filter, keepId?: string | null) {
+  async function load(
+    nextFilter = filter,
+    options?: { keepId?: string | null; animMode?: 'list' | 'patch' },
+  ) {
+    const animMode = options?.animMode ?? 'list'
     setLoading(true)
     setError(null)
     try {
       const data = await listTickets(nextFilter)
+      if (animMode === 'list') {
+        setAnim({
+          listToken: nextAnimToken(),
+          rowTokens: {},
+          cellTokens: {},
+        })
+      } else {
+        const patch = buildPatchAnim(previousRows.current, data.items)
+        setAnim((current) => mergeAnimPlan(current, patch))
+      }
+      previousRows.current = snapshotTickets(data.items)
       setRows(data.items)
       setCounts(data.counts)
-      const preferred = keepId ?? selectedId
+      const preferred = options?.keepId ?? selectedId
       const nextSelected =
         data.items.find((ticket) => ticket.id === preferred)?.id ??
         data.items[0]?.id ??
         null
       setSelectedId(nextSelected)
-      setWave((value) => value + 1)
     } catch (err) {
       setRows([])
       setCounts(EMPTY_COUNTS)
       setSelectedId(null)
+      previousRows.current = new Map()
+      setAnim(EMPTY_ANIM)
       setError(err instanceof Error ? err.message : 'falha ao carregar chamados')
     } finally {
       setLoading(false)
@@ -80,20 +107,21 @@ export function TicketsView() {
   }
 
   useEffect(() => {
-    void load('todos')
+    void load('todos', { animMode: 'list' })
     void listUsers('tecnico')
       .then((data) => setTechnicians(data.items.filter((user) => user.handle)))
       .catch(() => setTechnicians([]))
     return onTicketsChanged(() => {
-      void load(filter)
+      void load(filterRef.current, { animMode: 'patch' })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function applyFilter(next: TicketFilter) {
     setFilter(next)
+    filterRef.current = next
     setTransferOpen(false)
-    void load(next)
+    void load(next, { animMode: 'list' })
   }
 
   function selectRow(ticket: Ticket) {
@@ -101,7 +129,6 @@ export function TicketsView() {
     setDraft('')
     setAsNote(false)
     setTransferOpen(false)
-    setWave((value) => value + 1)
   }
 
   async function runAction(
@@ -116,7 +143,7 @@ export function TicketsView() {
       setDraft('')
       setAsNote(false)
       setTransferOpen(false)
-      await load(filter, updated.id)
+      await load(filter, { keepId: updated.id, animMode: 'patch' })
       notifyTicketsChanged()
       if (successMessage) toast.success(successMessage)
     } catch (err) {
@@ -166,6 +193,23 @@ export function TicketsView() {
     void runAction(() => closeTicket(selected.id), 'chamado encerrado')
   }
 
+  function cellAnim(ticketId: string, field: CellField) {
+    if (anim.listToken) {
+      return { animate: true as const, nonce: anim.listToken }
+    }
+    if (anim.rowTokens[ticketId]) {
+      return { animate: true as const, nonce: anim.rowTokens[ticketId] }
+    }
+    const cell = anim.cellTokens[ticketId]?.[field]
+    if (cell) return { animate: true as const, nonce: cell }
+    return { animate: false as const, nonce: 0 }
+  }
+
+  function cellKey(ticketId: string, field: CellField) {
+    const { animate, nonce } = cellAnim(ticketId, field)
+    return animate ? `${ticketId}-${field}-${nonce}` : `${ticketId}-${field}`
+  }
+
   return (
     <div className="flex min-h-0 flex-1">
       <div className="min-w-0 flex-1 overflow-y-auto px-6 py-4">
@@ -198,7 +242,7 @@ export function TicketsView() {
             <button
               type="button"
               className="ml-3 text-amber underline"
-              onClick={() => void load(filter)}
+              onClick={() => void load(filter, { animMode: 'list' })}
             >
               tentar de novo
             </button>
@@ -222,10 +266,16 @@ export function TicketsView() {
           <div className="px-2.5 text-xs text-dim">nenhum chamado neste filtro</div>
         ) : null}
 
-        <div className="flex flex-col gap-1.5" key={`${filter}-${wave}`}>
+        <div className="flex flex-col gap-1.5">
           {rows.map((ticket, index) => {
             const selectedRow = selected?.id === ticket.id
-            const delay = Math.min(index, 30) * 45
+            const listDelay = anim.listToken ? Math.min(index, 30) * 45 : 0
+            const idAnim = cellAnim(ticket.id, 'id')
+            const subjectAnim = cellAnim(ticket.id, 'subject')
+            const statusAnim = cellAnim(ticket.id, 'status')
+            const priorityAnim = cellAnim(ticket.id, 'priority')
+            const agentAnim = cellAnim(ticket.id, 'agent')
+            const timeAnim = cellAnim(ticket.id, 'time')
             return (
               <button
                 key={ticket.id}
@@ -233,30 +283,54 @@ export function TicketsView() {
                 onClick={() => selectRow(ticket)}
                 className="grid w-full grid-cols-[80px_1fr_120px_100px_100px_60px] gap-1.5 text-left [perspective:700px]"
               >
-                <FlapCell delayMs={delay} selected={selectedRow}>
+                <FlapCell
+                  key={cellKey(ticket.id, 'id')}
+                  delayMs={listDelay}
+                  selected={selectedRow}
+                  animate={idAnim.animate}
+                >
                   #{ticket.id}
                 </FlapCell>
                 <FlapCell
-                  delayMs={delay}
+                  key={cellKey(ticket.id, 'subject')}
+                  delayMs={listDelay}
                   selected={selectedRow}
+                  animate={subjectAnim.animate}
                   className="font-normal tracking-wide normal-case"
                 >
                   {ticket.subject}
                 </FlapCell>
-                <FlapCell delayMs={delay} selected={selectedRow}>
+                <FlapCell
+                  key={cellKey(ticket.id, 'status')}
+                  delayMs={listDelay}
+                  selected={selectedRow}
+                  animate={statusAnim.animate}
+                >
                   <StatusColor status={ticket.status} />
                 </FlapCell>
-                <FlapCell delayMs={delay} selected={selectedRow}>
+                <FlapCell
+                  key={cellKey(ticket.id, 'priority')}
+                  delayMs={listDelay}
+                  selected={selectedRow}
+                  animate={priorityAnim.animate}
+                >
                   <PriorityColor
                     priority={ticket.priority === 'media' ? 'média' : ticket.priority}
                   />
                 </FlapCell>
-                <FlapCell delayMs={delay} selected={selectedRow}>
+                <FlapCell
+                  key={cellKey(ticket.id, 'agent')}
+                  delayMs={listDelay}
+                  selected={selectedRow}
+                  animate={agentAnim.animate}
+                >
                   {ticket.agentLabel}
                 </FlapCell>
                 <FlapCell
-                  delayMs={delay}
+                  key={cellKey(ticket.id, 'time')}
+                  delayMs={listDelay}
                   selected={selectedRow}
+                  animate={timeAnim.animate}
                   align="end"
                   className="font-normal text-dim"
                 >

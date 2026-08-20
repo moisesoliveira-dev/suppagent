@@ -11,3 +11,11 @@ Telas em `apps/frontend/src/features/<feature>/`. Shell compartilhado em `featur
 Chamados (`features/tickets/`): dados só via API (`VITE_API_URL`). Abrir / responder / assumir / transferir / aguardar / encerrar. Sem mock.
 Usuários (`features/users/`): cadastro em Cadastros → usuários, perfis `usuario` | `tecnico` (técnico exige `handle` de agente).
 Feedback: `toast` em `shared/ui/toast` — sem `window.confirm` / `prompt`.
+
+Não criar pastas globais `components/` ou `hooks/` na raiz de `src` como ímã. Estado da tela fica na feature.
+
+Animação split-flap (`FlapCell`):
+- lista toda: abrir a aba / trocar filtro (ou paginar)
+- linha inteira: item novo
+- update: só as células que mudaram
+- `animate={false}` desliga o flap

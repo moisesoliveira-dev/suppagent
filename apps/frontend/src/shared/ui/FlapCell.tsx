@@ -6,6 +6,8 @@ type FlapCellProps = {
   className?: string
   selected?: boolean
   align?: 'start' | 'end'
+  /** quando false, a célula não roda o split-flap */
+  animate?: boolean
 }
 
 export function FlapCell({
@@ -14,12 +16,15 @@ export function FlapCell({
   className = '',
   selected = false,
   align = 'start',
+  animate = true,
 }: FlapCellProps) {
-  const style: CSSProperties = { animationDelay: `${delayMs}ms` }
+  const style: CSSProperties | undefined = animate
+    ? { animationDelay: `${delayMs}ms` }
+    : undefined
 
   return (
     <div
-      className={`flap-in relative flex min-w-0 items-center overflow-hidden rounded-[3px] border bg-tile px-2.5 py-2 text-xs font-bold tracking-wide uppercase ${
+      className={`${animate ? 'flap-in' : ''} relative flex min-w-0 items-center overflow-hidden rounded-[3px] border bg-tile px-2.5 py-2 text-xs font-bold tracking-wide uppercase ${
         selected ? 'border-amber' : 'border-stroke'
       } ${align === 'end' ? 'justify-end' : ''} ${className}`}
       style={style}
