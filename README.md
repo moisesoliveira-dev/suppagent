@@ -62,6 +62,7 @@ API de chamados (sem auth ainda; agente atual via `?agent=`, padrão `c.reis`):
 | `POST` | `/tickets/:id/replies` | `{ "text", "note"? }` |
 | `POST` | `/tickets/:id/transfer` | `{ "agent": "b.alves" \| null }` |
 | `POST` | `/tickets/:id/close` | encerra |
+| `POST` | `/tickets/:id/reopen` | `{ "reason" }` reabre com justificativa |
 
 API de usuários (Cadastros → usuários):
 

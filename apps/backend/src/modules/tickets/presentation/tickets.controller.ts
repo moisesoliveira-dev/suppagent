@@ -15,12 +15,14 @@ import { CreateTicketService } from '../application/create-ticket.service';
 import { GetTicketService } from '../application/get-ticket.service';
 import { ListTicketsService } from '../application/list-tickets.service';
 import { MarkTicketWaitingService } from '../application/mark-ticket-waiting.service';
+import { ReopenTicketService } from '../application/reopen-ticket.service';
 import { ReplyToTicketService } from '../application/reply-to-ticket.service';
 import { TransferTicketService } from '../application/transfer-ticket.service';
 import { InvalidTicketFilterError } from '../domain/ticket-filter';
 import {
   TicketAlreadyResolvedError,
   TicketNotFoundError,
+  TicketNotResolvedError,
 } from '../domain/ticket.errors';
 import { parsePriority } from './ticket-format';
 import { toTicketHttp } from './ticket.http';
@@ -36,6 +38,7 @@ export class TicketsController {
     private readonly claimTicket: ClaimTicketService,
     private readonly markWaiting: MarkTicketWaitingService,
     private readonly closeTicket: CloseTicketService,
+    private readonly reopenTicket: ReopenTicketService,
   ) {}
 
   @Get()
@@ -176,6 +179,22 @@ export class TicketsController {
     }
   }
 
+  @Post(':id/reopen')
+  async reopen(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { reason?: string },
+  ) {
+    try {
+      const ticket = await this.reopenTicket.execute(
+        id,
+        required(body.reason, 'reason'),
+      );
+      return toTicketHttp(ticket);
+    } catch (error) {
+      this.rethrow(error);
+    }
+  }
+
   private rethrow(error: unknown): never {
     if (error instanceof InvalidTicketFilterError) {
       throw new BadRequestException(error.message);
@@ -183,7 +202,10 @@ export class TicketsController {
     if (error instanceof TicketNotFoundError) {
       throw new NotFoundException(error.message);
     }
-    if (error instanceof TicketAlreadyResolvedError) {
+    if (
+      error instanceof TicketAlreadyResolvedError ||
+      error instanceof TicketNotResolvedError
+    ) {
       throw new BadRequestException(error.message);
     }
     if (error instanceof Error) {

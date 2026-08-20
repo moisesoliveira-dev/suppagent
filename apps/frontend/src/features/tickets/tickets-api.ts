@@ -80,4 +80,11 @@ export function closeTicket(id: string): Promise<Ticket> {
   })
 }
 
+export function reopenTicket(id: string, reason: string): Promise<Ticket> {
+  return apiRequest<Ticket>(`/tickets/${id}/reopen`, {
+    method: 'POST',
+    body: JSON.stringify({ reason }),
+  })
+}
+
 export { API_URL }

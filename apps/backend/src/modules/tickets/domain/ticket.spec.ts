@@ -69,6 +69,21 @@ describe('Ticket', () => {
     expect(ticket.history.at(-1)?.author).toBe('agent');
   });
 
+  it('reabre chamado encerrado com justificativa', () => {
+    const ticket = openTicket().withId(30);
+    ticket.claim('c.reis', NOW);
+    ticket.close(NOW);
+    ticket.reopen('cliente voltou a reportar o erro', NOW);
+    expect(ticket.status).toBe('in_progress');
+    expect(ticket.history.at(-1)?.text).toContain('cliente voltou');
+  });
+
+  it('exige justificativa para reabrir', () => {
+    const ticket = openTicket().withId(31);
+    ticket.close(NOW);
+    expect(() => ticket.reopen('  ', NOW)).toThrow('justificativa');
+  });
+
   it('não altera chamado já encerrado', () => {
     const ticket = openTicket().withId(1);
     ticket.close(NOW);

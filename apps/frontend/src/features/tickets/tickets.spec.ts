@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { CURRENT_AGENT, EMPTY_COUNTS } from './tickets'
-import { closeTicket, listTickets, replyToTicket, transferTicket } from './tickets-api'
+import { closeTicket, listTickets, reopenTicket, replyToTicket, transferTicket } from './tickets-api'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -73,6 +73,24 @@ describe('tickets-api', () => {
       3,
       'http://localhost:3000/tickets/4471/close',
       expect.objectContaining({ method: 'POST' }),
+    )
+  })
+
+  it('reabre chamado com justificativa', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: '4471', status: 'andamento' }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await reopenTicket('4471', 'cliente voltou a reportar')
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3000/tickets/4471/reopen',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ reason: 'cliente voltou a reportar' }),
+      }),
     )
   })
 

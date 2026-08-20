@@ -5,6 +5,7 @@ import { CreateTicketService } from './application/create-ticket.service';
 import { GetTicketService } from './application/get-ticket.service';
 import { ListTicketsService } from './application/list-tickets.service';
 import { MarkTicketWaitingService } from './application/mark-ticket-waiting.service';
+import { ReopenTicketService } from './application/reopen-ticket.service';
 import { ReplyToTicketService } from './application/reply-to-ticket.service';
 import { TransferTicketService } from './application/transfer-ticket.service';
 import { TICKET_REPOSITORY } from './domain/ticket.repository';
@@ -22,6 +23,7 @@ import { TicketsController } from './presentation/tickets.controller';
     ClaimTicketService,
     MarkTicketWaitingService,
     CloseTicketService,
+    ReopenTicketService,
     {
       provide: TICKET_REPOSITORY,
       useClass: PrismaTicketRepository,

@@ -13,6 +13,7 @@ import {
   claimTicket,
   closeTicket,
   listTickets,
+  reopenTicket,
   replyToTicket,
   transferTicket,
 } from '../tickets/tickets-api'
@@ -196,6 +197,23 @@ export function UserChatView() {
     void runAction(() => closeTicket(selected.id), 'conversa encerrada')
   }
 
+  async function onReopen() {
+    if (!selected) return
+    const reason = await toast.prompt({
+      title: 'reabrir chamado',
+      message: `informe a justificativa para reabrir o nº ${selected.id}`,
+      placeholder: 'ex.: cliente reportou o mesmo erro novamente',
+      confirmLabel: 'reabrir',
+    })
+    if (reason == null) return
+    const trimmed = reason.trim()
+    if (!trimmed) {
+      toast.error('justificativa é obrigatória')
+      return
+    }
+    void runAction(() => reopenTicket(selected.id, trimmed), 'chamado reaberto')
+  }
+
   async function onTransferPick(handle: string | null) {
     if (!selected) return
     void runAction(
@@ -318,17 +336,30 @@ export function UserChatView() {
                       </button>
                     ) : null}
                     {resolved ? (
-                      <button
-                        type="button"
-                        disabled={busy}
-                        onClick={() => {
-                          setMenuOpen(false)
-                          setKbOpen(true)
-                        }}
-                        className="block w-full px-3.5 py-2.5 text-left text-[12px] hover:bg-tile"
-                      >
-                        criar na base
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => {
+                            setMenuOpen(false)
+                            void onReopen()
+                          }}
+                          className="block w-full px-3.5 py-2.5 text-left text-[12px] hover:bg-tile"
+                        >
+                          reabrir chamado
+                        </button>
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => {
+                            setMenuOpen(false)
+                            setKbOpen(true)
+                          }}
+                          className="block w-full px-3.5 py-2.5 text-left text-[12px] hover:bg-tile"
+                        >
+                          criar na base
+                        </button>
+                      </>
                     ) : null}
                   </div>
                 ) : null}

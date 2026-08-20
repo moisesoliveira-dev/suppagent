@@ -1,6 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import type { TicketPriority } from './ticket-priority';
-import { TicketAlreadyResolvedError } from './ticket.errors';
+import {
+  TicketAlreadyResolvedError,
+  TicketNotResolvedError,
+} from './ticket.errors';
 import type { TicketStatus } from './ticket-status';
 
 export type TicketEventAuthor = 'requester' | 'agent';
@@ -206,6 +209,22 @@ export class Ticket {
       id: randomUUID(),
       occurredAt: at,
       text: 'chamado encerrado.',
+      isInternalNote: false,
+      author: 'agent',
+    });
+  }
+
+  reopen(reason: string, at = new Date()): void {
+    if (this._status !== 'resolved') {
+      throw new TicketNotResolvedError(this._id);
+    }
+    const trimmed = reason.trim();
+    if (!trimmed) throw new Error('justificativa da reabertura é obrigatória');
+    this._status = this._agentId ? 'in_progress' : 'open';
+    this._history.push({
+      id: randomUUID(),
+      occurredAt: at,
+      text: `chamado reaberto: ${trimmed}`,
       isInternalNote: false,
       author: 'agent',
     });

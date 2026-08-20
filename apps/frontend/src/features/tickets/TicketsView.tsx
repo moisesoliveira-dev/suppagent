@@ -19,6 +19,7 @@ import {
   closeTicket,
   listTickets,
   markTicketWaiting,
+  reopenTicket,
   transferTicket,
 } from './tickets-api'
 import {
@@ -245,6 +246,23 @@ export function TicketsView() {
     })
     if (!ok) return
     void runAction(() => closeTicket(selected.id), 'chamado encerrado')
+  }
+
+  async function onReopen() {
+    if (!selected) return
+    const reason = await toast.prompt({
+      title: 'reabrir chamado',
+      message: `informe a justificativa para reabrir o nº ${selected.id}`,
+      placeholder: 'ex.: cliente reportou o mesmo erro novamente',
+      confirmLabel: 'reabrir',
+    })
+    if (reason == null) return
+    const trimmed = reason.trim()
+    if (!trimmed) {
+      toast.error('justificativa é obrigatória')
+      return
+    }
+    void runAction(() => reopenTicket(selected.id, trimmed), 'chamado reaberto')
   }
 
   function cellAnim(ticketId: string, field: CellField) {
@@ -489,16 +507,22 @@ export function TicketsView() {
           )}
           <ActionBar>
             <ActionButton primary onClick={() => openChatForTicket(selected.id)}>
-              responder
+              {resolved ? 'ver chat' : 'responder'}
             </ActionButton>
-            {unassigned && !resolved ? (
-              <ActionButton onClick={onClaim}>assumir</ActionButton>
+            {resolved ? (
+              <ActionButton onClick={() => void onReopen()}>reabrir</ActionButton>
             ) : (
-              <ActionButton onClick={() => setTransferOpen((value) => !value)}>
-                transferir
-              </ActionButton>
+              <>
+                {unassigned ? (
+                  <ActionButton onClick={onClaim}>assumir</ActionButton>
+                ) : (
+                  <ActionButton onClick={() => setTransferOpen((value) => !value)}>
+                    transferir
+                  </ActionButton>
+                )}
+                <ActionButton onClick={onClose}>encerrar</ActionButton>
+              </>
             )}
-            <ActionButton onClick={onClose}>encerrar</ActionButton>
           </ActionBar>
           {!resolved ? (
             <button
