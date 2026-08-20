@@ -73,6 +73,8 @@ API de bate-papo da equipe:
 | Método | Rota | Uso |
 |---|---|---|
 | `GET` | `/team-chats` | lista canais |
+| `POST` | `/team-chats` | cria canal `{ "name" }` |
+| `DELETE` | `/team-chats/:id` | remove canal |
 | `GET` | `/team-chats/:id` | detalhe + mensagens |
 | `POST` | `/team-chats/:id/messages` | envia `{ text, replyToId? }` |
 | `PATCH` / `DELETE` / `POST …/pin` | `/team-chats/:id/messages/:messageId` | edita / apaga / fixa |

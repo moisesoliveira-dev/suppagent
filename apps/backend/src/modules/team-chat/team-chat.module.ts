@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TicketsModule } from '../tickets/tickets.module';
+import { CreateTeamChatService } from './application/create-team-chat.service';
 import { DeleteTeamChatMessageService } from './application/delete-team-chat-message.service';
+import { DeleteTeamChatService } from './application/delete-team-chat.service';
 import { EditTeamChatMessageService } from './application/edit-team-chat-message.service';
 import { ForwardIntoTeamChatService } from './application/forward-into-team-chat.service';
 import { ForwardTeamMessageToTicketService } from './application/forward-team-message-to-ticket.service';
@@ -20,6 +22,8 @@ import { TeamChatController } from './presentation/team-chat.controller';
   providers: [
     ListTeamChatsService,
     GetTeamChatService,
+    CreateTeamChatService,
+    DeleteTeamChatService,
     PostTeamChatMessageService,
     EditTeamChatMessageService,
     DeleteTeamChatMessageService,

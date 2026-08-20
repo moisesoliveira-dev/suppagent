@@ -10,7 +10,9 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { CreateTeamChatService } from '../application/create-team-chat.service';
 import { DeleteTeamChatMessageService } from '../application/delete-team-chat-message.service';
+import { DeleteTeamChatService } from '../application/delete-team-chat.service';
 import { EditTeamChatMessageService } from '../application/edit-team-chat-message.service';
 import { ForwardIntoTeamChatService } from '../application/forward-into-team-chat.service';
 import { ForwardTeamMessageToTicketService } from '../application/forward-team-message-to-ticket.service';
@@ -30,6 +32,8 @@ export class TeamChatController {
   constructor(
     private readonly listChats: ListTeamChatsService,
     private readonly getChat: GetTeamChatService,
+    private readonly createChat: CreateTeamChatService,
+    private readonly deleteChat: DeleteTeamChatService,
     private readonly postMessage: PostTeamChatMessageService,
     private readonly editMessage: EditTeamChatMessageService,
     private readonly deleteMessage: DeleteTeamChatMessageService,
@@ -44,11 +48,31 @@ export class TeamChatController {
     return { items: items.map((chat) => toTeamChatHttp(chat)) };
   }
 
+  @Post()
+  async create(@Body() body: { name?: string }) {
+    try {
+      const chat = await this.createChat.execute(required(body.name, 'name'));
+      return toTeamChatHttp(chat);
+    } catch (error) {
+      this.rethrow(error);
+    }
+  }
+
   @Get(':id')
   async show(@Param('id') id: string) {
     try {
       const chat = await this.getChat.execute(id);
       return toTeamChatHttp(chat);
+    } catch (error) {
+      this.rethrow(error);
+    }
+  }
+
+  @Delete(':id')
+  async removeChat(@Param('id') id: string) {
+    try {
+      await this.deleteChat.execute(id);
+      return { ok: true };
     } catch (error) {
       this.rethrow(error);
     }

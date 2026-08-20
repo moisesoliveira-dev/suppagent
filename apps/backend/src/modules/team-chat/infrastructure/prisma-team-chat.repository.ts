@@ -78,6 +78,10 @@ export class PrismaTeamChatRepository implements TeamChatRepository {
 
     return toDomain(saved);
   }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.teamChat.delete({ where: { id } });
+  }
 }
 
 function toDomain(record: {

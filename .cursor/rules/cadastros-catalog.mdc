@@ -1,0 +1,22 @@
+---
+description: Cadastros — sempre avaliar aba de entidade ao criar funcionalidade
+alwaysApply: true
+---
+
+# Cadastros (obrigatório na análise)
+
+Sempre que o usuário pedir uma **aba**, **tela** ou **funcionalidade** nova:
+
+1. Identificar entidades persistidas/gerenciáveis envolvidas (ex.: usuário, canal, artigo, bate-papo da equipe).
+2. Se a entidade for **cadastrável** (criar/listar/editar/remover no dia a dia), incluir (ou estender) item em **Cadastros** (`CatalogView`), no mesmo conjunto de mudanças.
+3. Espelhar o padrão de `UsersCatalogPanel`: painel em `features/<entidade>/`, API real, sem mock na aba de cadastro.
+4. Se **não** for o caso (só leitura, config one-shot, ou dado derivado), **não** criar aba — e dizer em uma linha por quê.
+
+```
+✅ feat chat equipe → Cadastros → bate-papos da equipe
+✅ feat usuários → Cadastros → usuários
+❌ feature com entidade gerenciável e cadastro só no seed / hardcoded
+```
+
+Exemplos que **pedem** cadastro: usuários, canais/bate-papos da equipe, categorias reais, templates editáveis.
+Exemplos que **não** pedem: contadores, filtros de lista, animações, menus de contexto.

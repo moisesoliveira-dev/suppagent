@@ -6,4 +6,5 @@ export interface TeamChatRepository {
   findById(id: string): Promise<TeamChat | null>;
   findAll(): Promise<TeamChat[]>;
   save(chat: TeamChat): Promise<TeamChat>;
+  delete(id: string): Promise<void>;
 }

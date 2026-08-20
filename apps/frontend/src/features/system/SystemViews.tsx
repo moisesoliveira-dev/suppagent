@@ -11,6 +11,7 @@ import {
   StubBar,
 } from '../../shared/ui/chrome'
 import { UsersCatalogPanel } from '../users/UsersCatalogPanel'
+import { TeamChatsCatalogPanel } from '../chat/TeamChatsCatalogPanel'
 
 function SettingsShell({
   items,
@@ -196,6 +197,7 @@ export function CatalogView() {
     <SettingsShell
       items={[
         { id: 'usuarios', label: 'usuários' },
+        { id: 'chats-equipe', label: 'bate-papos da equipe' },
         { id: 'setores', label: 'setores' },
         { id: 'cargos', label: 'cargos' },
         { id: 'canais', label: 'canais de atendimento' },
@@ -205,6 +207,7 @@ export function CatalogView() {
     >
       {(id) => {
         if (id === 'usuarios') return <UsersCatalogPanel />
+        if (id === 'chats-equipe') return <TeamChatsCatalogPanel />
 
         const data: Record<string, { title: string; sub: string; rows: { name: string; meta: string }[] }> = {
           setores: {

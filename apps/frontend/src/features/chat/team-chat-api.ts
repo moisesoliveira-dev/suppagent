@@ -24,6 +24,17 @@ export function listTeamChats(): Promise<TeamChatListResponse> {
   return apiRequest<TeamChatListResponse>('/team-chats')
 }
 
+export function createTeamChat(name: string): Promise<TeamChatSummary> {
+  return apiRequest<TeamChatSummary>('/team-chats', {
+    method: 'POST',
+    body: JSON.stringify({ name }),
+  })
+}
+
+export function deleteTeamChat(id: string): Promise<void> {
+  return apiRequest<void>(`/team-chats/${id}`, { method: 'DELETE' })
+}
+
 export function getTeamChat(id: string): Promise<TeamChatSummary> {
   return apiRequest<TeamChatSummary>(`/team-chats/${id}`)
 }
