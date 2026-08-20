@@ -9,6 +9,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CreateUserService } from '../application/create-user.service';
 import { DeleteUserService } from '../application/delete-user.service';
@@ -19,6 +20,7 @@ import {
 } from '../domain/user-role';
 import {
   UserEmailAlreadyExistsError,
+  UserHandleAlreadyExistsError,
   UserNotFoundError,
 } from '../domain/user.errors';
 import { toUserHttp } from './user.http';
@@ -32,9 +34,14 @@ export class UsersController {
   ) {}
 
   @Get()
-  async list() {
-    const users = await this.listUsers.execute();
-    return { items: users.map(toUserHttp) };
+  async list(@Query('role') role?: string) {
+    try {
+      const parsed = role ? parseUserRole(role) : undefined;
+      const users = await this.listUsers.execute(parsed);
+      return { items: users.map(toUserHttp) };
+    } catch (error) {
+      this.rethrow(error);
+    }
   }
 
   @Post()
@@ -44,6 +51,7 @@ export class UsersController {
       name?: string;
       email?: string;
       role?: string;
+      handle?: string | null;
     },
   ) {
     try {
@@ -51,6 +59,7 @@ export class UsersController {
         name: required(body.name, 'name'),
         email: required(body.email, 'email'),
         role: parseUserRole(required(body.role, 'role')),
+        handle: body.handle,
       });
       return toUserHttp(user);
     } catch (error) {
@@ -72,7 +81,10 @@ export class UsersController {
     if (error instanceof InvalidUserRoleError) {
       throw new BadRequestException(error.message);
     }
-    if (error instanceof UserEmailAlreadyExistsError) {
+    if (
+      error instanceof UserEmailAlreadyExistsError ||
+      error instanceof UserHandleAlreadyExistsError
+    ) {
       throw new ConflictException(error.message);
     }
     if (error instanceof UserNotFoundError) {

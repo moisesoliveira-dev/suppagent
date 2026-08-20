@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import type { UserRole } from '../domain/user-role';
 import {
   USER_REPOSITORY,
   type UserRepository,
@@ -10,7 +11,7 @@ export class ListUsersService {
     @Inject(USER_REPOSITORY) private readonly users: UserRepository,
   ) {}
 
-  execute() {
-    return this.users.findAll();
+  execute(role?: UserRole) {
+    return this.users.findAll(role);
   }
 }

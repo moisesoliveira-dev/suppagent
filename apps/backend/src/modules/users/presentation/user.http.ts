@@ -10,6 +10,7 @@ export type UserHttp = {
   id: string;
   name: string;
   email: string;
+  handle: string | null;
   role: 'usuario' | 'tecnico';
   roleLabel: string;
   createdAt: string;
@@ -21,6 +22,7 @@ export function toUserHttp(user: User): UserHttp {
     id: user.id,
     name: user.name,
     email: user.email,
+    handle: user.handle,
     role,
     roleLabel: role === 'tecnico' ? 'técnico' : 'usuário',
     createdAt: user.createdAt.toISOString(),

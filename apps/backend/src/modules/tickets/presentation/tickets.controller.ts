@@ -9,10 +9,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ClaimTicketService } from '../application/claim-ticket.service';
 import { CloseTicketService } from '../application/close-ticket.service';
 import { CreateTicketService } from '../application/create-ticket.service';
 import { GetTicketService } from '../application/get-ticket.service';
 import { ListTicketsService } from '../application/list-tickets.service';
+import { MarkTicketWaitingService } from '../application/mark-ticket-waiting.service';
 import { ReplyToTicketService } from '../application/reply-to-ticket.service';
 import { TransferTicketService } from '../application/transfer-ticket.service';
 import { InvalidTicketFilterError } from '../domain/ticket-filter';
@@ -31,6 +33,8 @@ export class TicketsController {
     private readonly createTicket: CreateTicketService,
     private readonly replyToTicket: ReplyToTicketService,
     private readonly transferTicket: TransferTicketService,
+    private readonly claimTicket: ClaimTicketService,
+    private readonly markWaiting: MarkTicketWaitingService,
     private readonly closeTicket: CloseTicketService,
   ) {}
 
@@ -116,6 +120,32 @@ export class TicketsController {
         id,
         body.agent ?? null,
       );
+      return toTicketHttp(ticket);
+    } catch (error) {
+      this.rethrow(error);
+    }
+  }
+
+  @Post(':id/claim')
+  async claim(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { agent?: string },
+  ) {
+    try {
+      const ticket = await this.claimTicket.execute(
+        id,
+        required(body.agent, 'agent'),
+      );
+      return toTicketHttp(ticket);
+    } catch (error) {
+      this.rethrow(error);
+    }
+  }
+
+  @Post(':id/waiting')
+  async waiting(@Param('id', ParseIntPipe) id: number) {
+    try {
+      const ticket = await this.markWaiting.execute(id);
       return toTicketHttp(ticket);
     } catch (error) {
       this.rethrow(error);

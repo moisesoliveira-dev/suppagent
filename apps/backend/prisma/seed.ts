@@ -209,6 +209,39 @@ async function main() {
   });
 
   try {
+    const technicians = [
+      {
+        email: 'camila.reis@balcao.com',
+        name: 'camila reis',
+        handle: 'c.reis',
+        role: 'TECHNICIAN' as const,
+      },
+      {
+        email: 'bruno.alves@balcao.com',
+        name: 'bruno alves',
+        handle: 'b.alves',
+        role: 'TECHNICIAN' as const,
+      },
+      {
+        email: 'rafael.souza@balcao.com',
+        name: 'rafael souza',
+        handle: 'r.souza',
+        role: 'TECHNICIAN' as const,
+      },
+    ];
+
+    for (const tech of technicians) {
+      await prisma.user.upsert({
+        where: { email: tech.email },
+        update: {
+          name: tech.name,
+          handle: tech.handle,
+          role: tech.role,
+        },
+        create: tech,
+      });
+    }
+
     for (const ticket of SEED) {
       const { events, ...data } = ticket;
       await prisma.ticket.upsert({

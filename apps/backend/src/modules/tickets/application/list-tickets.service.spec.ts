@@ -20,6 +20,7 @@ describe('ListTicketsService', () => {
       meus: 4,
       naoatribuidos: 3,
       urgentes: 3,
+      abertos: 8,
     });
 
     const module = await Test.createTestingModule({

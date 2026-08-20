@@ -1,6 +1,4 @@
-import {
-  UserRole as PrismaUserRole,
-} from '../../../generated/client';
+import { UserRole as PrismaUserRole } from '../../../generated/client';
 import { User } from '../domain/user';
 import type { UserRole } from '../domain/user-role';
 
@@ -8,6 +6,7 @@ type UserRecord = {
   id: string;
   name: string;
   email: string;
+  handle: string | null;
   role: PrismaUserRole;
   createdAt: Date;
 };
@@ -31,6 +30,7 @@ export function toDomainUser(record: UserRecord): User {
     id: record.id,
     name: record.name,
     email: record.email,
+    handle: record.handle,
     role: ROLE_FROM_PRISMA[record.role],
     createdAt: record.createdAt,
   });

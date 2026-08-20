@@ -1,5 +1,6 @@
 import { apiRequest, API_URL } from '../../shared/api/http'
 import type {
+  CreateTicketInput,
   Ticket,
   TicketFilter,
   TicketListResponse,
@@ -7,7 +8,7 @@ import type {
 import { CURRENT_AGENT } from './tickets'
 
 export function listTickets(
-  filter: TicketFilter,
+  filter: TicketFilter = 'todos',
   agent = CURRENT_AGENT,
 ): Promise<TicketListResponse> {
   const params = new URLSearchParams({ filter, agent })
@@ -16,6 +17,13 @@ export function listTickets(
 
 export function getTicket(id: string): Promise<Ticket> {
   return apiRequest<Ticket>(`/tickets/${id}`)
+}
+
+export function createTicket(input: CreateTicketInput): Promise<Ticket> {
+  return apiRequest<Ticket>('/tickets', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
 }
 
 export function replyToTicket(
@@ -36,6 +44,22 @@ export function transferTicket(
   return apiRequest<Ticket>(`/tickets/${id}/transfer`, {
     method: 'POST',
     body: JSON.stringify({ agent }),
+  })
+}
+
+export function claimTicket(
+  id: string,
+  agent = CURRENT_AGENT,
+): Promise<Ticket> {
+  return apiRequest<Ticket>(`/tickets/${id}/claim`, {
+    method: 'POST',
+    body: JSON.stringify({ agent }),
+  })
+}
+
+export function markTicketWaiting(id: string): Promise<Ticket> {
+  return apiRequest<Ticket>(`/tickets/${id}/waiting`, {
+    method: 'POST',
   })
 }
 

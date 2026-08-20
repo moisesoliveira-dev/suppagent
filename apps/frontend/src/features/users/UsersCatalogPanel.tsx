@@ -8,6 +8,7 @@ export function UsersCatalogPanel() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [role, setRole] = useState<UserRole>('usuario')
+  const [handle, setHandle] = useState('')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -37,10 +38,16 @@ export function UsersCatalogPanel() {
     setBusy(true)
     setError(null)
     try {
-      await createUser({ name, email, role })
+      await createUser({
+        name,
+        email,
+        role,
+        handle: role === 'tecnico' ? handle : null,
+      })
       setName('')
       setEmail('')
       setRole('usuario')
+      setHandle('')
       setShowForm(false)
       await load()
       toast.success('usuário cadastrado')
@@ -104,7 +111,8 @@ export function UsersCatalogPanel() {
           <div>
             <div className="mb-0.5 text-[12.5px] font-bold">{user.name}</div>
             <div className="text-[10.5px] text-dim">
-              {user.email} · perfil {user.roleLabel}
+              {user.email}
+              {user.handle ? ` · ${user.handle}` : ''} · perfil {user.roleLabel}
             </div>
           </div>
           <button
@@ -172,6 +180,20 @@ export function UsersCatalogPanel() {
               })}
             </div>
           </div>
+          {role === 'tecnico' ? (
+            <div className="mb-4">
+              <label className="mb-1.5 block text-[10px] tracking-widest text-dim uppercase">
+                identificador do agente
+              </label>
+              <input
+                required
+                value={handle}
+                onChange={(event) => setHandle(event.target.value)}
+                className="w-full rounded-[3px] border border-stroke bg-board px-3 py-2 text-[12.5px] text-ink"
+                placeholder="ex.: c.reis"
+              />
+            </div>
+          ) : null}
           <div className="flex gap-2">
             <button
               type="submit"

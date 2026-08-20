@@ -8,11 +8,6 @@ alwaysApply: false
 
 Telas em `apps/frontend/src/features/<feature>/`. Shell compartilhado em `features/shell/`. Peças visuais reutilizáveis em `shared/ui/`.
 
-Chamados (`features/tickets/`): dados só via API (`VITE_API_URL`, padrão `http://localhost:3000`). Sem array mock de tickets no front.
-Usuários (`features/users/`): cadastro em Cadastros → usuários, perfis `usuario` | `tecnico`, persistidos no PostgreSQL.
-
-Não criar pastas globais `components/` ou `hooks/` na raiz de `src` como ímã. Estado da tela fica na feature.
-
-Animação de lista: `flap-in` (split-flap) nas células ao mudar de view, filtro ou seleção — ver `shared/ui/FlapCell.tsx`.
-
-Feedback e confirmação: usar `toast` de `shared/ui/toast` (`toast.success` / `error` / `confirm` / `prompt`). Não usar `window.alert`, `confirm` nem `prompt`.
+Chamados (`features/tickets/`): dados só via API (`VITE_API_URL`). Abrir / responder / assumir / transferir / aguardar / encerrar. Sem mock.
+Usuários (`features/users/`): cadastro em Cadastros → usuários, perfis `usuario` | `tecnico` (técnico exige `handle` de agente).
+Feedback: `toast` em `shared/ui/toast` — sem `window.confirm` / `prompt`.

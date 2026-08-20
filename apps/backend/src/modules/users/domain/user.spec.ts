@@ -12,6 +12,25 @@ describe('User', () => {
     expect(user.name).toBe('Marina Costa');
     expect(user.email).toBe('marina@acme.com');
     expect(user.role).toBe('user');
+    expect(user.handle).toBeNull();
+  });
+
+  it('exige identificador para técnico', () => {
+    expect(() =>
+      User.register({
+        name: 'Bruno',
+        email: 'b@balcao.com',
+        role: 'technician',
+      }),
+    ).toThrow('identificador');
+
+    const tech = User.register({
+      name: 'Bruno',
+      email: 'b@balcao.com',
+      role: 'technician',
+      handle: 'b.alves',
+    });
+    expect(tech.handle).toBe('b.alves');
   });
 
   it('recusa e-mail inválido', () => {
@@ -19,7 +38,7 @@ describe('User', () => {
       User.register({
         name: 'x',
         email: 'sem-arroba',
-        role: 'technician',
+        role: 'user',
       }),
     ).toThrow('e-mail');
   });

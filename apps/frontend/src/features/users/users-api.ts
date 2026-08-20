@@ -1,14 +1,16 @@
 import { apiRequest } from '../../shared/api/http'
 import type { User, UserListResponse, UserRole } from './users'
 
-export function listUsers(): Promise<UserListResponse> {
-  return apiRequest<UserListResponse>('/users')
+export function listUsers(role?: UserRole): Promise<UserListResponse> {
+  const params = role ? `?role=${role}` : ''
+  return apiRequest<UserListResponse>(`/users${params}`)
 }
 
 export function createUser(input: {
   name: string
   email: string
   role: UserRole
+  handle?: string | null
 }): Promise<User> {
   return apiRequest<User>('/users', {
     method: 'POST',

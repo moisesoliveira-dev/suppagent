@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ClaimTicketService } from './application/claim-ticket.service';
 import { CloseTicketService } from './application/close-ticket.service';
 import { CreateTicketService } from './application/create-ticket.service';
 import { GetTicketService } from './application/get-ticket.service';
 import { ListTicketsService } from './application/list-tickets.service';
+import { MarkTicketWaitingService } from './application/mark-ticket-waiting.service';
 import { ReplyToTicketService } from './application/reply-to-ticket.service';
 import { TransferTicketService } from './application/transfer-ticket.service';
 import { TICKET_REPOSITORY } from './domain/ticket.repository';
@@ -17,6 +19,8 @@ import { TicketsController } from './presentation/tickets.controller';
     CreateTicketService,
     ReplyToTicketService,
     TransferTicketService,
+    ClaimTicketService,
+    MarkTicketWaitingService,
     CloseTicketService,
     {
       provide: TICKET_REPOSITORY,

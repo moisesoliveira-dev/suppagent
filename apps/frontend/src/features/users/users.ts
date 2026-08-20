@@ -4,6 +4,7 @@ export type User = {
   id: string
   name: string
   email: string
+  handle: string | null
   role: UserRole
   roleLabel: string
   createdAt: string

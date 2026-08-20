@@ -67,11 +67,18 @@ API de usuários (Cadastros → usuários):
 
 | Método | Rota | Uso |
 |---|---|---|
-| `GET` | `/users` | lista |
-| `POST` | `/users` | `{ "name", "email", "role": "usuario"\|"tecnico" }` |
+| `GET` | `/users?role=usuario\|tecnico` | lista (filtro opcional) |
+| `POST` | `/users` | `{ "name", "email", "role", "handle"? }` — `handle` obrigatório para técnico |
 | `DELETE` | `/users/:id` | remove |
 
-Perfis por enquanto: **usuário** (normal) e **técnico**.
+Perfis por enquanto: **usuário** (normal) e **técnico** (com identificador de agente, ex. `c.reis`).
+
+Chamados — ações extras:
+
+| Método | Rota | Uso |
+|---|---|---|
+| `POST` | `/tickets/:id/claim` | `{ "agent" }` assume o chamado |
+| `POST` | `/tickets/:id/waiting` | marca aguardando cliente |
 
 O seed (`pnpm --filter backend prisma:seed`) grava os chamados de exemplo do painel. No Docker, o start do backend resolve o CLI do Prisma pelo `node_modules` do pacote (não pelo `.bin` da raiz do workspace), aplica `migrate deploy`, roda o seed compilado e sobe o Nest.
 

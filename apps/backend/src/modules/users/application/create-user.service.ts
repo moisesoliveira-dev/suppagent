@@ -1,6 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../domain/user';
-import { UserEmailAlreadyExistsError } from '../domain/user.errors';
+import {
+  UserEmailAlreadyExistsError,
+  UserHandleAlreadyExistsError,
+} from '../domain/user.errors';
 import type { UserRole } from '../domain/user-role';
 import {
   USER_REPOSITORY,
@@ -11,6 +14,7 @@ export type CreateUserCommand = {
   name: string;
   email: string;
   role: UserRole;
+  handle?: string | null;
 };
 
 @Injectable()
@@ -21,8 +25,12 @@ export class CreateUserService {
 
   async execute(command: CreateUserCommand): Promise<User> {
     const user = User.register(command);
-    const existing = await this.users.findByEmail(user.email);
-    if (existing) throw new UserEmailAlreadyExistsError(user.email);
+    const byEmail = await this.users.findByEmail(user.email);
+    if (byEmail) throw new UserEmailAlreadyExistsError(user.email);
+    if (user.handle) {
+      const byHandle = await this.users.findByHandle(user.handle);
+      if (byHandle) throw new UserHandleAlreadyExistsError(user.handle);
+    }
     return this.users.save(user);
   }
 }

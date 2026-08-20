@@ -142,6 +142,9 @@ export class Ticket {
       text: trimmed,
       isInternalNote,
     });
+    if (this._status === 'open') {
+      this._status = 'in_progress';
+    }
   }
 
   transfer(agentId: string | null, at = new Date()): void {
@@ -154,6 +157,36 @@ export class Ticket {
       text: next
         ? `chamado transferido para ${next}.`
         : 'chamado desatribuído.',
+      isInternalNote: true,
+    });
+    if (next && this._status === 'open') {
+      this._status = 'in_progress';
+    }
+  }
+
+  claim(agentId: string, at = new Date()): void {
+    const next = agentId.trim();
+    if (!next) throw new Error('agente é obrigatório para assumir');
+    this.assertOpen();
+    this._agentId = next;
+    if (this._status === 'open') {
+      this._status = 'in_progress';
+    }
+    this._history.push({
+      id: randomUUID(),
+      occurredAt: at,
+      text: `chamado assumido por ${next}.`,
+      isInternalNote: true,
+    });
+  }
+
+  markWaiting(at = new Date()): void {
+    this.assertOpen();
+    this._status = 'waiting';
+    this._history.push({
+      id: randomUUID(),
+      occurredAt: at,
+      text: 'aguardando resposta do solicitante.',
       isInternalNote: true,
     });
   }

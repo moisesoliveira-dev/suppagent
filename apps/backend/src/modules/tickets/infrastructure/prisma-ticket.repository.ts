@@ -42,13 +42,17 @@ export class PrismaTicketRepository implements TicketRepository {
   }
 
   async counts(currentAgent: string): Promise<TicketCounts> {
-    const [todos, meus, naoatribuidos, urgentes] = await Promise.all([
+    const notResolved = { not: 'RESOLVED' as const };
+    const [todos, meus, naoatribuidos, urgentes, abertos] = await Promise.all([
       this.prisma.ticket.count(),
       this.prisma.ticket.count({ where: { agentId: currentAgent } }),
       this.prisma.ticket.count({ where: { agentId: null } }),
-      this.prisma.ticket.count({ where: { priority: 'URGENT' } }),
+      this.prisma.ticket.count({
+        where: { priority: 'URGENT', status: notResolved },
+      }),
+      this.prisma.ticket.count({ where: { status: notResolved } }),
     ]);
-    return { todos, meus, naoatribuidos, urgentes };
+    return { todos, meus, naoatribuidos, urgentes, abertos };
   }
 
   async save(ticket: Ticket): Promise<Ticket> {

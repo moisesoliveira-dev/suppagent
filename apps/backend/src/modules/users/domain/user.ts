@@ -4,13 +4,21 @@ export type RegisterUserInput = {
   name: string;
   email: string;
   role: UserRole;
+  handle?: string | null;
 };
+
+function normalizeHandle(value: string | null | undefined): string | null {
+  if (value == null) return null;
+  const handle = value.trim().toLowerCase();
+  return handle || null;
+}
 
 export class User {
   private constructor(
     private readonly _id: string,
     private _name: string,
     private _email: string,
+    private _handle: string | null,
     private _role: UserRole,
     private readonly _createdAt: Date,
   ) {}
@@ -18,17 +26,28 @@ export class User {
   static register(input: RegisterUserInput): User {
     const name = input.name.trim();
     const email = input.email.trim().toLowerCase();
+    const handle = normalizeHandle(input.handle);
     if (!name) throw new Error('nome do usuário é obrigatório');
     if (!email || !email.includes('@')) {
       throw new Error('e-mail do usuário é inválido');
     }
-    return new User('', name, email, input.role, new Date());
+    if (input.role === 'technician' && !handle) {
+      throw new Error('identificador do técnico é obrigatório');
+    }
+    if (input.role === 'user' && handle) {
+      throw new Error('usuário normal não possui identificador de agente');
+    }
+    if (handle && !/^[a-z0-9._-]+$/.test(handle)) {
+      throw new Error('identificador inválido (use letras, números, . _ -)');
+    }
+    return new User('', name, email, handle, input.role, new Date());
   }
 
   static reconstitute(props: {
     id: string;
     name: string;
     email: string;
+    handle: string | null;
     role: UserRole;
     createdAt: Date;
   }): User {
@@ -36,6 +55,7 @@ export class User {
       props.id,
       props.name,
       props.email,
+      props.handle,
       props.role,
       props.createdAt,
     );
@@ -57,6 +77,10 @@ export class User {
     return this._email;
   }
 
+  get handle(): string | null {
+    return this._handle;
+  }
+
   get role(): UserRole {
     return this._role;
   }
@@ -70,18 +94,9 @@ export class User {
       id,
       name: this._name,
       email: this._email,
+      handle: this._handle,
       role: this._role,
       createdAt: this._createdAt,
     });
-  }
-
-  changeRole(role: UserRole): void {
-    this._role = role;
-  }
-
-  rename(name: string): void {
-    const trimmed = name.trim();
-    if (!trimmed) throw new Error('nome do usuário é obrigatório');
-    this._name = trimmed;
   }
 }

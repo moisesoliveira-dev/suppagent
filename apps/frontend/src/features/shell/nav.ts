@@ -24,7 +24,10 @@ export type NavGroup = {
 
 export const NAV_GROUPS: NavGroup[] = [
   { label: 'visão geral', items: [{ id: 'painel', label: 'painel' }] },
-  { label: 'chamados', items: [{ id: 'chamados', label: 'chamados', count: 10 }] },
+  {
+    label: 'chamados',
+    items: [{ id: 'chamados', label: 'chamados' }],
+  },
   {
     label: 'atendimento',
     items: [

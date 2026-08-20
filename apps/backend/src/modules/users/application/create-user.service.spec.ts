@@ -5,15 +5,16 @@ import { USER_REPOSITORY } from '../domain/user.repository';
 import { CreateUserService } from './create-user.service';
 
 describe('CreateUserService', () => {
-  it('persiste novo usuário', async () => {
+  it('persiste novo técnico', async () => {
     const save = jest.fn(async (user: User) => user.withId('u-1'));
     const findByEmail = jest.fn().mockResolvedValue(null);
+    const findByHandle = jest.fn().mockResolvedValue(null);
     const module = await Test.createTestingModule({
       providers: [
         CreateUserService,
         {
           provide: USER_REPOSITORY,
-          useValue: { save, findByEmail },
+          useValue: { save, findByEmail, findByHandle },
         },
       ],
     }).compile();
@@ -22,9 +23,11 @@ describe('CreateUserService', () => {
       name: 'Bruno Alves',
       email: 'bruno@balcao.com',
       role: 'technician',
+      handle: 'b.alves',
     });
 
     expect(findByEmail).toHaveBeenCalledWith('bruno@balcao.com');
+    expect(findByHandle).toHaveBeenCalledWith('b.alves');
     expect(save).toHaveBeenCalled();
     expect(created.id).toBe('u-1');
     expect(created.role).toBe('technician');
@@ -43,6 +46,7 @@ describe('CreateUserService', () => {
           provide: USER_REPOSITORY,
           useValue: {
             findByEmail: jest.fn().mockResolvedValue(existing),
+            findByHandle: jest.fn(),
             save: jest.fn(),
           },
         },

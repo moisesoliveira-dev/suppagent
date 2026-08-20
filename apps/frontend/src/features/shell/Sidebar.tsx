@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { listTickets } from '../tickets/tickets-api'
+import { onTicketsChanged } from '../tickets/tickets-ui'
 import { NAV_GROUPS, type ViewId } from './nav'
 
 type SidebarProps = {
@@ -8,6 +10,22 @@ type SidebarProps = {
 
 export function Sidebar({ active, onNavigate }: SidebarProps) {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
+  const [openCount, setOpenCount] = useState<number | null>(null)
+
+  useEffect(() => {
+    async function refresh() {
+      try {
+        const data = await listTickets('todos')
+        setOpenCount(data.counts.abertos)
+      } catch {
+        setOpenCount(null)
+      }
+    }
+    void refresh()
+    return onTicketsChanged(() => {
+      void refresh()
+    })
+  }, [])
 
   return (
     <aside className="flex h-full min-h-0 w-[210px] shrink-0 flex-col border-r border-stroke bg-panel py-5">
@@ -44,6 +62,10 @@ export function Sidebar({ active, onNavigate }: SidebarProps) {
                 <div>
                   {group.items.map((item) => {
                     const isActive = active === item.id
+                    const count =
+                      item.id === 'chamados' && openCount != null
+                        ? openCount
+                        : item.count
                     return (
                       <button
                         key={item.id}
@@ -56,8 +78,8 @@ export function Sidebar({ active, onNavigate }: SidebarProps) {
                         }`}
                       >
                         {item.label}
-                        {item.count != null ? (
-                          <span className="ml-auto text-[10.5px] text-dim">{item.count}</span>
+                        {count != null ? (
+                          <span className="ml-auto text-[10.5px] text-dim">{count}</span>
                         ) : null}
                       </button>
                     )
@@ -76,7 +98,7 @@ export function Sidebar({ active, onNavigate }: SidebarProps) {
           </div>
           <div>
             <div className="text-[11.5px] font-bold">camila reis</div>
-            <div className="text-[10px] text-dim">coordenadora</div>
+            <div className="text-[10px] text-dim">c.reis · técnica</div>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../shared/infrastructure/persistence/prisma.service';
 import type { User } from '../domain/user';
+import type { UserRole } from '../domain/user-role';
 import type { UserRepository } from '../domain/user.repository';
 import { toDomainUser, toPrismaRole } from './user.mapper';
 
@@ -20,8 +21,16 @@ export class PrismaUserRepository implements UserRepository {
     return record ? toDomainUser(record) : null;
   }
 
-  async findAll(): Promise<User[]> {
+  async findByHandle(handle: string): Promise<User | null> {
+    const record = await this.prisma.user.findUnique({
+      where: { handle: handle.trim().toLowerCase() },
+    });
+    return record ? toDomainUser(record) : null;
+  }
+
+  async findAll(role?: UserRole): Promise<User[]> {
     const records = await this.prisma.user.findMany({
+      where: role ? { role: toPrismaRole(role) } : undefined,
       orderBy: { createdAt: 'desc' },
     });
     return records.map(toDomainUser);
@@ -33,6 +42,7 @@ export class PrismaUserRepository implements UserRepository {
         data: {
           name: user.name,
           email: user.email,
+          handle: user.handle,
           role: toPrismaRole(user.role),
           createdAt: user.createdAt,
         },
@@ -45,6 +55,7 @@ export class PrismaUserRepository implements UserRepository {
       data: {
         name: user.name,
         email: user.email,
+        handle: user.handle,
         role: toPrismaRole(user.role),
       },
     });
