@@ -93,6 +93,12 @@ Perfis por enquanto: **usuário** (normal) e **técnico** (com identificador de 
 
 Aba **equipe** (frontend): lista técnicos via `/users?role=tecnico` e carga de chamados via `/tickets?filter=meus&agent=…`. Cadastro de pessoas continua em Cadastros → usuários.
 
+API de relatórios:
+
+| Método | Rota | Uso |
+|---|---|---|
+| `GET` | `/reports/summary` | totais + por status/prioridade/categoria/agente + base de conhecimento |
+
 Chamados — ações extras:
 
 | Método | Rota | Uso |

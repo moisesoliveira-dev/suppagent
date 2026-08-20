@@ -11,6 +11,7 @@ Telas em `apps/frontend/src/features/<feature>/`. Shell compartilhado em `featur
 Chamados (`features/tickets/`): dados só via API (`VITE_API_URL`). Abrir / responder / assumir / transferir / aguardar / encerrar. Sem mock.
 Usuários (`features/users/`): cadastro em Cadastros → usuários, perfis `usuario` | `tecnico` (técnico exige `handle` de agente).
 Equipe (`features/team/`): visão operacional dos técnicos + carga de chamados (API); cadastro continua em Cadastros → usuários.
+Relatórios (`features/reports/`): resumo ao vivo via `GET /reports/summary` (chamados + base); sem agendamento ainda.
 Base de conhecimento (`features/knowledge/`): artigos via API; criar a partir do chat só com chamado encerrado.
 Bate-papos da equipe (`features/chat/` + Cadastros): canais gerenciáveis em Cadastros → bate-papos da equipe.
 Ao pedir feature/aba nova: seguir `.cursor/rules/cadastros-catalog.mdc` (avaliar se falta item em Cadastros).

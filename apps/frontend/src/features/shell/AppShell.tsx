@@ -3,7 +3,8 @@ import { DashboardView } from '../dashboard/DashboardView'
 import { UserChatView } from '../chat/UserChatView'
 import { CannedView } from '../inbox/InboxViews'
 import { KnowledgeView } from '../knowledge/KnowledgeView'
-import { AutomationsView, ReportsView, SlaView } from '../ops/OpsViews'
+import { AutomationsView, SlaView } from '../ops/OpsViews'
+import { ReportsView } from '../reports/ReportsView'
 import { TeamView } from '../team/TeamView'
 import {
   AiChatView,
