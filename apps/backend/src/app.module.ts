@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { resolve } from 'node:path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AutomationsModule } from './modules/automations/automations.module';
 import { HealthModule } from './modules/health/health.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
@@ -27,6 +28,7 @@ import { UsersModule } from './modules/users/users.module';
     KnowledgeModule,
     TeamChatModule,
     ReportsModule,
+    AutomationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

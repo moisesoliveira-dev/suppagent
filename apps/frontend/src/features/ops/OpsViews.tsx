@@ -1,92 +1,13 @@
 import { useState } from 'react'
 import { FlapCell } from '../../shared/ui/FlapCell'
-import { Toggle } from '../../shared/ui/Toggle'
 import {
   DetailPanel,
   PassLabel,
   PassSub,
   PassTitle,
   PriorityColor,
-  RelTicket,
   StubBar,
 } from '../../shared/ui/chrome'
-
-const RULES = [
-  { id: 'fin', name: 'Atribuir chamados financeiros', meta: 'novo chamado · 214 execuções', on: true, title: 'Atribuir chamados financeiros', sub: 'criada por camila reis · atualizada há 2 semanas', runs: '214', last: 'há 12 min', trigger: 'novo chamado é criado', condition: 'categoria = financeiro', action: 'atribuir para camila reis / prioridade = média', history: [['#4465 — cobrança duplicada — agosto', 'aguardando']] as [string, string][] },
-  { id: 'escalar', name: 'Escalar urgentes sem resposta', meta: 'sem resposta 30min · 42 execuções', on: true, title: 'Escalar urgentes sem resposta', sub: 'criada por bruno alves · atualizada há 1 semana', runs: '42', last: 'há 3 horas', trigger: 'chamado sem resposta há 30 minutos', condition: 'prioridade = urgente', action: 'notificar coordenador / marcar tag "escalado"', history: [['#4441 — pagamento não é confirmado', 'andamento']] as [string, string][] },
-  { id: 'fechar', name: 'Fechar chamados resolvidos', meta: 'resolvido há 3 dias · 189 execuções', on: true, title: 'Fechar chamados resolvidos', sub: 'criada por camila reis · atualizada há 1 mês', runs: '189', last: 'há 6 horas', trigger: 'status = resolvido há 3 dias', condition: 'sem nova resposta do cliente', action: 'fechar chamado / enviar aviso de encerramento', history: [['#4452 — alterar e-mail de cobrança', 'resolvido']] as [string, string][] },
-  { id: 'safari', name: 'Alertar bugs no Safari', meta: 'categoria = bug · 8 execuções', on: false, title: 'Alertar bugs no Safari', sub: 'criada por camila reis · atualizada há 3 dias · inativa', runs: '8', last: 'há 5 horas', trigger: 'novo chamado é criado', condition: 'categoria = bug e menciona "safari"', action: 'marcar tag "safari" / notificar equipe de dev', history: [['#4460 — botão de salvar — safari', 'andamento']] as [string, string][] },
-  { id: 'csat', name: 'Enviar pesquisa de satisfação', meta: 'chamado encerrado · 301 execuções', on: true, title: 'Enviar pesquisa de satisfação', sub: 'criada por bruno alves · atualizada há 5 dias', runs: '301', last: 'há 40 min', trigger: 'chamado é encerrado', condition: 'cliente respondeu ao menos 1 vez', action: 'enviar pesquisa de satisfação por e-mail', history: [['#4430 — senha resetada com sucesso', 'resolvido']] as [string, string][] },
-]
-
-export function AutomationsView() {
-  const [selectedId, setSelectedId] = useState('fin')
-  const [toggles, setToggles] = useState<Record<string, boolean>>(
-    Object.fromEntries(RULES.map((rule) => [rule.id, rule.on])),
-  )
-  const rule = RULES.find((item) => item.id === selectedId) ?? RULES[0]
-
-  return (
-    <div className="flex min-h-0 flex-1">
-      <div className="w-[280px] shrink-0 overflow-y-auto border-r border-stroke bg-panel px-4 py-4">
-        <div className="mb-3 text-[10px] tracking-widest text-dim uppercase">regras de automação</div>
-        {RULES.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => setSelectedId(item.id)}
-            className={`mb-2 w-full rounded border px-3 py-3 text-left ${
-              selectedId === item.id ? 'border-amber bg-tile' : 'border-stroke bg-tile'
-            }`}
-          >
-            <div className="mb-2 flex items-start justify-between gap-2">
-              <span className="text-xs font-bold leading-snug">{item.name}</span>
-              <Toggle
-                on={toggles[item.id]}
-                onToggle={() => setToggles((current) => ({ ...current, [item.id]: !current[item.id] }))}
-              />
-            </div>
-            <div className="text-[10.5px] text-dim">{item.meta}</div>
-          </button>
-        ))}
-      </div>
-      <div className="min-w-0 flex-1 overflow-y-auto px-7 py-5">
-        <p className="mb-1 text-[17px] font-bold tracking-wide text-amber">{rule.title}</p>
-        <div className="mb-5 text-[11.5px] text-dim">{rule.sub}</div>
-        <div className="mb-6 flex gap-6">
-          <div>
-            <PassLabel>execuções</PassLabel>
-            <div className="text-base font-bold">{rule.runs}</div>
-          </div>
-          <div>
-            <PassLabel>última execução</PassLabel>
-            <div className="text-base font-bold">{rule.last}</div>
-          </div>
-        </div>
-        <div className="mb-7 flex flex-wrap items-stretch gap-2.5">
-          <div className="min-w-[180px] flex-1 rounded border border-amber bg-board px-4 py-3.5">
-            <div className="mb-2 text-[10px] font-bold tracking-widest text-amber uppercase">gatilho</div>
-            <div className="text-[12.5px] leading-relaxed">{rule.trigger}</div>
-          </div>
-          <div className="flex items-center text-base text-dim">→</div>
-          <div className="min-w-[180px] flex-1 rounded border border-blue bg-board px-4 py-3.5">
-            <div className="mb-2 text-[10px] font-bold tracking-widest text-blue uppercase">condição</div>
-            <div className="text-[12.5px] leading-relaxed">{rule.condition}</div>
-          </div>
-          <div className="flex items-center text-base text-dim">→</div>
-          <div className="min-w-[180px] flex-1 rounded border border-green bg-board px-4 py-3.5">
-            <div className="mb-2 text-[10px] font-bold tracking-widest text-green uppercase">ação</div>
-            <div className="text-[12.5px] leading-relaxed">{rule.action}</div>
-          </div>
-        </div>
-        <div className="mb-2 text-[10.5px] tracking-widest text-dim uppercase">histórico recente</div>
-        {rule.history.map(([label, status]) => (
-          <RelTicket key={label} label={label} status={status} />
-        ))}
-      </div>
-    </div>
-  )
-}
 
 const SLA_ROWS = [
   { id: '4448', subject: 'sistema fora do ar — login não abre', prio: 'urgente', resp: 'vencida', resol: 'restam 5min', respTone: 'breach', resolTone: 'breach', meta: 'chamado nº 4448 · urgente', sub: 'política aplicada: urgente · resposta 15min / resolução 4h', respText: 'vencida há 3min', respColor: 'text-red', respSub: 'prazo era 15min · sla de resposta não cumprido', resolText: 'restam 5min', resolColor: 'text-red', resolSub: 'vencimento previsto às 12:55', log: [['12:40', 'chamado aberto — sla iniciado'], ['12:53', 'alerta crítico — restam menos de 10min']] as [string, string][] },

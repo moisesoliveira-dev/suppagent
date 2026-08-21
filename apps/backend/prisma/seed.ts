@@ -509,6 +509,80 @@ async function main() {
         sound: true,
       },
     });
+
+    const automationRules = [
+      {
+        id: 'seed-auto-fin',
+        name: 'Atribuir chamados financeiros',
+        trigger: 'novo chamado é criado',
+        condition: 'categoria = financeiro',
+        action: 'atribuir para camila reis / prioridade = média',
+        enabled: true,
+        authorName: 'camila reis',
+        runCount: 214,
+        lastRunAt: new Date('2026-08-20T12:00:00'),
+        createdAt: new Date('2026-07-01T10:00:00'),
+      },
+      {
+        id: 'seed-auto-escalar',
+        name: 'Escalar urgentes sem resposta',
+        trigger: 'chamado sem resposta há 30 minutos',
+        condition: 'prioridade = urgente',
+        action: 'notificar coordenador / marcar tag "escalado"',
+        enabled: true,
+        authorName: 'bruno alves',
+        runCount: 42,
+        lastRunAt: new Date('2026-08-20T09:00:00'),
+        createdAt: new Date('2026-07-10T10:00:00'),
+      },
+      {
+        id: 'seed-auto-fechar',
+        name: 'Fechar chamados resolvidos',
+        trigger: 'status = resolvido há 3 dias',
+        condition: 'sem nova resposta do cliente',
+        action: 'fechar chamado / enviar aviso de encerramento',
+        enabled: true,
+        authorName: 'camila reis',
+        runCount: 189,
+        lastRunAt: new Date('2026-08-20T06:00:00'),
+        createdAt: new Date('2026-06-15T10:00:00'),
+      },
+      {
+        id: 'seed-auto-safari',
+        name: 'Alertar bugs no Safari',
+        trigger: 'novo chamado é criado',
+        condition: 'categoria = bug e menciona "safari"',
+        action: 'marcar tag "safari" / notificar equipe de dev',
+        enabled: false,
+        authorName: 'camila reis',
+        runCount: 8,
+        lastRunAt: new Date('2026-08-20T07:00:00'),
+        createdAt: new Date('2026-08-17T10:00:00'),
+      },
+      {
+        id: 'seed-auto-csat',
+        name: 'Enviar pesquisa de satisfação',
+        trigger: 'chamado é encerrado',
+        condition: 'cliente respondeu ao menos 1 vez',
+        action: 'enviar pesquisa de satisfação por e-mail',
+        enabled: true,
+        authorName: 'bruno alves',
+        runCount: 301,
+        lastRunAt: new Date('2026-08-20T11:20:00'),
+        createdAt: new Date('2026-08-01T10:00:00'),
+      },
+    ];
+
+    for (const rule of automationRules) {
+      await prisma.automationRule.upsert({
+        where: { id: rule.id },
+        update: {},
+        create: {
+          ...rule,
+          updatedAt: rule.createdAt,
+        },
+      });
+    }
   } finally {
     await prisma.$disconnect();
   }

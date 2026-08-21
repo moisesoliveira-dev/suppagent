@@ -10,6 +10,7 @@ import {
   PassTitle,
   StubBar,
 } from '../../shared/ui/chrome'
+import { AutomationsCatalogPanel } from '../automations/AutomationsCatalogPanel'
 import { UsersCatalogPanel } from '../users/UsersCatalogPanel'
 import { TeamChatsCatalogPanel } from '../chat/TeamChatsCatalogPanel'
 import { NotificationsSettingsPanel } from '../notifications/NotificationsSettingsPanel'
@@ -180,6 +181,7 @@ export function CatalogView() {
       items={[
         { id: 'usuarios', label: 'usuários' },
         { id: 'chats-equipe', label: 'bate-papos da equipe' },
+        { id: 'automacoes', label: 'automações' },
         { id: 'setores', label: 'setores' },
         { id: 'cargos', label: 'cargos' },
         { id: 'canais', label: 'canais de atendimento' },
@@ -190,6 +192,7 @@ export function CatalogView() {
       {(id) => {
         if (id === 'usuarios') return <UsersCatalogPanel />
         if (id === 'chats-equipe') return <TeamChatsCatalogPanel />
+        if (id === 'automacoes') return <AutomationsCatalogPanel />
 
         const data: Record<string, { title: string; sub: string; rows: { name: string; meta: string }[] }> = {
           setores: {

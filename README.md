@@ -110,6 +110,20 @@ API de notificações (sino no topbar; prefs em Configurações):
 | `POST` | `/notifications/read-all?agent=` | marca todas |
 | `GET` / `PATCH` | `/notifications/preferences?agent=` | preferências (`assigned`, `sla`, `digest`, `sound`) |
 
+API de automações (gestão → automações; Cadastros → automações):
+
+| Método | Rota | Uso |
+|---|---|---|
+| `GET` | `/automations` | lista regras |
+| `GET` | `/automations/:id` | detalhe |
+| `POST` | `/automations` | cria `{ name, trigger, condition, action, authorName, enabled? }` |
+| `PATCH` | `/automations/:id` | atualiza campos |
+| `POST` | `/automations/:id/toggle` | ativa / desativa |
+| `POST` | `/automations/:id/run` | registra execução (`runCount` + `lastRunAt`) |
+| `DELETE` | `/automations/:id` | remove |
+
+O motor de gatilhos em tempo real ainda não dispara ações sozinho — a aba gerencia regras e contadores.
+
 Chamados — ações extras:
 
 | Método | Rota | Uso |
