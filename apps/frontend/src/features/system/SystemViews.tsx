@@ -11,6 +11,7 @@ import {
   StubBar,
 } from '../../shared/ui/chrome'
 import { AutomationsCatalogPanel } from '../automations/AutomationsCatalogPanel'
+import { CannedCatalogPanel } from '../canned/CannedCatalogPanel'
 import { SlaPoliciesCatalogPanel } from '../sla/SlaPoliciesCatalogPanel'
 import { UsersCatalogPanel } from '../users/UsersCatalogPanel'
 import { TeamChatsCatalogPanel } from '../chat/TeamChatsCatalogPanel'
@@ -183,6 +184,7 @@ export function CatalogView() {
         { id: 'usuarios', label: 'usuários' },
         { id: 'chats-equipe', label: 'bate-papos da equipe' },
         { id: 'automacoes', label: 'automações' },
+        { id: 'respostas-prontas', label: 'respostas prontas' },
         { id: 'setores', label: 'setores' },
         { id: 'cargos', label: 'cargos' },
         { id: 'canais', label: 'canais de atendimento' },
@@ -195,6 +197,7 @@ export function CatalogView() {
         if (id === 'chats-equipe') return <TeamChatsCatalogPanel />
         if (id === 'automacoes') return <AutomationsCatalogPanel />
         if (id === 'prioridades') return <SlaPoliciesCatalogPanel />
+        if (id === 'respostas-prontas') return <CannedCatalogPanel />
 
         const data: Record<string, { title: string; sub: string; rows: { name: string; meta: string }[] }> = {
           setores: {

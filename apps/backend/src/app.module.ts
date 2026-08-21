@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AutomationsModule } from './modules/automations/automations.module';
+import { CannedResponsesModule } from './modules/canned-responses/canned-responses.module';
 import { HealthModule } from './modules/health/health.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
@@ -31,6 +32,7 @@ import { UsersModule } from './modules/users/users.module';
     ReportsModule,
     AutomationsModule,
     SlaModule,
+    CannedResponsesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

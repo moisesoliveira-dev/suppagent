@@ -625,6 +625,69 @@ async function main() {
         },
       });
     }
+
+    const cannedResponses = [
+      {
+        id: 'seed-canned-ola',
+        title: 'saudação inicial',
+        category: 'saudacao',
+        shortcut: '/ola',
+        body: 'Olá {{nome_cliente}}! Meu nome é {{agente}} e vou te ajudar com isso.',
+        useCount: 342,
+      },
+      {
+        id: 'seed-canned-detalhes',
+        title: 'solicitar mais informações',
+        category: 'acesso',
+        shortcut: '/detalhes',
+        body: 'Para te ajudar melhor, você pode enviar um print da tela?',
+        useCount: 128,
+      },
+      {
+        id: 'seed-canned-reembolso',
+        title: 'reembolso solicitado',
+        category: 'financeiro',
+        shortcut: '/reembolso',
+        body: 'Solicitei o reembolso. O valor deve cair em até {{prazo_reembolso}} dias úteis.',
+        useCount: 89,
+      },
+      {
+        id: 'seed-canned-senha',
+        title: 'como resetar a senha',
+        category: 'acesso',
+        shortcut: '/senha',
+        body: 'Você pode resetar sua senha em "esqueci minha senha". O link expira em {{tempo_expiracao}} minutos.',
+        useCount: 214,
+      },
+      {
+        id: 'seed-canned-encerrar',
+        title: 'encerramento padrão',
+        category: 'encerramento',
+        shortcut: '/encerrar',
+        body: 'Ficamos felizes em ajudar, {{nome_cliente}}!',
+        useCount: 401,
+      },
+      {
+        id: 'seed-canned-escalar',
+        title: 'escalonamento para especialista',
+        category: 'escalonamento',
+        shortcut: '/escalar',
+        body: 'Vou transferir seu chamado para um especialista em {{categoria}}.',
+        useCount: 47,
+      },
+    ];
+
+    for (const item of cannedResponses) {
+      await prisma.cannedResponse.upsert({
+        where: { id: item.id },
+        update: {},
+        create: {
+          ...item,
+          createdAt: new Date('2026-07-01T10:00:00'),
+          updatedAt: new Date('2026-07-01T10:00:00'),
+        },
+      });
+    }
   } finally {
     await prisma.$disconnect();
   }

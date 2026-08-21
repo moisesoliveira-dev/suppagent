@@ -132,6 +132,17 @@ API de SLA (gestão → sla; Cadastros → prioridades):
 | `GET` | `/sla/policies` | lista metas por prioridade |
 | `PATCH` | `/sla/policies/:priority` | `{ responseMinutes, resolutionMinutes }` (`urgente`/`urgent`, …) |
 
+API de respostas prontas (atendimento → respostas prontas; Cadastros → respostas prontas):
+
+| Método | Rota | Uso |
+|---|---|---|
+| `GET` | `/canned-responses?category=` | lista + `categories` |
+| `POST` | `/canned-responses` | cria `{ title, category, shortcut, body }` |
+| `PATCH` | `/canned-responses/:id` | atualiza campos |
+| `POST` | `/canned-responses/:id/use` | incrementa usos (corpo para colar no chat) |
+| `POST` | `/canned-responses/:id/duplicate` | duplica modelo |
+| `DELETE` | `/canned-responses/:id` | remove |
+
 Chamados — ações extras:
 
 | Método | Rota | Uso |

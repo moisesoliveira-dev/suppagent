@@ -196,3 +196,17 @@ model SlaPolicy {
 
   @@map("sla_policies")
 }
+
+model CannedResponse {
+  id        String   @id @default(uuid())
+  title     String
+  category  String
+  shortcut  String   @unique
+  body      String
+  useCount  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@map("canned_responses")
+}
