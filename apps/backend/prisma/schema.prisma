@@ -139,3 +139,32 @@ model TeamChatMessage {
   @@index([chatId])
   @@map("team_chat_messages")
 }
+
+model Notification {
+  id              String    @id @default(uuid())
+  recipientHandle String
+  type            String
+  title           String
+  body            String
+  ticketId        Int?
+  readAt          DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([recipientHandle, createdAt])
+  @@index([recipientHandle, readAt])
+  @@map("notifications")
+}
+
+model NotificationPreference {
+  id              String   @id @default(uuid())
+  recipientHandle String   @unique
+  assigned        Boolean  @default(true)
+  sla             Boolean  @default(true)
+  digest          Boolean  @default(false)
+  sound           Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("notification_preferences")
+}

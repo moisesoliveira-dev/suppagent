@@ -99,6 +99,15 @@ API de relatórios:
 |---|---|---|
 | `GET` | `/reports/summary` | totais + por status/prioridade/categoria/agente + base de conhecimento |
 
+API de notificações (sino no topbar; prefs em Configurações):
+
+| Método | Rota | Uso |
+|---|---|---|
+| `GET` | `/notifications?agent=` | lista + `unread` |
+| `POST` | `/notifications/:id/read?agent=` | marca lida |
+| `POST` | `/notifications/read-all?agent=` | marca todas |
+| `GET` / `PATCH` | `/notifications/preferences?agent=` | preferências (`assigned`, `sla`, `digest`, `sound`) |
+
 Chamados — ações extras:
 
 | Método | Rota | Uso |

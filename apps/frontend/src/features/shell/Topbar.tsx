@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { listTickets } from '../tickets/tickets-api'
 import { EMPTY_COUNTS, type TicketCounts } from '../tickets/tickets'
 import { onTicketsChanged, openCreateTicketDialog } from '../tickets/tickets-ui'
+import { NotificationsBell } from '../notifications/NotificationsBell'
+import { notifyNotificationsChanged } from '../notifications/notifications-ui'
 
 export function Topbar() {
   const [counts, setCounts] = useState<TicketCounts>(EMPTY_COUNTS)
@@ -18,6 +20,7 @@ export function Topbar() {
     void refresh()
     return onTicketsChanged(() => {
       void refresh()
+      notifyNotificationsChanged()
     })
   }, [])
 
@@ -38,6 +41,7 @@ export function Topbar() {
         <b className="text-sm text-amber">{counts.naoatribuidos}</b>
         <span className="text-[10.5px] tracking-wide text-dim uppercase">livres</span>
       </div>
+      <NotificationsBell />
       <button
         type="button"
         onClick={() => openCreateTicketDialog()}

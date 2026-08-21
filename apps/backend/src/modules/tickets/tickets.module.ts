@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { NotificationsModule } from '../notifications/notifications.module';
 import { ClaimTicketService } from './application/claim-ticket.service';
 import { CloseTicketService } from './application/close-ticket.service';
 import { CreateTicketService } from './application/create-ticket.service';
@@ -11,12 +12,14 @@ import { MarkTicketWaitingService } from './application/mark-ticket-waiting.serv
 import { PinTicketMessageService } from './application/pin-ticket-message.service';
 import { ReopenTicketService } from './application/reopen-ticket.service';
 import { ReplyToTicketService } from './application/reply-to-ticket.service';
+import { TicketNotificationBridge } from './application/ticket-notification.bridge';
 import { TransferTicketService } from './application/transfer-ticket.service';
 import { TICKET_REPOSITORY } from './domain/ticket.repository';
 import { PrismaTicketRepository } from './infrastructure/prisma-ticket.repository';
 import { TicketsController } from './presentation/tickets.controller';
 
 @Module({
+  imports: [NotificationsModule],
   controllers: [TicketsController],
   providers: [
     ListTicketsService,
@@ -32,6 +35,7 @@ import { TicketsController } from './presentation/tickets.controller';
     DeleteTicketMessageService,
     PinTicketMessageService,
     ForwardTicketMessageService,
+    TicketNotificationBridge,
     {
       provide: TICKET_REPOSITORY,
       useClass: PrismaTicketRepository,

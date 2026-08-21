@@ -456,6 +456,59 @@ async function main() {
         },
       });
     }
+
+    const seedNotifications = [
+      {
+        id: 'seed-notif-assigned',
+        recipientHandle: 'c.reis',
+        type: 'ticket_assigned',
+        title: 'chamado atribuído a você',
+        body: '#4465 — cobrança duplicada — agosto',
+        ticketId: 4465,
+        createdAt: new Date('2026-08-20T10:00:00'),
+      },
+      {
+        id: 'seed-notif-urgent',
+        recipientHandle: 'c.reis',
+        type: 'ticket_urgent',
+        title: 'chamado urgente aberto',
+        body: '#4448 — sistema fora do ar — login não abre',
+        ticketId: 4448,
+        createdAt: new Date('2026-08-20T11:00:00'),
+      },
+      {
+        id: 'seed-notif-opened',
+        recipientHandle: 'b.alves',
+        type: 'ticket_opened',
+        title: 'novo chamado na fila',
+        body: '#4471 — erro ao gerar relatório mensal',
+        ticketId: 4471,
+        createdAt: new Date('2026-08-20T09:30:00'),
+      },
+    ];
+
+    for (const item of seedNotifications) {
+      await prisma.notification.upsert({
+        where: { id: item.id },
+        update: {},
+        create: {
+          ...item,
+          updatedAt: item.createdAt,
+        },
+      });
+    }
+
+    await prisma.notificationPreference.upsert({
+      where: { recipientHandle: 'c.reis' },
+      update: {},
+      create: {
+        recipientHandle: 'c.reis',
+        assigned: true,
+        sla: true,
+        digest: false,
+        sound: true,
+      },
+    });
   } finally {
     await prisma.$disconnect();
   }

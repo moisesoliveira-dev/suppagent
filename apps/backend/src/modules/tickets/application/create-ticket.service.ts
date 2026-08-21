@@ -5,6 +5,7 @@ import {
   TICKET_REPOSITORY,
   type TicketRepository,
 } from '../domain/ticket.repository';
+import { TicketNotificationBridge } from './ticket-notification.bridge';
 
 export type CreateTicketCommand = {
   subject: string;
@@ -19,10 +20,13 @@ export type CreateTicketCommand = {
 export class CreateTicketService {
   constructor(
     @Inject(TICKET_REPOSITORY) private readonly tickets: TicketRepository,
+    private readonly notifications: TicketNotificationBridge,
   ) {}
 
-  execute(command: CreateTicketCommand) {
+  async execute(command: CreateTicketCommand) {
     const ticket = Ticket.open(command);
-    return this.tickets.save(ticket);
+    const saved = await this.tickets.save(ticket);
+    await this.notifications.onCreated(saved);
+    return saved;
   }
 }

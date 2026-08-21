@@ -12,6 +12,7 @@ import {
 } from '../../shared/ui/chrome'
 import { UsersCatalogPanel } from '../users/UsersCatalogPanel'
 import { TeamChatsCatalogPanel } from '../chat/TeamChatsCatalogPanel'
+import { NotificationsSettingsPanel } from '../notifications/NotificationsSettingsPanel'
 
 function SettingsShell({
   items,
@@ -53,7 +54,7 @@ function Panel({ title, sub, children }: { title: string; sub: string; children:
 }
 
 export function SettingsView() {
-  const [toggles, setToggles] = useState({ assigned: true, sla: true, digest: false, sound: true, tfa: false, audit: true })
+  const [toggles, setToggles] = useState({ tfa: false, audit: true })
   const [cats, setCats] = useState(['financeiro', 'acesso', 'bug', 'suporte técnico', 'sugestão'])
 
   return (
@@ -105,26 +106,7 @@ export function SettingsView() {
           )
         }
         if (id === 'notificacoes') {
-          return (
-            <Panel title="notificações" sub="como e quando a equipe é avisada sobre eventos de chamados">
-              {(
-                [
-                  ['assigned', 'novo chamado atribuído', 'avisar o agente por e-mail quando um chamado for atribuído a ele.'],
-                  ['sla', 'sla em risco', 'alertar quando um chamado atingir 75% do prazo de sla.'],
-                  ['digest', 'resumo diário', 'enviar um resumo da fila todos os dias às 08:00.'],
-                  ['sound', 'som de alerta', 'reproduzir som ao receber um chamado urgente.'],
-                ] as const
-              ).map(([key, name, desc]) => (
-                <div key={key} className="flex max-w-[460px] items-start justify-between border-b border-stroke py-3">
-                  <div>
-                    <div className="mb-0.5 text-[12.5px]">{name}</div>
-                    <div className="max-w-[340px] text-[11px] text-dim">{desc}</div>
-                  </div>
-                  <Toggle on={toggles[key]} onToggle={() => setToggles((current) => ({ ...current, [key]: !current[key] }))} />
-                </div>
-              ))}
-            </Panel>
-          )
+          return <NotificationsSettingsPanel />
         }
         if (id === 'integracoes') {
           return (
