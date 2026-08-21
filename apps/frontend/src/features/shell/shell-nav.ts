@@ -92,7 +92,7 @@ export function consumeKnowledgeFocus(): string | null {
 /** só para testes */
 export function resetShellNav() {
   state = {
-    view: 'chamados',
+    view: 'painel',
     chatTicketId: null,
     chatDraft: '',
     ticketFocusId: null,
