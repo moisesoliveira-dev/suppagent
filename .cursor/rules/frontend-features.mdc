@@ -14,6 +14,7 @@ Equipe (`features/team/`): visão operacional dos técnicos + carga de chamados 
 Painel (`features/dashboard/`): KPIs e gráficos ao vivo via `GET /reports/summary`.
 Relatórios (`features/reports/`): resumo ao vivo via `GET /reports/summary` (chamados + base); sem agendamento ainda.
 Notificações (`features/notifications/`): sino no topbar + preferências em Configurações → notificações; sem aba em Cadastros (evento por agente).
+Shell (`features/shell/`): sidemenu com hierarquia clara — **grupo** = seção (rótulo pequeno, só colapsa); **item** = aba (trilho + destaque ativo).
 Auth (`features/auth/`): login com `VITE_APP_ENV=dev|prod` (em dev, Entrar passa sem credenciais) e `VITE_AUTH_REQUIRED` para o gate. Sem OAuth/Google.
 Base de conhecimento (`features/knowledge/`): artigos via API; criar a partir do chat só com chamado encerrado.
 Bate-papos da equipe (`features/chat/` + Cadastros): canais gerenciáveis em Cadastros → bate-papos da equipe.
