@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { isAuthRequired } from '../auth/auth'
+import { clearSession, useAuthSession } from '../auth/auth-session'
 import { listTickets } from '../tickets/tickets-api'
 import { onTicketsChanged } from '../tickets/tickets-ui'
 import { NAV_GROUPS, type ViewId } from './nav'
@@ -9,6 +11,7 @@ type SidebarProps = {
 }
 
 export function Sidebar({ active, onNavigate }: SidebarProps) {
+  const session = useAuthSession()
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
   const [openCount, setOpenCount] = useState<number | null>(null)
 
@@ -94,13 +97,37 @@ export function Sidebar({ active, onNavigate }: SidebarProps) {
       <div className="mt-auto shrink-0 border-t border-stroke px-[18px] pt-3.5">
         <div className="flex items-center gap-2 pt-3.5">
           <div className="flex h-7 w-7 items-center justify-center rounded-[3px] border border-stroke bg-tile text-[11px] font-bold text-amber">
-            CR
+            {session?.kind === 'authenticated'
+              ? session.user.name
+                  .split(/\s+/)
+                  .filter(Boolean)
+                  .slice(0, 2)
+                  .map((part) => part[0]?.toUpperCase() ?? '')
+                  .join('') || '?'
+              : 'CR'}
           </div>
-          <div>
-            <div className="text-[11.5px] font-bold">camila reis</div>
-            <div className="text-[10px] text-dim">c.reis · técnica</div>
+          <div className="min-w-0">
+            <div className="truncate text-[11.5px] font-bold">
+              {session?.kind === 'authenticated'
+                ? session.user.name
+                : 'camila reis'}
+            </div>
+            <div className="truncate text-[10px] text-dim">
+              {session?.kind === 'authenticated'
+                ? session.user.email
+                : 'c.reis · técnica'}
+            </div>
           </div>
         </div>
+        {isAuthRequired() ? (
+          <button
+            type="button"
+            onClick={() => clearSession()}
+            className="mt-3 w-full rounded-[3px] border border-stroke px-2.5 py-2 text-[10.5px] tracking-wide text-dim uppercase hover:border-amber hover:text-amber"
+          >
+            sair
+          </button>
+        ) : null}
       </div>
     </aside>
   )

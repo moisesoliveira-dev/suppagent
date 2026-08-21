@@ -32,9 +32,11 @@ cp .env.example .env
 | `POSTGRES_*` | Serviço `postgres` no Compose |
 | `PORT` | HTTP do backend (padrão `3000`) |
 | `VITE_API_URL` | URL da API no build do frontend |
+| `VITE_AUTH_REQUIRED` | `true` (padrão) exige tela de login; `false` abre o painel direto |
 
 Não commitar `.env`.
 
+Login (frontend): `features/auth/` — formulário completo. Integração esperada: `POST /auth/login` `{ email, password }` → `{ token, user }`. Enquanto o endpoint não existir, a tela mostra erro amigável e opção de continuar ao painel. Sem OAuth/Google por enquanto.
 ## Como rodar
 
 ### Só o banco (dev no host)

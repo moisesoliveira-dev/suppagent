@@ -13,6 +13,7 @@ Usuários (`features/users/`): cadastro em Cadastros → usuários, perfis `usua
 Equipe (`features/team/`): visão operacional dos técnicos + carga de chamados (API); cadastro continua em Cadastros → usuários.
 Relatórios (`features/reports/`): resumo ao vivo via `GET /reports/summary` (chamados + base); sem agendamento ainda.
 Notificações (`features/notifications/`): sino no topbar + preferências em Configurações → notificações; sem aba em Cadastros (evento por agente).
+Auth (`features/auth/`): tela de login; `POST /auth/login` quando existir; `VITE_AUTH_REQUIRED` controla o gate. Sem OAuth/Google por enquanto.
 Base de conhecimento (`features/knowledge/`): artigos via API; criar a partir do chat só com chamado encerrado.
 Bate-papos da equipe (`features/chat/` + Cadastros): canais gerenciáveis em Cadastros → bate-papos da equipe.
 Ao pedir feature/aba nova: seguir `.cursor/rules/cadastros-catalog.mdc` (avaliar se falta item em Cadastros).
