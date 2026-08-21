@@ -47,6 +47,7 @@ describe('shell-nav', () => {
   it('lê aba válida do hash da url', () => {
     expect(parseViewFromHash('#automacoes')).toBe('automacoes')
     expect(parseViewFromHash('#/equipe')).toBe('equipe')
+    expect(parseViewFromHash('#iaagente')).toBeNull()
     expect(parseViewFromHash('#inexistente')).toBeNull()
     expect(parseViewFromHash('')).toBeNull()
   })

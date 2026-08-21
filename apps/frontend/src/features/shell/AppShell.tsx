@@ -10,7 +10,6 @@ import { TeamView } from '../team/TeamView'
 import {
   AiChatView,
   AiConfigView,
-  AiOverviewView,
   AiRepliesView,
   AiRoutingView,
   CatalogView,
@@ -42,7 +41,6 @@ export function AppShell() {
           {view === 'relatorios' ? <ReportsView /> : null}
           {view === 'cadastros' ? <CatalogView /> : null}
           {view === 'iachat' ? <AiChatView /> : null}
-          {view === 'iaagente' ? <AiOverviewView /> : null}
           {view === 'iaroteamento' ? <AiRoutingView /> : null}
           {view === 'iarespostas' ? <AiRepliesView /> : null}
           {view === 'iaconfig' ? <AiConfigView /> : null}

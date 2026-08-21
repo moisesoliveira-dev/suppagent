@@ -369,56 +369,6 @@ export function AiChatView() {
   )
 }
 
-export function AiOverviewView() {
-  return (
-    <div className="min-h-0 flex-1 overflow-y-auto px-7 py-5">
-      <div className="mb-5 grid grid-cols-4 gap-2.5">
-        {(
-          [
-            ['chamados triados hoje', '47', '↑ pela ia automaticamente', true],
-            ['resolvidos sem humano', '18', '38% do total triado', true],
-            ['precisão de roteamento', '92%', '↑ 3pts nas últimas 2 semanas', true],
-            ['escalados para humano', '6', 'confiança abaixo do limite', false],
-          ] as const
-        ).map(([label, value, delta, up]) => (
-          <div key={label} className="rounded border border-stroke bg-tile px-4 py-3.5">
-            <div className="mb-2 text-[10px] tracking-widest text-dim uppercase">{label}</div>
-            <div className="mb-1.5 text-2xl font-bold">{value}</div>
-            <div className={`text-[10.5px] ${up ? 'text-green' : 'text-red'}`}>{delta}</div>
-          </div>
-        ))}
-      </div>
-      <div className="mb-3 text-[10.5px] tracking-widest text-dim uppercase">atividade do agente ia em tempo real</div>
-      <div className="max-h-[460px] overflow-y-auto rounded border border-stroke bg-tile px-4">
-        {[
-          ['13:14', 'roteado', 'roteado', '#4482 classificado como financeiro → camila reis (94%)'],
-          ['13:10', 'respondido', 'respondido', '#4479 respondido automaticamente (91% similaridade)'],
-          ['13:02', 'escalado', 'escalado', '#4448 urgente sem resposta → coordenação'],
-          ['12:31', 'revisao', 'revisão', '#4474 aguardando aprovação humana (62%)'],
-        ].map(([time, tag, label, text]) => (
-          <div key={time + text} className="flex items-start gap-3 border-b border-stroke py-3 last:border-b-0">
-            <span className="w-11 shrink-0 pt-0.5 text-[11px] text-dim">{time}</span>
-            <span
-              className={`rounded-[3px] px-2 py-1 text-[9.5px] font-bold tracking-wide uppercase ${
-                tag === 'roteado'
-                  ? 'bg-[#1d2a45] text-blue'
-                  : tag === 'respondido'
-                    ? 'bg-[#1e3a28] text-green'
-                    : tag === 'escalado'
-                      ? 'bg-[#3a1f1e] text-red'
-                      : 'bg-[#3a2e1c] text-amber'
-              }`}
-            >
-              {label}
-            </span>
-            <span className="text-xs leading-relaxed">{text}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
 const ROUTES = [
   { id: '4482', subject: 'não recebi o reembolso do mês passado', cat: 'financeiro', dest: 'camila reis', conf: '94%', status: 'aplicado', tone: 'high', meta: 'chamado nº 4482 · financeiro', title: 'não recebi o reembolso do mês passado', sub: 'marina costa · cliente com histórico de 7 chamados', signals: ['palavra-chave detectada: "reembolso"', 'cliente com histórico em chamados financeiros'] },
   { id: '4474', subject: 'dúvida sobre cancelamento do plano', cat: 'indefinido', dest: '— revisar —', conf: '62%', status: 'revisão', tone: 'low', meta: 'chamado nº 4474 · classificação incerta', title: 'dúvida sobre cancelamento do plano', sub: 'pedro alves · sem histórico anterior de chamados', signals: ['palavras-chave: "cancelar", "dúvida", "plano"', 'cliente sem chamados anteriores'] },

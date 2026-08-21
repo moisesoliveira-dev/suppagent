@@ -11,7 +11,6 @@ export type ViewId =
   | 'relatorios'
   | 'cadastros'
   | 'iachat'
-  | 'iaagente'
   | 'iaroteamento'
   | 'iarespostas'
   | 'iaconfig'
@@ -51,7 +50,6 @@ export const NAV_GROUPS: NavGroup[] = [
     label: 'agente ia',
     items: [
       { id: 'iachat', label: 'chat com a ia' },
-      { id: 'iaagente', label: 'visão geral' },
       { id: 'iaroteamento', label: 'roteamento' },
       { id: 'iarespostas', label: 'respostas automáticas' },
       { id: 'iaconfig', label: 'configuração da ia' },
