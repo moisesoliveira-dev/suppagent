@@ -10,7 +10,7 @@ export type ShellNavState = {
 }
 
 let state: ShellNavState = {
-  view: 'chamados',
+  view: 'painel',
   chatTicketId: null,
   chatDraft: '',
   ticketFocusId: null,

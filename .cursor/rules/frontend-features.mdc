@@ -11,6 +11,7 @@ Telas em `apps/frontend/src/features/<feature>/`. Shell compartilhado em `featur
 Chamados (`features/tickets/`): dados só via API (`VITE_API_URL`). Abrir / responder / assumir / transferir / aguardar / encerrar. Sem mock.
 Usuários (`features/users/`): cadastro em Cadastros → usuários, perfis `usuario` | `tecnico` (técnico exige `handle` de agente).
 Equipe (`features/team/`): visão operacional dos técnicos + carga de chamados (API); cadastro continua em Cadastros → usuários.
+Painel (`features/dashboard/`): KPIs e gráficos ao vivo via `GET /reports/summary`.
 Relatórios (`features/reports/`): resumo ao vivo via `GET /reports/summary` (chamados + base); sem agendamento ainda.
 Notificações (`features/notifications/`): sino no topbar + preferências em Configurações → notificações; sem aba em Cadastros (evento por agente).
 Auth (`features/auth/`): login com `VITE_APP_ENV=dev|prod` (em dev, Entrar passa sem credenciais) e `VITE_AUTH_REQUIRED` para o gate. Sem OAuth/Google.
