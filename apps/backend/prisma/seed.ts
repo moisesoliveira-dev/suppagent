@@ -727,6 +727,45 @@ async function main() {
         },
       });
     }
+
+    await prisma.aiChatSession.upsert({
+      where: { id: 'seed-ai-chat-1' },
+      update: {},
+      create: {
+        id: 'seed-ai-chat-1',
+        title: 'chamados urgentes abertos',
+        ownerHandle: 'c.reis',
+        createdAt: new Date('2026-08-20T10:00:00'),
+        updatedAt: new Date('2026-08-20T10:05:00'),
+        messages: {
+          create: [
+            {
+              id: 'seed-ai-msg-1',
+              role: 'ASSISTANT',
+              content:
+                'Olá! Posso responder perguntas sobre chamados, clientes, SLA e o funcionamento geral do sistema.',
+              createdAt: new Date('2026-08-20T10:00:00'),
+              updatedAt: new Date('2026-08-20T10:00:00'),
+            },
+            {
+              id: 'seed-ai-msg-2',
+              role: 'USER',
+              content: 'quantos chamados urgentes estão em aberto agora?',
+              createdAt: new Date('2026-08-20T10:01:00'),
+              updatedAt: new Date('2026-08-20T10:01:00'),
+            },
+            {
+              id: 'seed-ai-msg-3',
+              role: 'ASSISTANT',
+              content:
+                'Há <b>6 chamados urgentes</b> em aberto agora. Três deles (#4471, #4448 e #4441) já estão vencidos ou muito próximos do prazo.',
+              createdAt: new Date('2026-08-20T10:01:01'),
+              updatedAt: new Date('2026-08-20T10:01:01'),
+            },
+          ],
+        },
+      },
+    });
   } finally {
     await prisma.$disconnect();
   }

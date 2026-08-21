@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { resolve } from 'node:path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AiChatModule } from './modules/ai-chat/ai-chat.module';
 import { AutomationsModule } from './modules/automations/automations.module';
 import { CannedResponsesModule } from './modules/canned-responses/canned-responses.module';
 import { HealthModule } from './modules/health/health.module';
@@ -35,6 +36,7 @@ import { UsersModule } from './modules/users/users.module';
     SlaModule,
     CannedResponsesModule,
     RoutingModule,
+    AiChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

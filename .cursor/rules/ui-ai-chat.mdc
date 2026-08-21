@@ -6,11 +6,13 @@ alwaysApply: false
 
 # Chat com a IA — layout
 
-- **Coluna principal**: estilo ChatGPT — faixa central `max-w-[48rem]`, mensagens em prosa (assistente com avatar), bolha do usuário à direita, composer arredondado no rodapé com atalhos acima.
+- **Sidebar esquerda**: lista de sessões (nova conversa, selecionar, renomear, excluir) — padrão ChatGPT.
+- **Coluna principal**: faixa central `max-w-[48rem]`, mensagens em prosa (assistente com avatar), bolha do usuário à direita, composer arredondado no rodapé com atalhos acima.
 - **Painel direito**: manter “domínio conectado” / fontes consultadas (não remover ao redesenhar o chat).
+- Sessões e mensagens via API ` /ai-chat/sessions` (não mock local).
 - Tokens do Balcão (`amber`, `tile`, `stroke`, `bg`) — não copiar paleta roxa do ChatGPT.
 
 ```
-✅ main = conversa centralizada + composer pill; aside = fontes
-❌ chat messenger com bolhas dos dois lados e sem coluna central
+✅ sidebar sessões + main conversa + aside fontes
+❌ só uma conversa em memória sem histórico de sessões
 ```

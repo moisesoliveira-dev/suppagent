@@ -153,6 +153,18 @@ API de roteamento ia (agente ia → roteamento; Cadastros → roteamento ia):
 | `GET` | `/routing/rules` | lista regras (palavras-chave → categoria/agente) |
 | `POST` / `PATCH` / `DELETE` | `/routing/rules` | CRUD de regras |
 
+API do chat com a IA (sessões estilo ChatGPT; sem item em Cadastros):
+
+| Método | Rota | Uso |
+|---|---|---|
+| `GET` | `/ai-chat/sessions?agent=` | lista conversas do agente |
+| `POST` | `/ai-chat/sessions?agent=` | cria `{ title? }` (já com boas-vindas) |
+| `GET` | `/ai-chat/sessions/:id?agent=` | detalhe + mensagens |
+| `PATCH` | `/ai-chat/sessions/:id?agent=` | renomeia `{ title }` |
+| `DELETE` | `/ai-chat/sessions/:id?agent=` | exclui |
+| `POST` | `/ai-chat/sessions/:id/messages?agent=` | envia `{ text }` e grava resposta simulada |
+| `GET` | `/ai-chat/starters` | atalhos de pergunta |
+
 Chamados — ações extras:
 
 | Método | Rota | Uso |
