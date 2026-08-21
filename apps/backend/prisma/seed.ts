@@ -583,6 +583,48 @@ async function main() {
         },
       });
     }
+
+    const slaPolicies = [
+      {
+        id: 'seed-sla-urgent',
+        priority: 'URGENT' as const,
+        responseMinutes: 15,
+        resolutionMinutes: 240,
+      },
+      {
+        id: 'seed-sla-high',
+        priority: 'HIGH' as const,
+        responseMinutes: 30,
+        resolutionMinutes: 480,
+      },
+      {
+        id: 'seed-sla-medium',
+        priority: 'MEDIUM' as const,
+        responseMinutes: 120,
+        resolutionMinutes: 1440,
+      },
+      {
+        id: 'seed-sla-low',
+        priority: 'LOW' as const,
+        responseMinutes: 480,
+        resolutionMinutes: 4320,
+      },
+    ];
+
+    for (const policy of slaPolicies) {
+      await prisma.slaPolicy.upsert({
+        where: { priority: policy.priority },
+        update: {
+          responseMinutes: policy.responseMinutes,
+          resolutionMinutes: policy.resolutionMinutes,
+        },
+        create: {
+          ...policy,
+          createdAt: new Date('2026-06-01T10:00:00'),
+          updatedAt: new Date('2026-06-01T10:00:00'),
+        },
+      });
+    }
   } finally {
     await prisma.$disconnect();
   }

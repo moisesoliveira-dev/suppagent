@@ -8,6 +8,7 @@ import { HealthModule } from './modules/health/health.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { ReportsModule } from './modules/reports/reports.module';
+import { SlaModule } from './modules/sla/sla.module';
 import { TeamChatModule } from './modules/team-chat/team-chat.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { UsersModule } from './modules/users/users.module';
@@ -29,6 +30,7 @@ import { UsersModule } from './modules/users/users.module';
     TeamChatModule,
     ReportsModule,
     AutomationsModule,
+    SlaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -11,6 +11,7 @@ import {
   StubBar,
 } from '../../shared/ui/chrome'
 import { AutomationsCatalogPanel } from '../automations/AutomationsCatalogPanel'
+import { SlaPoliciesCatalogPanel } from '../sla/SlaPoliciesCatalogPanel'
 import { UsersCatalogPanel } from '../users/UsersCatalogPanel'
 import { TeamChatsCatalogPanel } from '../chat/TeamChatsCatalogPanel'
 import { NotificationsSettingsPanel } from '../notifications/NotificationsSettingsPanel'
@@ -193,6 +194,7 @@ export function CatalogView() {
         if (id === 'usuarios') return <UsersCatalogPanel />
         if (id === 'chats-equipe') return <TeamChatsCatalogPanel />
         if (id === 'automacoes') return <AutomationsCatalogPanel />
+        if (id === 'prioridades') return <SlaPoliciesCatalogPanel />
 
         const data: Record<string, { title: string; sub: string; rows: { name: string; meta: string }[] }> = {
           setores: {
@@ -223,16 +225,6 @@ export function CatalogView() {
               { name: 'chat do site', meta: 'widget embutido · ativo' },
               { name: 'whatsapp', meta: '(11) 4000-1234 · ativo' },
               { name: 'telefone', meta: '0800 123 4567 · inativo' },
-            ],
-          },
-          prioridades: {
-            title: 'prioridades',
-            sub: 'níveis de urgência usados para classificar chamados',
-            rows: [
-              { name: 'urgente', meta: 'sla: resposta 15min · resolução 4h' },
-              { name: 'alta', meta: 'sla: resposta 30min · resolução 8h' },
-              { name: 'média', meta: 'sla: resposta 2h · resolução 24h' },
-              { name: 'baixa', meta: 'sla: resposta 8h · resolução 72h' },
             ],
           },
           motivos: {

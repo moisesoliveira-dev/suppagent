@@ -124,6 +124,14 @@ API de automações (gestão → automações; Cadastros → automações):
 
 O motor de gatilhos em tempo real ainda não dispara ações sozinho — a aba gerencia regras e contadores.
 
+API de SLA (gestão → sla; Cadastros → prioridades):
+
+| Método | Rota | Uso |
+|---|---|---|
+| `GET` | `/sla/board` | políticas com % cumprimento + chamados abertos e relógios |
+| `GET` | `/sla/policies` | lista metas por prioridade |
+| `PATCH` | `/sla/policies/:priority` | `{ responseMinutes, resolutionMinutes }` (`urgente`/`urgent`, …) |
+
 Chamados — ações extras:
 
 | Método | Rota | Uso |

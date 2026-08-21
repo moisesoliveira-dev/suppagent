@@ -4,7 +4,7 @@ import { UserChatView } from '../chat/UserChatView'
 import { CannedView } from '../inbox/InboxViews'
 import { KnowledgeView } from '../knowledge/KnowledgeView'
 import { AutomationsView } from '../automations/AutomationsView'
-import { SlaView } from '../ops/OpsViews'
+import { SlaView } from '../sla/SlaView'
 import { ReportsView } from '../reports/ReportsView'
 import { TeamView } from '../team/TeamView'
 import {
