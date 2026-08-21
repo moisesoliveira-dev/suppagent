@@ -15,8 +15,11 @@ apps/backend     NestJS (hexagonal / features em src/modules)
 apps/frontend    Vite + React + Tailwind — painel Balcão (features/)
 
 packages/        shared kernel (quando existir)
+docs/            referências (ex.: mapa UML do modelo de dados)
 compose.yaml     postgres + backend + frontend
 ```
+
+Modelo de dados e domínio para diagrama UML: [`docs/uml-modelo-dados.md`](docs/uml-modelo-dados.md).
 
 Instalação e scripts **sempre na raiz**. Não rode `npm install` dentro de `apps/`.
 
