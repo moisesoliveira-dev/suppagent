@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   getShellNav,
   navigateTo,
@@ -8,6 +8,7 @@ import {
   consumeTicketFocus,
   openKnowledgeFocus,
   consumeKnowledgeFocus,
+  parseViewFromHash,
   resetShellNav,
 } from '../shell/shell-nav'
 
@@ -41,5 +42,25 @@ describe('shell-nav', () => {
   it('navega entre abas', () => {
     navigateTo('painel')
     expect(getShellNav().view).toBe('painel')
+  })
+
+  it('lê aba válida do hash da url', () => {
+    expect(parseViewFromHash('#automacoes')).toBe('automacoes')
+    expect(parseViewFromHash('#/equipe')).toBe('equipe')
+    expect(parseViewFromHash('#inexistente')).toBeNull()
+    expect(parseViewFromHash('')).toBeNull()
+  })
+
+  it('grava a aba no hash ao navegar', () => {
+    const replaceState = vi.fn()
+    vi.stubGlobal('window', {
+      location: { hash: '', pathname: '/', search: '' },
+      history: { replaceState },
+      addEventListener: vi.fn(),
+    })
+    navigateTo('relatorios')
+    expect(getShellNav().view).toBe('relatorios')
+    expect(replaceState).toHaveBeenCalledWith(null, '', '/#relatorios')
+    vi.unstubAllGlobals()
   })
 })

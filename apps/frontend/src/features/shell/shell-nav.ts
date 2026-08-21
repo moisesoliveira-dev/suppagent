@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import type { ViewId } from './nav'
+import { NAV_GROUPS } from './nav'
 
 export type ShellNavState = {
   view: ViewId
@@ -9,8 +10,30 @@ export type ShellNavState = {
   knowledgeFocusId: string | null
 }
 
+const VALID_VIEWS = new Set<ViewId>(
+  NAV_GROUPS.flatMap((group) => group.items.map((item) => item.id)),
+)
+
+export function parseViewFromHash(hash: string): ViewId | null {
+  const raw = hash.replace(/^#\/?/, '').split(/[?/]/)[0]?.trim() ?? ''
+  if (!raw) return null
+  return VALID_VIEWS.has(raw as ViewId) ? (raw as ViewId) : null
+}
+
+function readViewFromLocation(): ViewId {
+  if (typeof window === 'undefined') return 'painel'
+  return parseViewFromHash(window.location.hash) ?? 'painel'
+}
+
+function writeViewToLocation(view: ViewId) {
+  if (typeof window === 'undefined') return
+  const next = `#${view}`
+  if (window.location.hash === next) return
+  window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}${next}`)
+}
+
 let state: ShellNavState = {
-  view: 'painel',
+  view: readViewFromLocation(),
   chatTicketId: null,
   chatDraft: '',
   ticketFocusId: null,
@@ -25,6 +48,7 @@ function emit() {
 
 function setState(patch: Partial<ShellNavState>) {
   state = { ...state, ...patch }
+  if (patch.view !== undefined) writeViewToLocation(state.view)
   emit()
 }
 
@@ -89,14 +113,26 @@ export function consumeKnowledgeFocus(): string | null {
   return id
 }
 
+function onHashChange() {
+  const view = readViewFromLocation()
+  if (view === state.view) return
+  state = { ...state, view }
+  emit()
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('hashchange', onHashChange)
+}
+
 /** só para testes */
-export function resetShellNav() {
+export function resetShellNav(view: ViewId = 'painel') {
   state = {
-    view: 'painel',
+    view,
     chatTicketId: null,
     chatDraft: '',
     ticketFocusId: null,
     knowledgeFocusId: null,
   }
+  writeViewToLocation(view)
   emit()
 }
