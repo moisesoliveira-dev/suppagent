@@ -688,6 +688,45 @@ async function main() {
         },
       });
     }
+
+    const routingRules = [
+      {
+        id: 'seed-route-fin',
+        name: 'financeiro / reembolso',
+        keywords: ['reembolso', 'cobrança', 'pagamento', 'fatura'],
+        category: 'financeiro',
+        agentHandle: 'c.reis',
+        enabled: true,
+      },
+      {
+        id: 'seed-route-acesso',
+        name: 'acesso / login',
+        keywords: ['login', 'senha', 'acesso', 'erro'],
+        category: 'acesso',
+        agentHandle: 'b.alves',
+        enabled: true,
+      },
+      {
+        id: 'seed-route-cancel',
+        name: 'cancelamento (revisão)',
+        keywords: ['cancelar', 'cancelamento', 'plano'],
+        category: 'indefinido',
+        agentHandle: null as string | null,
+        enabled: true,
+      },
+    ];
+
+    for (const rule of routingRules) {
+      await prisma.routingRule.upsert({
+        where: { id: rule.id },
+        update: {},
+        create: {
+          ...rule,
+          createdAt: new Date('2026-07-01T10:00:00'),
+          updatedAt: new Date('2026-07-01T10:00:00'),
+        },
+      });
+    }
   } finally {
     await prisma.$disconnect();
   }

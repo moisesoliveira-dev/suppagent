@@ -12,6 +12,7 @@ import {
 } from '../../shared/ui/chrome'
 import { AutomationsCatalogPanel } from '../automations/AutomationsCatalogPanel'
 import { CannedCatalogPanel } from '../canned/CannedCatalogPanel'
+import { RoutingRulesCatalogPanel } from '../routing/RoutingRulesCatalogPanel'
 import { SlaPoliciesCatalogPanel } from '../sla/SlaPoliciesCatalogPanel'
 import { UsersCatalogPanel } from '../users/UsersCatalogPanel'
 import { TeamChatsCatalogPanel } from '../chat/TeamChatsCatalogPanel'
@@ -185,6 +186,7 @@ export function CatalogView() {
         { id: 'chats-equipe', label: 'bate-papos da equipe' },
         { id: 'automacoes', label: 'automações' },
         { id: 'respostas-prontas', label: 'respostas prontas' },
+        { id: 'roteamento', label: 'roteamento ia' },
         { id: 'setores', label: 'setores' },
         { id: 'cargos', label: 'cargos' },
         { id: 'canais', label: 'canais de atendimento' },
@@ -198,6 +200,7 @@ export function CatalogView() {
         if (id === 'automacoes') return <AutomationsCatalogPanel />
         if (id === 'prioridades') return <SlaPoliciesCatalogPanel />
         if (id === 'respostas-prontas') return <CannedCatalogPanel />
+        if (id === 'roteamento') return <RoutingRulesCatalogPanel />
 
         const data: Record<string, { title: string; sub: string; rows: { name: string; meta: string }[] }> = {
           setores: {
@@ -365,95 +368,6 @@ export function AiChatView() {
           </div>
         ))}
       </aside>
-    </div>
-  )
-}
-
-const ROUTES = [
-  { id: '4482', subject: 'não recebi o reembolso do mês passado', cat: 'financeiro', dest: 'camila reis', conf: '94%', status: 'aplicado', tone: 'high', meta: 'chamado nº 4482 · financeiro', title: 'não recebi o reembolso do mês passado', sub: 'marina costa · cliente com histórico de 7 chamados', signals: ['palavra-chave detectada: "reembolso"', 'cliente com histórico em chamados financeiros'] },
-  { id: '4474', subject: 'dúvida sobre cancelamento do plano', cat: 'indefinido', dest: '— revisar —', conf: '62%', status: 'revisão', tone: 'low', meta: 'chamado nº 4474 · classificação incerta', title: 'dúvida sobre cancelamento do plano', sub: 'pedro alves · sem histórico anterior de chamados', signals: ['palavras-chave: "cancelar", "dúvida", "plano"', 'cliente sem chamados anteriores'] },
-  { id: '4481', subject: 'erro ao fazer login pelo aplicativo', cat: 'acesso', dest: 'bruno alves', conf: '88%', status: 'aplicado', tone: 'high', meta: 'chamado nº 4481 · acesso', title: 'erro ao fazer login pelo aplicativo', sub: 'rafael nunes · 2 chamados', signals: ['palavras-chave: "login", "erro"', 'chamado semelhante resolvido por bruno'] },
-]
-
-export function AiRoutingView() {
-  const [selectedId, setSelectedId] = useState('4474')
-  const [wave, setWave] = useState(0)
-  const selected = ROUTES.find((row) => row.id === selectedId) ?? ROUTES[1]
-
-  return (
-    <div className="flex min-h-0 flex-1">
-      <div className="min-w-0 flex-1 overflow-y-auto px-6 py-4">
-        <div className="mb-2 grid grid-cols-[70px_1fr_110px_130px_90px_110px] px-2.5 text-[10px] tracking-widest text-dim uppercase">
-          <span>ticket</span>
-          <span>assunto</span>
-          <span>categoria (ia)</span>
-          <span>destino sugerido</span>
-          <span>confiança</span>
-          <span>status</span>
-        </div>
-        <div className="flex flex-col gap-1.5" key={wave}>
-          {ROUTES.map((row, index) => {
-            const selectedRow = row.id === selectedId
-            const delay = Math.min(index, 30) * 45
-            const confColor = row.tone === 'high' ? 'text-green' : row.tone === 'low' ? 'text-red' : 'text-amber'
-            return (
-              <button
-                key={row.id}
-                type="button"
-                onClick={() => {
-                  setSelectedId(row.id)
-                  setWave((value) => value + 1)
-                }}
-                className="grid w-full grid-cols-[70px_1fr_110px_130px_90px_110px] gap-1.5 text-left [perspective:700px]"
-              >
-                <FlapCell delayMs={delay} selected={selectedRow}>
-                  #{row.id}
-                </FlapCell>
-                <FlapCell delayMs={delay} selected={selectedRow} className="font-normal normal-case">
-                  {row.subject}
-                </FlapCell>
-                <FlapCell delayMs={delay} selected={selectedRow} className="font-normal text-dim">
-                  {row.cat}
-                </FlapCell>
-                <FlapCell delayMs={delay} selected={selectedRow} className="font-normal">
-                  {row.dest}
-                </FlapCell>
-                <FlapCell delayMs={delay} selected={selectedRow} className={confColor}>
-                  {row.conf}
-                </FlapCell>
-                <FlapCell delayMs={delay} selected={selectedRow} className={row.status === 'aplicado' ? 'text-green' : 'text-amber'}>
-                  {row.status}
-                </FlapCell>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-      <DetailPanel>
-        <PassLabel>{selected.meta}</PassLabel>
-        <PassTitle>{selected.title}</PassTitle>
-        <PassSub>{selected.sub}</PassSub>
-        <StubBar />
-        <div className="mb-4">
-          <div className="mb-1 flex justify-between text-[10px] text-dim">
-            <span>confiança da classificação</span>
-            <span>{selected.conf}</span>
-          </div>
-          <div className="h-2 overflow-hidden rounded-[3px] bg-board">
-            <div className={`h-full ${selected.tone === 'high' ? 'bg-green' : selected.tone === 'low' ? 'bg-red' : 'bg-amber'}`} style={{ width: selected.conf }} />
-          </div>
-        </div>
-        {selected.signals.map((signal) => (
-          <div key={signal} className="flex gap-2 border-b border-stroke py-1.5 text-xs">
-            <span className="text-amber">·</span>
-            {signal}
-          </div>
-        ))}
-        <ActionBar>
-          <ActionButton primary>aplicar roteamento</ActionButton>
-          <ActionButton>revisar</ActionButton>
-        </ActionBar>
-      </DetailPanel>
     </div>
   )
 }

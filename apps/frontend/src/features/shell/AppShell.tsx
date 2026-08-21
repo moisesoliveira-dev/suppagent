@@ -3,6 +3,7 @@ import { DashboardView } from '../dashboard/DashboardView'
 import { UserChatView } from '../chat/UserChatView'
 import { CannedView } from '../canned/CannedView'
 import { KnowledgeView } from '../knowledge/KnowledgeView'
+import { AiRoutingView } from '../routing/AiRoutingView'
 import { AutomationsView } from '../automations/AutomationsView'
 import { SlaView } from '../sla/SlaView'
 import { ReportsView } from '../reports/ReportsView'
@@ -11,7 +12,6 @@ import {
   AiChatView,
   AiConfigView,
   AiRepliesView,
-  AiRoutingView,
   CatalogView,
   SettingsView,
 } from '../system/SystemViews'

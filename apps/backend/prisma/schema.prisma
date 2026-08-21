@@ -210,3 +210,18 @@ model CannedResponse {
   @@index([category])
   @@map("canned_responses")
 }
+
+model RoutingRule {
+  id          String   @id @default(uuid())
+  name        String
+  keywords    String[]
+  category    String
+  agentHandle String?
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([enabled])
+  @@index([category])
+  @@map("routing_rules")
+}

@@ -143,6 +143,16 @@ API de respostas prontas (atendimento → respostas prontas; Cadastros → respo
 | `POST` | `/canned-responses/:id/duplicate` | duplica modelo |
 | `DELETE` | `/canned-responses/:id` | remove |
 
+API de roteamento ia (agente ia → roteamento; Cadastros → roteamento ia):
+
+| Método | Rota | Uso |
+|---|---|---|
+| `GET` | `/routing/board` | chamados abertos + sugestão (categoria, agente, confiança, sinais) |
+| `POST` | `/routing/board/:ticketId/apply` | aplica categoria + atribui agente |
+| `POST` | `/routing/board/:ticketId/review` | desatribui e marca revisão humana |
+| `GET` | `/routing/rules` | lista regras (palavras-chave → categoria/agente) |
+| `POST` / `PATCH` / `DELETE` | `/routing/rules` | CRUD de regras |
+
 Chamados — ações extras:
 
 | Método | Rota | Uso |
