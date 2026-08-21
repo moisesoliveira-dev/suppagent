@@ -8,8 +8,8 @@ import { AutomationsView } from '../automations/AutomationsView'
 import { SlaView } from '../sla/SlaView'
 import { ReportsView } from '../reports/ReportsView'
 import { TeamView } from '../team/TeamView'
+import { AiChatView } from '../ai-chat/AiChatView'
 import {
-  AiChatView,
   AiConfigView,
   AiRepliesView,
   CatalogView,

@@ -1,0 +1,16 @@
+---
+description: Layout do chat com a IA (estilo ChatGPT + painel de fontes)
+globs: apps/frontend/src/features/ai-chat/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Chat com a IA — layout
+
+- **Coluna principal**: estilo ChatGPT — faixa central `max-w-[48rem]`, mensagens em prosa (assistente com avatar), bolha do usuário à direita, composer arredondado no rodapé com atalhos acima.
+- **Painel direito**: manter “domínio conectado” / fontes consultadas (não remover ao redesenhar o chat).
+- Tokens do Balcão (`amber`, `tile`, `stroke`, `bg`) — não copiar paleta roxa do ChatGPT.
+
+```
+✅ main = conversa centralizada + composer pill; aside = fontes
+❌ chat messenger com bolhas dos dois lados e sem coluna central
+```

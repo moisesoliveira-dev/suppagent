@@ -16,6 +16,7 @@ Relatórios (`features/reports/`): resumo ao vivo via `GET /reports/summary` (ch
 Notificações (`features/notifications/`): sino no topbar + preferências em Configurações → notificações; sem aba em Cadastros (evento por agente).
 Shell (`features/shell/`): sidemenu com hierarquia clara — **grupo** = seção (rótulo pequeno, só colapsa); **item** = aba (trilho + destaque ativo).
 Auth (`features/auth/`): login com `VITE_APP_ENV=dev|prod` (em dev, Entrar passa sem credenciais) e `VITE_AUTH_REQUIRED` para o gate. Sem OAuth/Google.
+Chat com a IA (`features/ai-chat/`): layout tipo ChatGPT na coluna principal + painel direito de fontes (ver `ui-ai-chat.mdc`).
 Base de conhecimento (`features/knowledge/`): artigos via API; criar a partir do chat só com chamado encerrado.
 Bate-papos da equipe (`features/chat/` + Cadastros): canais gerenciáveis em Cadastros → bate-papos da equipe.
 Ao pedir feature/aba nova: seguir `.cursor/rules/cadastros-catalog.mdc` (avaliar se falta item em Cadastros).
