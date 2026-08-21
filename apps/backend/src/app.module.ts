@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AiChatModule } from './modules/ai-chat/ai-chat.module';
 import { AutomationsModule } from './modules/automations/automations.module';
 import { CannedResponsesModule } from './modules/canned-responses/canned-responses.module';
+import { ClientsModule } from './modules/clients/clients.module';
 import { HealthModule } from './modules/health/health.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
@@ -35,6 +36,7 @@ import { UsersModule } from './modules/users/users.module';
     AutomationsModule,
     SlaModule,
     CannedResponsesModule,
+    ClientsModule,
     RoutingModule,
     AiChatModule,
   ],

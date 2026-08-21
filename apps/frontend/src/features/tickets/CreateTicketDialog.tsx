@@ -6,7 +6,7 @@ import {
   TICKET_PRIORITIES,
   type TicketPriority,
 } from './tickets'
-import { notifyTicketsChanged, onOpenCreateTicket } from './tickets-ui'
+import { notifyTicketsChanged, onOpenCreateTicket, consumeCreateTicketPrefill } from './tickets-ui'
 
 const inputClass =
   'w-full rounded-[3px] border border-stroke bg-board px-3 py-2 text-[12.5px] text-ink'
@@ -21,7 +21,16 @@ export function CreateTicketDialog() {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
 
-  useEffect(() => onOpenCreateTicket(() => setOpen(true)), [])
+  useEffect(
+    () =>
+      onOpenCreateTicket(() => {
+        const prefill = consumeCreateTicketPrefill()
+        if (prefill?.requester) setRequester(prefill.requester)
+        if (prefill?.email) setEmail(prefill.email)
+        setOpen(true)
+      }),
+    [],
+  )
 
   function reset() {
     setSubject('')

@@ -95,6 +95,16 @@ Perfis por enquanto: **usuário** (normal) e **técnico** (com identificador de 
 
 Aba **equipe** (frontend): lista técnicos via `/users?role=tecnico` e carga de chamados via `/tickets?filter=meus&agent=…`. Cadastro de pessoas continua em Cadastros → usuários.
 
+API de clientes (atendimento → clientes; Cadastros → clientes):
+
+| Método | Rota | Uso |
+|---|---|---|
+| `GET` | `/clients` | lista + chamados vinculados (por e-mail do solicitante) |
+| `GET` | `/clients/:id` | detalhe + chamados |
+| `POST` | `/clients` | cria `{ name, email, plan, company?, phone?, tags? }` — plano: `starter`/`pro`/`empresa` |
+| `PATCH` | `/clients/:id` | atualiza campos |
+| `DELETE` | `/clients/:id` | remove |
+
 API de relatórios:
 
 | Método | Rota | Uso |

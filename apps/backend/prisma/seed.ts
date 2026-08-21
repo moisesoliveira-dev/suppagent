@@ -270,6 +270,80 @@ async function main() {
       });
     }
 
+    const clients = [
+      {
+        id: 'seed-client-marina',
+        name: 'marina costa',
+        company: 'vertex corp',
+        plan: 'EMPRESA' as const,
+        email: 'marina.costa@vertexcorp.com',
+        phone: '(11) 98421-0092',
+        tags: ['conta empresa', 'relatórios', 'prioritário'],
+        createdAt: new Date('2023-03-15T10:00:00'),
+      },
+      {
+        id: 'seed-client-rafael',
+        name: 'rafael nunes',
+        company: null as string | null,
+        plan: 'PRO' as const,
+        email: 'rafael.nunes@email.com',
+        phone: '(11) 90000-0000',
+        tags: ['acesso'],
+        createdAt: new Date('2024-06-10T10:00:00'),
+      },
+      {
+        id: 'seed-client-helena',
+        name: 'helena duarte',
+        company: null as string | null,
+        plan: 'STARTER' as const,
+        email: 'helena.duarte@email.com',
+        phone: null as string | null,
+        tags: ['csv'],
+        createdAt: new Date('2025-01-08T10:00:00'),
+      },
+      {
+        id: 'seed-client-joao',
+        name: 'joão pedro lima',
+        company: null as string | null,
+        plan: 'PRO' as const,
+        email: 'joao.lima@email.com',
+        phone: null as string | null,
+        tags: ['financeiro'],
+        createdAt: new Date('2022-10-20T10:00:00'),
+      },
+      {
+        id: 'seed-client-studio',
+        name: 'studio verde design',
+        company: null as string | null,
+        plan: 'EMPRESA' as const,
+        email: 'contato@studioverde.com',
+        phone: null as string | null,
+        tags: ['bug'],
+        createdAt: new Date('2024-02-12T10:00:00'),
+      },
+      {
+        id: 'seed-client-diego',
+        name: 'diego martins',
+        company: null as string | null,
+        plan: 'STARTER' as const,
+        email: 'diego@email.com',
+        phone: null as string | null,
+        tags: [] as string[],
+        createdAt: new Date('2025-05-01T10:00:00'),
+      },
+    ];
+
+    for (const client of clients) {
+      await prisma.client.upsert({
+        where: { id: client.id },
+        update: {},
+        create: {
+          ...client,
+          updatedAt: client.createdAt,
+        },
+      });
+    }
+
     for (const ticket of SEED) {
       const { events, ...data } = ticket;
       await prisma.ticket.upsert({

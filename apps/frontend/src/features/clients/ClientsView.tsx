@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { FlapCell } from '../../shared/ui/FlapCell'
 import {
   ActionBar,
@@ -12,114 +12,100 @@ import {
 } from '../../shared/ui/chrome'
 import { IconButton } from '../../shared/ui/IconButton'
 import { PencilIcon } from '../../shared/ui/icons'
+import { toast } from '../../shared/ui/toast'
+import { openTicketFocus } from '../shell/shell-nav'
+import { openCreateTicketDialog } from '../tickets/tickets-ui'
+import type { Client, ClientPlan } from './clients'
+import { CLIENT_PLAN_OPTIONS } from './clients'
+import { listClients, updateClient } from './clients-api'
+import { notifyClientsChanged, onClientsChanged } from './clients-ui'
 
-const CLIENTS = [
-  {
-    id: 'marina',
-    name: 'marina costa — vertex corp',
-    short: 'marina costa',
-    plan: 'empresa',
-    openLabel: '1 aberto',
-    open: 1,
-    last: '12m atrás',
-    since: 'mar/23',
-    sinceLong: 'desde mar/2023',
-    email: 'marina.costa@vertexcorp.com',
-    phone: '(11) 98421-0092',
-    total: 7,
-    tags: ['conta empresa', 'relatórios', 'prioritário'],
-    tickets: [
-      { label: '#4471 — erro ao gerar relatório', status: 'aberto' },
-      { label: '#4390 — acesso a api', status: 'resolvido' },
-      { label: '#4201 — faturamento', status: 'resolvido' },
-    ],
-  },
-  {
-    id: 'rafael',
-    name: 'rafael nunes',
-    short: 'rafael nunes',
-    plan: 'pro',
-    openLabel: '1 aberto',
-    open: 1,
-    last: '34m atrás',
-    since: 'jun/24',
-    sinceLong: 'desde jun/2024',
-    email: 'rafael.nunes@email.com',
-    phone: '(11) 90000-0000',
-    total: 2,
-    tags: ['acesso'],
-    tickets: [{ label: '#4470 — não consigo acessar o painel', status: 'andamento' }],
-  },
-  {
-    id: 'helena',
-    name: 'helena duarte',
-    short: 'helena duarte',
-    plan: 'starter',
-    openLabel: '1 aberto',
-    open: 1,
-    last: '1h atrás',
-    since: 'jan/25',
-    sinceLong: 'desde jan/2025',
-    email: 'helena.duarte@email.com',
-    phone: '—',
-    total: 1,
-    tags: ['csv'],
-    tickets: [{ label: '#4468 — exportar dados em csv', status: 'aberto' }],
-  },
-  {
-    id: 'joao',
-    name: 'joão pedro lima',
-    short: 'joão pedro lima',
-    plan: 'pro',
-    openLabel: '1 aguardando',
-    open: 1,
-    last: '2h atrás',
-    since: 'out/22',
-    sinceLong: 'desde out/2022',
-    email: 'joao.lima@email.com',
-    phone: '—',
-    total: 3,
-    tags: ['financeiro'],
-    tickets: [{ label: '#4465 — cobrança duplicada — agosto', status: 'aguardando' }],
-  },
-  {
-    id: 'studio',
-    name: 'studio verde design',
-    short: 'studio verde design',
-    plan: 'empresa',
-    openLabel: '1 andamento',
-    open: 1,
-    last: '3h atrás',
-    since: 'fev/24',
-    sinceLong: 'desde fev/2024',
-    email: 'contato@studioverde.com',
-    phone: '—',
-    total: 4,
-    tags: ['bug'],
-    tickets: [{ label: '#4460 — botão de salvar — safari', status: 'andamento' }],
-  },
-  {
-    id: 'diego',
-    name: 'diego martins',
-    short: 'diego martins',
-    plan: 'starter',
-    openLabel: '0 aberto',
-    open: 0,
-    last: '1d atrás',
-    since: 'mai/25',
-    sinceLong: 'desde mai/2025',
-    email: 'diego@email.com',
-    phone: '—',
-    total: 1,
-    tags: [],
-    tickets: [{ label: '#4452 — alterar e-mail de cobrança', status: 'resolvido' }],
-  },
-]
+const inputClass =
+  'w-full rounded-[3px] border border-stroke bg-board px-3 py-2 text-[12.5px] text-ink'
 
 export function ClientsView() {
-  const [selectedId, setSelectedId] = useState('marina')
+  const [items, setItems] = useState<Client[]>([])
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [wave, setWave] = useState(0)
-  const selected = CLIENTS.find((client) => client.id === selectedId) ?? CLIENTS[0]
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [editing, setEditing] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [name, setName] = useState('')
+  const [company, setCompany] = useState('')
+  const [plan, setPlan] = useState<ClientPlan>('starter')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [tagsText, setTagsText] = useState('')
+
+  async function load(preferId?: string | null) {
+    setLoading(true)
+    setError(null)
+    try {
+      const data = await listClients()
+      setItems(data.items)
+      setSelectedId((current) => {
+        const next = preferId ?? current
+        if (next && data.items.some((item) => item.id === next)) return next
+        return data.items[0]?.id ?? null
+      })
+    } catch (err) {
+      setItems([])
+      setSelectedId(null)
+      setError(err instanceof Error ? err.message : 'falha ao carregar clientes')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    void load()
+    return onClientsChanged(() => {
+      void load()
+    })
+  }, [])
+
+  const selected =
+    items.find((client) => client.id === selectedId) ?? items[0] ?? null
+
+  function startEdit() {
+    if (!selected) return
+    setName(selected.name)
+    setCompany(selected.company ?? '')
+    setPlan(selected.plan)
+    setEmail(selected.email)
+    setPhone(selected.phone ?? '')
+    setTagsText(selected.tags.join(', '))
+    setEditing(true)
+  }
+
+  async function onSave(event: FormEvent) {
+    event.preventDefault()
+    if (!selected || busy) return
+    setBusy(true)
+    try {
+      const tags = tagsText
+        .split(/[,;]/)
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+      await updateClient(selected.id, {
+        name,
+        company: company.trim() || null,
+        plan,
+        email,
+        phone: phone.trim() || null,
+        tags,
+      })
+      setEditing(false)
+      await load(selected.id)
+      notifyClientsChanged()
+      toast.success('cliente atualizado')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'falha ao salvar')
+    } finally {
+      setBusy(false)
+    }
+  }
 
   return (
     <div className="flex min-h-0 flex-1">
@@ -131,9 +117,26 @@ export function ClientsView() {
           <span>último contato</span>
           <span className="text-right">desde</span>
         </div>
+
+        {error ? (
+          <div className="mb-3 rounded-[3px] border border-red/40 bg-tile px-3 py-2 text-xs text-red">
+            {error}
+          </div>
+        ) : null}
+
+        {loading ? (
+          <div className="px-2.5 text-xs text-dim">carregando…</div>
+        ) : null}
+
+        {!loading && items.length === 0 ? (
+          <div className="px-2.5 text-xs text-dim">
+            nenhum cliente cadastrado — use Cadastros → clientes
+          </div>
+        ) : null}
+
         <div className="flex flex-col gap-1.5" key={wave}>
-          {CLIENTS.map((client, index) => {
-            const selectedRow = client.id === selectedId
+          {items.map((client, index) => {
+            const selectedRow = client.id === selected?.id
             const delay = Math.min(index, 30) * 45
             return (
               <button
@@ -141,12 +144,13 @@ export function ClientsView() {
                 type="button"
                 onClick={() => {
                   setSelectedId(client.id)
+                  setEditing(false)
                   setWave((value) => value + 1)
                 }}
                 className="grid w-full grid-cols-[1fr_130px_100px_110px_90px] gap-1.5 text-left [perspective:700px]"
               >
                 <FlapCell delayMs={delay} selected={selectedRow}>
-                  {client.name}
+                  {client.displayName}
                 </FlapCell>
                 <FlapCell delayMs={delay} selected={selectedRow} className="font-normal text-dim">
                   {client.plan}
@@ -154,14 +158,19 @@ export function ClientsView() {
                 <FlapCell
                   delayMs={delay}
                   selected={selectedRow}
-                  className={client.open === 0 ? 'text-dim' : 'text-amber'}
+                  className={client.openCount === 0 ? 'text-dim' : 'text-amber'}
                 >
                   {client.openLabel}
                 </FlapCell>
                 <FlapCell delayMs={delay} selected={selectedRow}>
-                  {client.last}
+                  {client.lastContact}
                 </FlapCell>
-                <FlapCell delayMs={delay} selected={selectedRow} align="end" className="font-normal text-dim">
+                <FlapCell
+                  delayMs={delay}
+                  selected={selectedRow}
+                  align="end"
+                  className="font-normal text-dim"
+                >
                   {client.since}
                 </FlapCell>
               </button>
@@ -169,48 +178,179 @@ export function ClientsView() {
           })}
         </div>
       </div>
+
       <DetailPanel>
-        <PassLabel>cliente · plano {selected.plan}</PassLabel>
-        <PassTitle>{selected.short}</PassTitle>
-        <PassSub>
-          {selected.id === 'marina' ? 'vertex corp' : selected.plan} · {selected.sinceLong}
-        </PassSub>
-        <StubBar />
-        <div className="mb-5 grid grid-cols-2 gap-3">
-          <div>
-            <PassLabel>e-mail</PassLabel>
-            <div className="text-[12.5px]">{selected.email}</div>
-          </div>
-          <div>
-            <PassLabel>telefone</PassLabel>
-            <div className="text-[12.5px]">{selected.phone}</div>
-          </div>
-          <div>
-            <PassLabel>chamados abertos</PassLabel>
-            <div className="text-[12.5px] text-amber">{selected.open}</div>
-          </div>
-          <div>
-            <PassLabel>total de chamados</PassLabel>
-            <div className="text-[12.5px]">{selected.total}</div>
-          </div>
-        </div>
-        <div className="mb-4 flex flex-wrap gap-1.5">
-          {selected.tags.map((tag) => (
-            <span key={tag} className="rounded-[3px] border border-stroke bg-tile px-2 py-1 text-[10px] tracking-wide text-dim uppercase">
-              {tag}
-            </span>
-          ))}
-        </div>
-        <div className="mb-2 text-[10.5px] tracking-widest text-dim uppercase">chamados relacionados</div>
-        {selected.tickets.map((ticket) => (
-          <RelTicket key={ticket.label} label={ticket.label} status={ticket.status} />
-        ))}
-        <ActionBar>
-          <ActionButton primary>novo chamado</ActionButton>
-          <IconButton label="editar cliente" tone="accent">
-            <PencilIcon />
-          </IconButton>
-        </ActionBar>
+        {!selected ? (
+          <div className="text-xs text-dim">selecione um cliente</div>
+        ) : editing ? (
+          <form onSubmit={(event) => void onSave(event)}>
+            <PassLabel>editar cliente</PassLabel>
+            <PassTitle>{selected.name}</PassTitle>
+            <label className="mb-3 block">
+              <span className="mb-1.5 block text-[10px] tracking-widest text-dim uppercase">
+                nome
+              </span>
+              <input
+                required
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                className={inputClass}
+                disabled={busy}
+              />
+            </label>
+            <label className="mb-3 block">
+              <span className="mb-1.5 block text-[10px] tracking-widest text-dim uppercase">
+                empresa
+              </span>
+              <input
+                value={company}
+                onChange={(event) => setCompany(event.target.value)}
+                className={inputClass}
+                disabled={busy}
+              />
+            </label>
+            <label className="mb-3 block">
+              <span className="mb-1.5 block text-[10px] tracking-widest text-dim uppercase">
+                plano
+              </span>
+              <select
+                value={plan}
+                onChange={(event) => setPlan(event.target.value as ClientPlan)}
+                className={inputClass}
+                disabled={busy}
+              >
+                {CLIENT_PLAN_OPTIONS.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="mb-3 block">
+              <span className="mb-1.5 block text-[10px] tracking-widest text-dim uppercase">
+                e-mail
+              </span>
+              <input
+                required
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                className={inputClass}
+                disabled={busy}
+              />
+            </label>
+            <label className="mb-3 block">
+              <span className="mb-1.5 block text-[10px] tracking-widest text-dim uppercase">
+                telefone
+              </span>
+              <input
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                className={inputClass}
+                disabled={busy}
+              />
+            </label>
+            <label className="mb-3 block">
+              <span className="mb-1.5 block text-[10px] tracking-widest text-dim uppercase">
+                tags (vírgula)
+              </span>
+              <input
+                value={tagsText}
+                onChange={(event) => setTagsText(event.target.value)}
+                className={inputClass}
+                disabled={busy}
+              />
+            </label>
+            <ActionBar>
+              <button
+                type="submit"
+                disabled={busy}
+                className="flex-1 rounded-[3px] border border-amber bg-amber py-2 text-center text-[10.5px] font-bold tracking-widest text-amber-ink uppercase disabled:opacity-50"
+              >
+                {busy ? 'salvando…' : 'salvar'}
+              </button>
+              <ActionButton
+                onClick={() => {
+                  if (!busy) setEditing(false)
+                }}
+              >
+                cancelar
+              </ActionButton>
+            </ActionBar>
+          </form>
+        ) : (
+          <>
+            <PassLabel>cliente · plano {selected.plan}</PassLabel>
+            <PassTitle>{selected.name}</PassTitle>
+            <PassSub>
+              {selected.company ?? selected.plan} · {selected.sinceLong}
+            </PassSub>
+            <StubBar />
+            <div className="mb-5 grid grid-cols-2 gap-3">
+              <div>
+                <PassLabel>e-mail</PassLabel>
+                <div className="text-[12.5px]">{selected.email}</div>
+              </div>
+              <div>
+                <PassLabel>telefone</PassLabel>
+                <div className="text-[12.5px]">{selected.phone ?? '—'}</div>
+              </div>
+              <div>
+                <PassLabel>chamados abertos</PassLabel>
+                <div className="text-[12.5px] text-amber">{selected.openCount}</div>
+              </div>
+              <div>
+                <PassLabel>total de chamados</PassLabel>
+                <div className="text-[12.5px]">{selected.totalTickets}</div>
+              </div>
+            </div>
+            {selected.tags.length > 0 ? (
+              <div className="mb-4 flex flex-wrap gap-1.5">
+                {selected.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-[3px] border border-stroke bg-tile px-2 py-1 text-[10px] tracking-wide text-dim uppercase"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+            <div className="mb-2 text-[10.5px] tracking-widest text-dim uppercase">
+              chamados relacionados
+            </div>
+            {selected.tickets.length === 0 ? (
+              <div className="mb-3 text-xs text-dim">nenhum chamado vinculado</div>
+            ) : (
+              selected.tickets.map((ticket) => (
+                <button
+                  key={ticket.id}
+                  type="button"
+                  onClick={() => openTicketFocus(ticket.id)}
+                  className="block w-full text-left"
+                >
+                  <RelTicket label={ticket.label} status={ticket.status} />
+                </button>
+              ))
+            )}
+            <ActionBar>
+              <ActionButton
+                primary
+                onClick={() =>
+                  openCreateTicketDialog({
+                    requester: selected.name,
+                    email: selected.email,
+                  })
+                }
+              >
+                novo chamado
+              </ActionButton>
+              <IconButton label="editar cliente" tone="accent" onClick={startEdit}>
+                <PencilIcon />
+              </IconButton>
+            </ActionBar>
+          </>
+        )}
       </DetailPanel>
     </div>
   )

@@ -14,6 +14,7 @@ import { IconButton } from '../../shared/ui/IconButton'
 import { PencilIcon, TrashIcon } from '../../shared/ui/icons'
 import { AutomationsCatalogPanel } from '../automations/AutomationsCatalogPanel'
 import { CannedCatalogPanel } from '../canned/CannedCatalogPanel'
+import { ClientsCatalogPanel } from '../clients/ClientsCatalogPanel'
 import { RoutingRulesCatalogPanel } from '../routing/RoutingRulesCatalogPanel'
 import { SlaPoliciesCatalogPanel } from '../sla/SlaPoliciesCatalogPanel'
 import { UsersCatalogPanel } from '../users/UsersCatalogPanel'
@@ -185,6 +186,7 @@ export function CatalogView() {
     <SettingsShell
       items={[
         { id: 'usuarios', label: 'usuários' },
+        { id: 'clientes', label: 'clientes' },
         { id: 'chats-equipe', label: 'bate-papos da equipe' },
         { id: 'automacoes', label: 'automações' },
         { id: 'respostas-prontas', label: 'respostas prontas' },
@@ -198,6 +200,7 @@ export function CatalogView() {
     >
       {(id) => {
         if (id === 'usuarios') return <UsersCatalogPanel />
+        if (id === 'clientes') return <ClientsCatalogPanel />
         if (id === 'chats-equipe') return <TeamChatsCatalogPanel />
         if (id === 'automacoes') return <AutomationsCatalogPanel />
         if (id === 'prioridades') return <SlaPoliciesCatalogPanel />
