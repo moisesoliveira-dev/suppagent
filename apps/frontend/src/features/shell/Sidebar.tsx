@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
-import { isAuthRequired } from '../auth/auth'
-import { clearSession, useAuthSession } from '../auth/auth-session'
 import { listTickets } from '../tickets/tickets-api'
-import { onTicketsChanged } from '../tickets/tickets-ui'
+import { onTicketsChanged, openCreateTicketDialog } from '../tickets/tickets-ui'
 import { NAV_GROUPS, type ViewId } from './nav'
 
 type SidebarProps = {
@@ -11,7 +9,6 @@ type SidebarProps = {
 }
 
 export function Sidebar({ active, onNavigate }: SidebarProps) {
-  const session = useAuthSession()
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
   const [openCount, setOpenCount] = useState<number | null>(null)
 
@@ -32,11 +29,21 @@ export function Sidebar({ active, onNavigate }: SidebarProps) {
 
   return (
     <aside className="flex h-full min-h-0 w-[220px] shrink-0 flex-col border-r border-stroke bg-panel py-5">
-      <div className="mb-4 flex shrink-0 items-center gap-2.5 border-b border-stroke px-[18px] pb-[18px]">
+      <div className="mb-3 flex shrink-0 items-center gap-2.5 border-b border-stroke px-[18px] pb-3.5">
         <div className="flex h-7 w-7 items-center justify-center rounded-[3px] bg-amber text-[13px] font-bold text-amber-ink">
           #
         </div>
         <div className="text-sm font-bold tracking-wider uppercase">Balcão</div>
+      </div>
+
+      <div className="shrink-0 px-3 pb-3">
+        <button
+          type="button"
+          onClick={() => openCreateTicketDialog()}
+          className="w-full rounded-[3px] bg-amber px-3 py-2.5 text-[11px] font-bold tracking-wide text-amber-ink uppercase hover:brightness-110 active:scale-[0.98]"
+        >
+          abrir chamado
+        </button>
       </div>
 
       <nav className="min-h-0 flex-1 overflow-y-auto px-3" aria-label="menu principal">
@@ -136,42 +143,6 @@ export function Sidebar({ active, onNavigate }: SidebarProps) {
           )
         })}
       </nav>
-
-      <div className="mt-auto shrink-0 border-t border-stroke px-[18px] pt-3.5">
-        <div className="flex items-center gap-2 pt-3.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-[3px] border border-stroke bg-tile text-[11px] font-bold text-amber">
-            {session?.kind === 'authenticated'
-              ? session.user.name
-                  .split(/\s+/)
-                  .filter(Boolean)
-                  .slice(0, 2)
-                  .map((part) => part[0]?.toUpperCase() ?? '')
-                  .join('') || '?'
-              : 'CR'}
-          </div>
-          <div className="min-w-0">
-            <div className="truncate text-[11.5px] font-bold">
-              {session?.kind === 'authenticated'
-                ? session.user.name
-                : 'camila reis'}
-            </div>
-            <div className="truncate text-[10px] text-dim">
-              {session?.kind === 'authenticated'
-                ? session.user.email
-                : 'c.reis · técnica'}
-            </div>
-          </div>
-        </div>
-        {isAuthRequired() ? (
-          <button
-            type="button"
-            onClick={() => clearSession()}
-            className="mt-3 w-full rounded-[3px] border border-stroke px-2.5 py-2 text-[10.5px] tracking-wide text-dim uppercase hover:border-amber hover:text-amber"
-          >
-            sair
-          </button>
-        ) : null}
-      </div>
     </aside>
   )
 }

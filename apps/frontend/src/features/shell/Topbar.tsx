@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { listTickets } from '../tickets/tickets-api'
 import { EMPTY_COUNTS, type TicketCounts } from '../tickets/tickets'
-import { onTicketsChanged, openCreateTicketDialog } from '../tickets/tickets-ui'
+import { onTicketsChanged } from '../tickets/tickets-ui'
 import { NotificationsBell } from '../notifications/NotificationsBell'
 import { notifyNotificationsChanged } from '../notifications/notifications-ui'
+import { UserProfileMenu } from '../auth/UserProfileMenu'
 
 export function Topbar() {
   const [counts, setCounts] = useState<TicketCounts>(EMPTY_COUNTS)
@@ -42,13 +43,7 @@ export function Topbar() {
         <span className="text-[10.5px] tracking-wide text-dim uppercase">livres</span>
       </div>
       <NotificationsBell />
-      <button
-        type="button"
-        onClick={() => openCreateTicketDialog()}
-        className="ml-auto rounded-[3px] bg-amber px-4 py-2 text-[11.5px] font-bold tracking-wide text-amber-ink uppercase hover:brightness-110 active:scale-[0.98]"
-      >
-        abrir chamado
-      </button>
+      <UserProfileMenu />
     </header>
   )
 }
