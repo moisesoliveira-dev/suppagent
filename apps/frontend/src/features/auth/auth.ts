@@ -110,4 +110,23 @@ export function isAuthRequired(): boolean {
   return import.meta.env.VITE_AUTH_REQUIRED !== 'false'
 }
 
+/**
+ * Ambiente da aplicação: `VITE_APP_ENV=dev|prod`.
+ * Fallback: `import.meta.env.DEV` → dev, senão prod.
+ */
+export type AppEnv = 'dev' | 'prod'
+
+export function getAppEnv(): AppEnv {
+  const raw = String(import.meta.env.VITE_APP_ENV ?? '')
+    .trim()
+    .toLowerCase()
+  if (raw === 'dev' || raw === 'development') return 'dev'
+  if (raw === 'prod' || raw === 'production') return 'prod'
+  return import.meta.env.DEV ? 'dev' : 'prod'
+}
+
+export function isDevAppEnv(): boolean {
+  return getAppEnv() === 'dev'
+}
+
 export const REMEMBER_EMAIL_KEY = 'balcao.remember.email'

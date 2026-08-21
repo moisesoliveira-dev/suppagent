@@ -30,12 +30,7 @@ function persist(next: Session | null) {
     localStorage.removeItem(SESSION_KEY)
     return
   }
-  if (next.kind === 'authenticated') {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(next))
-    return
-  }
-  // anonymous: só em memória (não “grudar” bypass)
-  localStorage.removeItem(SESSION_KEY)
+  localStorage.setItem(SESSION_KEY, JSON.stringify(next))
 }
 
 export function getSession(): Session | null {

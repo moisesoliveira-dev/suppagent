@@ -4,6 +4,7 @@ import { signIn } from './auth-api'
 import {
   REMEMBER_EMAIL_KEY,
   hasFieldErrors,
+  isDevAppEnv,
   mapAuthError,
   validateLoginInput,
   type FieldErrors,
@@ -130,10 +131,24 @@ export function LoginView() {
     event.preventDefault()
     if (loading) return
 
-    const nextErrors = validateLoginInput({ email, password })
-    setFieldErrors(nextErrors)
+    setFieldErrors({})
     setFormError(null)
     setAuthUnavailable(false)
+
+    // Em dev: Entrar libera o painel sem e-mail/senha
+    if (isDevAppEnv()) {
+      setLoading(true)
+      try {
+        enterAnonymousSession()
+        toast.success('entrada em modo desenvolvimento')
+      } finally {
+        setLoading(false)
+      }
+      return
+    }
+
+    const nextErrors = validateLoginInput({ email, password })
+    setFieldErrors(nextErrors)
     if (hasFieldErrors(nextErrors)) return
 
     setLoading(true)
@@ -185,8 +200,15 @@ export function LoginView() {
               Bem-vindo de volta!
             </h1>
             <p className="max-w-[28ch] text-[12.5px] leading-relaxed text-dim">
-              Entre na sua conta para continuar.
+              {isDevAppEnv()
+                ? 'Ambiente de desenvolvimento — clique em Entrar para acessar o painel.'
+                : 'Entre na sua conta para continuar.'}
             </p>
+            {isDevAppEnv() ? (
+              <span className="mt-3 rounded-[3px] border border-amber/40 px-2 py-1 text-[10px] tracking-widest text-amber uppercase">
+                modo dev
+              </span>
+            ) : null}
           </div>
 
           <form className="flex flex-col gap-4" onSubmit={onSubmit} noValidate>

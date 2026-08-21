@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
+  getAppEnv,
   hasFieldErrors,
+  isDevAppEnv,
   mapAuthError,
   validateLoginInput,
 } from './auth'
@@ -24,5 +26,10 @@ describe('auth helpers', () => {
     expect(mapAuthError(new Error('404 Not Found'))).toMatch(/ainda não está disponível/i)
     expect(mapAuthError(new Error('Failed to fetch'))).toMatch(/conectar/i)
     expect(mapAuthError(new Error('erro HTTP 500'))).toMatch(/instabilidade/i)
+  })
+
+  it('resolve ambiente da aplicação', () => {
+    expect(['dev', 'prod']).toContain(getAppEnv())
+    expect(typeof isDevAppEnv()).toBe('boolean')
   })
 })

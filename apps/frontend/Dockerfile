@@ -9,8 +9,10 @@ RUN pnpm install --frozen-lockfile
 FROM deps AS build
 ARG VITE_API_URL=http://localhost:3000
 ARG VITE_AUTH_REQUIRED=true
+ARG VITE_APP_ENV=dev
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_AUTH_REQUIRED=$VITE_AUTH_REQUIRED
+ENV VITE_APP_ENV=$VITE_APP_ENV
 COPY apps/frontend apps/frontend
 RUN pnpm --filter frontend build
 
