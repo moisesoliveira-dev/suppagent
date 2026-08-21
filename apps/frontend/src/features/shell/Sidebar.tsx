@@ -57,7 +57,7 @@ export function Sidebar({ active, onNavigate }: SidebarProps) {
                 }`}
               >
                 <span>{group.label}</span>
-                <span className={`text-[8px] transition-transform ${isCollapsed ? '-rotate-90' : ''}`}>
+                <span className={`text-[8px] transition-transform duration-200 ease-out ${isCollapsed ? '-rotate-90' : ''}`}>
                   ▾
                 </span>
               </button>
@@ -74,7 +74,7 @@ export function Sidebar({ active, onNavigate }: SidebarProps) {
                         key={item.id}
                         type="button"
                         onClick={() => onNavigate(item.id)}
-                        className={`mb-0.5 flex w-full items-center gap-2 rounded-[3px] px-2.5 py-2 text-left text-xs tracking-wide uppercase ${
+                        className={`mb-0.5 flex w-full items-center gap-2 rounded-[3px] px-2.5 py-2 text-left text-xs tracking-wide uppercase transition-[color,background-color,border-color,transform] duration-200 active:scale-[0.99] ${
                           isActive
                             ? 'border border-stroke bg-tile text-amber'
                             : 'text-dim hover:bg-tile hover:text-ink'

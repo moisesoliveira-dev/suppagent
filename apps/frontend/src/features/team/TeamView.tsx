@@ -108,7 +108,7 @@ export function TeamView() {
               key={item.user.id}
               type="button"
               onClick={() => setSelectedId(item.user.id)}
-              className={`rounded border bg-tile px-4 py-3.5 text-left ${
+              className={`rounded border bg-tile px-4 py-3.5 text-left transition-[border-color,transform] duration-200 active:scale-[0.99] ${
                 selected?.user.id === item.user.id ? 'border-amber' : 'border-stroke'
               }`}
             >
@@ -131,7 +131,7 @@ export function TeamView() {
               </div>
               <div className="mb-3 h-1.5 overflow-hidden rounded-[3px] bg-board">
                 <div
-                  className={`h-full rounded-[3px] ${fillClass(item.fill)}`}
+                  className={`ui-bar h-full rounded-[3px] ${fillClass(item.fill)}`}
                   style={{ width: `${item.percent}%` }}
                 />
               </div>
@@ -166,7 +166,7 @@ export function TeamView() {
               </div>
               <div className="h-2 overflow-hidden rounded-[3px] bg-board">
                 <div
-                  className={`h-full rounded-[3px] ${fillClass(selected.fill)}`}
+                  className={`ui-bar h-full rounded-[3px] ${fillClass(selected.fill)}`}
                   style={{ width: `${selected.percent}%` }}
                 />
               </div>

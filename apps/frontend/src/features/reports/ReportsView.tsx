@@ -28,7 +28,7 @@ function ShareRows({
           <span className="w-[120px] shrink-0 truncate text-[11.5px]">{row.label}</span>
           <div className="h-2 flex-1 overflow-hidden rounded-[3px] bg-board">
             <div
-              className={`h-full rounded-[3px] ${barTone(row.share)}`}
+              className={`ui-bar h-full rounded-[3px] ${barTone(row.share)}`}
               style={{ width: `${row.share}%` }}
             />
           </div>
@@ -184,7 +184,7 @@ export function ReportsView() {
                     </div>
                     <div className="h-2 overflow-hidden rounded-[3px] bg-board">
                       <div
-                        className={`h-full rounded-[3px] ${barTone(row.openShare)}`}
+                        className={`ui-bar h-full rounded-[3px] ${barTone(row.openShare)}`}
                         style={{ width: `${Math.max(row.openShare, 4)}%` }}
                       />
                     </div>

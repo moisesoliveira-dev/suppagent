@@ -55,7 +55,7 @@ export function ContextMenuHost() {
     <div
       ref={ref}
       role="menu"
-      className="fixed z-[80] min-w-[180px] rounded-[3px] border border-stroke bg-panel py-1 shadow-lg shadow-black/50"
+      className="fixed z-[80] min-w-[180px] rounded-[3px] border border-stroke bg-panel py-1 shadow-lg shadow-black/50 ui-menu"
       style={{ left: pos.x || menu.x, top: pos.y || menu.y }}
       onMouseDown={(event) => event.stopPropagation()}
     >

@@ -63,7 +63,7 @@ export function DashboardView() {
 
       {data ? (
         <>
-          <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <div className="ui-stagger ui-stagger-rise mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
             {[
               { label: 'chamados abertos', value: data.totals.open },
               { label: 'resolvidos', value: data.totals.resolved },
@@ -100,7 +100,7 @@ export function DashboardView() {
                       >
                         <div className="mb-1.5 text-[10.5px]">{row.count}</div>
                         <div
-                          className={`w-full rounded-t-sm ${
+                          className={`ui-bar w-full rounded-t-sm ${
                             row.id === 'resolvido' ? 'bg-green' : 'bg-amber'
                           }`}
                           style={{ height }}
@@ -129,7 +129,7 @@ export function DashboardView() {
                     </span>
                     <div className="h-2 flex-1 overflow-hidden rounded-[3px] bg-board">
                       <div
-                        className={`h-full rounded-[3px] ${barTone(row.share)}`}
+                        className={`ui-bar h-full rounded-[3px] ${barTone(row.share)}`}
                         style={{ width: `${row.share}%` }}
                       />
                     </div>
@@ -152,7 +152,7 @@ export function DashboardView() {
                   <span className="w-[110px] shrink-0 text-[11.5px]">{row.label}</span>
                   <div className="h-2 flex-1 overflow-hidden rounded-[3px] bg-board">
                     <div
-                      className={`h-full rounded-[3px] ${
+                      className={`ui-bar h-full rounded-[3px] ${
                         row.id === 'urgente' || row.id === 'alta' ? 'bg-red' : 'bg-amber'
                       }`}
                       style={{ width: `${Math.max(row.share, 2)}%` }}
@@ -186,7 +186,7 @@ export function DashboardView() {
                         {row.agentName}
                       </span>
                       <div className="h-2 flex-1 overflow-hidden rounded-[3px] bg-board">
-                        <div className={`h-full rounded-[3px] ${color}`} style={{ width }} />
+                        <div className={`ui-bar h-full rounded-[3px] ${color}`} style={{ width }} />
                       </div>
                       <span className="w-[52px] shrink-0 text-right text-[11px] text-dim">
                         {row.open}/{row.total}

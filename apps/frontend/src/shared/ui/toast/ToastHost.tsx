@@ -16,7 +16,7 @@ const TONE_CLASS: Record<string, string> = {
 function MessageCard({ entry }: { entry: Extract<ToastEntry, { kind: 'message' }> }) {
   return (
     <div
-      className={`pointer-events-auto w-[320px] rounded-[3px] border bg-tile px-4 py-3 shadow-lg shadow-black/40 ${TONE_CLASS[entry.tone]}`}
+      className={`ui-toast pointer-events-auto w-[320px] rounded-[3px] border bg-tile px-4 py-3 shadow-lg shadow-black/40 ${TONE_CLASS[entry.tone]}`}
       role="status"
     >
       <div className="flex items-start justify-between gap-3">
@@ -41,7 +41,7 @@ function MessageCard({ entry }: { entry: Extract<ToastEntry, { kind: 'message' }
 function ConfirmCard({ entry }: { entry: Extract<ToastEntry, { kind: 'confirm' }> }) {
   return (
     <div
-      className="pointer-events-auto w-[320px] rounded-[3px] border border-stroke bg-tile px-4 py-3 shadow-lg shadow-black/40"
+      className="ui-toast pointer-events-auto w-[320px] rounded-[3px] border border-stroke bg-tile px-4 py-3 shadow-lg shadow-black/40"
       role="alertdialog"
     >
       <div className="mb-1 text-[10px] tracking-widest text-amber uppercase">{entry.title}</div>
@@ -50,14 +50,14 @@ function ConfirmCard({ entry }: { entry: Extract<ToastEntry, { kind: 'confirm' }
         <button
           type="button"
           onClick={() => resolveConfirm(entry.id, true)}
-          className="flex-1 rounded-[3px] border border-amber bg-amber py-2 text-[10.5px] font-bold tracking-widest text-amber-ink uppercase"
+          className="flex-1 rounded-[3px] border border-amber bg-amber py-2 text-[10.5px] font-bold tracking-widest text-amber-ink uppercase hover:brightness-110 active:scale-[0.98]"
         >
           {entry.confirmLabel}
         </button>
         <button
           type="button"
           onClick={() => resolveConfirm(entry.id, false)}
-          className="flex-1 rounded-[3px] border border-stroke bg-board py-2 text-[10.5px] tracking-widest text-ink uppercase"
+          className="flex-1 rounded-[3px] border border-stroke bg-board py-2 text-[10.5px] tracking-widest text-ink uppercase hover:border-dim active:scale-[0.98]"
         >
           {entry.cancelLabel}
         </button>
@@ -77,7 +77,7 @@ function PromptCard({ entry }: { entry: Extract<ToastEntry, { kind: 'prompt' }> 
   return (
     <form
       onSubmit={onSubmit}
-      className="pointer-events-auto w-[320px] rounded-[3px] border border-stroke bg-tile px-4 py-3 shadow-lg shadow-black/40"
+      className="ui-toast pointer-events-auto w-[320px] rounded-[3px] border border-stroke bg-tile px-4 py-3 shadow-lg shadow-black/40"
       role="dialog"
     >
       <div className="mb-1 text-[10px] tracking-widest text-amber uppercase">{entry.title}</div>
@@ -87,19 +87,19 @@ function PromptCard({ entry }: { entry: Extract<ToastEntry, { kind: 'prompt' }> 
         value={value}
         onChange={(event) => setValue(event.target.value)}
         placeholder={entry.placeholder}
-        className="mb-3 w-full rounded-[3px] border border-stroke bg-board px-3 py-2 text-[12.5px] text-ink placeholder:text-dim"
+        className="mb-3 w-full rounded-[3px] border border-stroke bg-board px-3 py-2 text-[12.5px] text-ink placeholder:text-dim focus:border-amber focus:ring-2 focus:ring-amber/20 focus:outline-none"
       />
       <div className="flex gap-2">
         <button
           type="submit"
-          className="flex-1 rounded-[3px] border border-amber bg-amber py-2 text-[10.5px] font-bold tracking-widest text-amber-ink uppercase"
+          className="flex-1 rounded-[3px] border border-amber bg-amber py-2 text-[10.5px] font-bold tracking-widest text-amber-ink uppercase hover:brightness-110 active:scale-[0.98]"
         >
           {entry.confirmLabel}
         </button>
         <button
           type="button"
           onClick={() => resolvePrompt(entry.id, null)}
-          className="flex-1 rounded-[3px] border border-stroke bg-board py-2 text-[10.5px] tracking-widest text-ink uppercase"
+          className="flex-1 rounded-[3px] border border-stroke bg-board py-2 text-[10.5px] tracking-widest text-ink uppercase hover:border-dim active:scale-[0.98]"
         >
           {entry.cancelLabel}
         </button>

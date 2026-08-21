@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 export function DetailPanel({ children }: { children: ReactNode }) {
   return (
-    <aside className="h-full w-[340px] shrink-0 overflow-y-auto border-l border-stroke bg-panel p-5">
+    <aside className="ui-panel h-full w-[340px] shrink-0 overflow-y-auto border-l border-stroke bg-panel p-5">
       {children}
     </aside>
   )
@@ -57,7 +57,7 @@ export function RelTicket({
           : 'text-dim'
 
   return (
-    <div className="flex justify-between border-b border-stroke py-2 text-xs">
+    <div className="flex justify-between border-b border-stroke py-2 text-xs transition-colors hover:bg-tile/60">
       <span className="text-dim">{label}</span>
       <span className={`text-[10.5px] font-bold tracking-wide uppercase ${color}`}>
         {status}
@@ -83,10 +83,10 @@ export function ActionButton({
     <button
       type="button"
       onClick={onClick}
-      className={`flex-1 rounded-[3px] border py-2 text-center text-[10.5px] tracking-widest uppercase ${
+      className={`flex-1 rounded-[3px] border py-2 text-center text-[10.5px] tracking-widest uppercase active:scale-[0.98] ${
         primary
-          ? 'border-amber bg-amber font-bold text-amber-ink'
-          : 'border-stroke bg-tile text-ink'
+          ? 'border-amber bg-amber font-bold text-amber-ink hover:brightness-110'
+          : 'border-stroke bg-tile text-ink hover:border-amber hover:text-amber'
       }`}
     >
       {children}

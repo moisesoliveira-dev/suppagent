@@ -45,7 +45,7 @@ export function Topbar() {
       <button
         type="button"
         onClick={() => openCreateTicketDialog()}
-        className="ml-auto rounded-[3px] bg-amber px-4 py-2 text-[11.5px] font-bold tracking-wide text-amber-ink uppercase"
+        className="ml-auto rounded-[3px] bg-amber px-4 py-2 text-[11.5px] font-bold tracking-wide text-amber-ink uppercase hover:brightness-110 active:scale-[0.98]"
       >
         abrir chamado
       </button>

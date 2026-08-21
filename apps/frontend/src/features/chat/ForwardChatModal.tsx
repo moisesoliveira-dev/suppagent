@@ -50,11 +50,11 @@ export function ForwardChatModal({
   const selected = filtered.find((item) => `${item.kind}:${item.id}` === selectedId)
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-seam/70 px-4">
+    <div className="ui-overlay fixed inset-0 z-[70] flex items-center justify-center bg-seam/70 px-4">
       <div
         role="dialog"
         aria-modal="true"
-        className="flex max-h-[min(560px,85vh)] w-full max-w-md flex-col overflow-hidden rounded-[3px] border border-stroke bg-panel shadow-xl shadow-black/50"
+        className="ui-modal flex max-h-[min(560px,85vh)] w-full max-w-md flex-col overflow-hidden rounded-[3px] border border-stroke bg-panel shadow-xl shadow-black/50"
       >
         <div className="flex items-center justify-between border-b border-stroke px-4 py-3">
           <div className="text-[12px] font-bold tracking-wide uppercase">encaminhar mensagem</div>

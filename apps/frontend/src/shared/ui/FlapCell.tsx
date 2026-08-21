@@ -24,7 +24,7 @@ export function FlapCell({
 
   return (
     <div
-      className={`${animate ? 'flap-in' : ''} relative flex min-w-0 items-center overflow-hidden rounded-[3px] border bg-tile px-2.5 py-2 text-xs font-bold tracking-wide uppercase ${
+      className={`${animate ? 'flap-in' : ''} relative flex min-w-0 items-center overflow-hidden rounded-[3px] border bg-tile px-2.5 py-2 text-xs font-bold tracking-wide uppercase transition-[border-color,background-color] duration-200 ${
         selected ? 'border-amber' : 'border-stroke'
       } ${align === 'end' ? 'justify-end' : ''} ${className}`}
       style={style}

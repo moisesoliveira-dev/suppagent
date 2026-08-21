@@ -24,7 +24,7 @@ export function AppShell() {
   const { view } = useShellNav()
 
   return (
-    <div className="flex h-full bg-bg font-display text-ink">
+    <div className="flex h-full bg-bg font-display text-ink ui-fade">
       <Sidebar active={view} onNavigate={navigateTo} />
       <main className="flex min-w-0 flex-1 flex-col">
         <Topbar />

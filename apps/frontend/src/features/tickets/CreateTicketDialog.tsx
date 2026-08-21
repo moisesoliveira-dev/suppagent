@@ -59,10 +59,10 @@ export function CreateTicketDialog() {
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/55 p-4">
+    <div className="ui-overlay fixed inset-0 z-40 flex items-center justify-center bg-black/55 p-4">
       <form
         onSubmit={(event) => void onSubmit(event)}
-        className="w-full max-w-md rounded-[3px] border border-stroke bg-panel p-5 shadow-xl shadow-black/50"
+        className="ui-modal w-full max-w-md rounded-[3px] border border-stroke bg-panel p-5 shadow-xl shadow-black/50"
       >
         <div className="mb-1 text-[10px] tracking-widest text-amber uppercase">
           novo chamado

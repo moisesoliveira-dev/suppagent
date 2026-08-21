@@ -10,6 +10,19 @@ Espaçamento, tamanho e layout dos componentes vêm da **escala Tailwind** (`p-4
 
 Beleza (cor, tipografia, sombra, radius, motion) pode ser livre — preferir utility do Tailwind quando existir.
 
+## Motion
+
+Tokens e classes em `index.css`: `--ease-out`, `--dur-*`, `view-enter`, `ui-rise`, `ui-fade`, `ui-overlay`, `ui-modal`, `ui-toast`, `ui-popover`, `ui-panel`, `ui-menu`, `ui-bar`, `ui-stagger*`.
+Usar essas classes para entrada de telas, overlays e barras. Manter animações curtas e sutis. Respeitar `prefers-reduced-motion` (já no CSS global).
+
+```tsx
+// ✅ GOOD
+<div className="ui-overlay …"><div className="ui-modal …">…</div></div>
+<div className="ui-bar" style={{ width: `${pct}%` }} />
+
+// ❌ BAD — animação longa, bounce exagerado, motion em tudo
+```
+
 ## Layout (obrigatório)
 
 - Empilhar com `flex` / `grid` + `gap-*` ou `space-y-*`. Não usar `position: absolute` para fluxo normal.

@@ -119,7 +119,7 @@ export function NotificationsBell() {
       </button>
 
       {open ? (
-        <div className="absolute top-[calc(100%+8px)] right-0 z-40 w-[340px] rounded border border-stroke bg-panel shadow-xl shadow-black/40">
+        <div className="ui-popover absolute top-[calc(100%+8px)] right-0 z-40 w-[340px] rounded border border-stroke bg-panel shadow-xl shadow-black/40">
           <div className="flex items-center justify-between border-b border-stroke px-3 py-2.5">
             <div className="text-[11px] font-bold tracking-wide uppercase">
               notificações

@@ -12,10 +12,10 @@ export function Toggle({ on, onToggle }: ToggleProps) {
         event.stopPropagation()
         onToggle()
       }}
-      className={`relative h-[18px] w-8 shrink-0 rounded-full ${on ? 'bg-[#1e3a28]' : 'bg-stroke'}`}
+      className={`relative h-[18px] w-8 shrink-0 rounded-full transition-colors duration-200 ${on ? 'bg-[#1e3a28]' : 'bg-stroke'}`}
     >
       <span
-        className={`absolute top-0.5 left-0.5 h-3.5 w-3.5 rounded-full transition-transform duration-150 ${
+        className={`absolute top-0.5 left-0.5 h-3.5 w-3.5 rounded-full transition-transform duration-200 ease-out ${
           on ? 'translate-x-3.5 bg-green' : 'bg-dim'
         }`}
       />
