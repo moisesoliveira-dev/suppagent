@@ -1,4 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { IconButton } from '../../shared/ui/IconButton'
+import { PencilIcon } from '../../shared/ui/icons'
 import { toast } from '../../shared/ui/toast'
 import { listSlaPolicies, updateSlaPolicy } from './sla-api'
 import type { SlaPolicy } from './sla'
@@ -90,14 +92,14 @@ export function SlaPoliciesCatalogPanel() {
           <div className="mb-0.5 flex items-center justify-between gap-2">
             <div className="text-[12.5px] font-bold">{policy.priority}</div>
             {editing !== policy.priorityKey ? (
-              <button
-                type="button"
+              <IconButton
+                label="editar"
+                tone="accent"
                 disabled={busy}
                 onClick={() => startEdit(policy)}
-                className="text-[10.5px] font-bold tracking-wide text-amber uppercase disabled:opacity-50"
               >
-                editar
-              </button>
+                <PencilIcon />
+              </IconButton>
             ) : null}
           </div>
           {editing === policy.priorityKey ? (

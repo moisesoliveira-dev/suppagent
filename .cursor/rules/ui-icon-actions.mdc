@@ -1,0 +1,19 @@
+---
+description: Botões de editar e excluir usam ícones (não texto)
+globs: apps/frontend/**/*.{tsx,ts}
+alwaysApply: false
+---
+
+# Ações editar / excluir
+
+Botões de **editar**, **excluir** ou **remover** usam ícone + `aria-label` / `title`, nunca rótulo textual.
+
+- Ícones: `PencilIcon` / `TrashIcon` em `shared/ui/icons.tsx`
+- Botão: `IconButton` em `shared/ui/IconButton.tsx` (`tone="danger"` para excluir)
+
+```
+✅ <IconButton label="editar"><PencilIcon /></IconButton>
+❌ <button>editar</button> / <ActionButton>remover</ActionButton>
+```
+
+Outras ações (salvar, aplicar, nova conversa) continuam com texto.

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { PassLabel, PassSub } from '../../shared/ui/chrome'
+import { IconButton } from '../../shared/ui/IconButton'
+import { PencilIcon, TrashIcon } from '../../shared/ui/icons'
 import { toast } from '../../shared/ui/toast'
 import {
   createAiChatSession,
@@ -252,23 +254,25 @@ export function AiChatView() {
                         {formatSessionTime(item.updatedAt)}
                       </div>
                     </button>
-                    <div className="flex shrink-0 flex-col gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-                      <button
-                        type="button"
+                    <div className="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+                      <IconButton
+                        label="editar"
+                        tone="accent"
                         disabled={busy}
                         onClick={() => startRename(item)}
-                        className="text-[9px] font-bold tracking-wide text-dim uppercase hover:text-amber"
+                        className="h-7 w-7 border-transparent"
                       >
-                        editar
-                      </button>
-                      <button
-                        type="button"
+                        <PencilIcon className="h-3.5 w-3.5" />
+                      </IconButton>
+                      <IconButton
+                        label="excluir"
+                        tone="danger"
                         disabled={busy}
                         onClick={() => void onDelete(item)}
-                        className="text-[9px] font-bold tracking-wide text-dim uppercase hover:text-red"
+                        className="h-7 w-7 border-transparent"
                       >
-                        excluir
-                      </button>
+                        <TrashIcon className="h-3.5 w-3.5" />
+                      </IconButton>
                     </div>
                   </div>
                 )}

@@ -5,6 +5,8 @@ import {
   PassLabel,
   RelTicket,
 } from '../../shared/ui/chrome'
+import { IconButton } from '../../shared/ui/IconButton'
+import { PencilIcon } from '../../shared/ui/icons'
 import { toast } from '../../shared/ui/toast'
 import {
   consumeKnowledgeFocus,
@@ -202,9 +204,13 @@ export function KnowledgeView() {
               />
             ) : null}
             <ActionBar>
-              <ActionButton primary onClick={() => setEditing(true)}>
-                editar artigo
-              </ActionButton>
+              <IconButton
+                label="editar artigo"
+                tone="accent"
+                onClick={() => setEditing(true)}
+              >
+                <PencilIcon />
+              </IconButton>
               <ActionButton onClick={() => void onTogglePublish()}>
                 {article.published ? 'despublicar' : 'publicar'}
               </ActionButton>

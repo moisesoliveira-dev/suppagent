@@ -1,4 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { IconButton } from '../../shared/ui/IconButton'
+import { TrashIcon } from '../../shared/ui/icons'
 import { toast } from '../../shared/ui/toast'
 import type { CannedResponse } from './canned'
 import {
@@ -117,14 +119,14 @@ export function CannedCatalogPanel() {
               {item.shortcut} · {item.category} · {item.useCount} usos
             </div>
           </div>
-          <button
-            type="button"
+          <IconButton
+            label="remover"
+            tone="danger"
             disabled={busy}
             onClick={() => void onRemove(item)}
-            className="shrink-0 text-[10.5px] font-bold tracking-wide text-red uppercase disabled:opacity-50"
           >
-            remover
-          </button>
+            <TrashIcon />
+          </IconButton>
         </div>
       ))}
 

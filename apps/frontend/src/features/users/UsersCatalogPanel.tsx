@@ -1,4 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { IconButton } from '../../shared/ui/IconButton'
+import { TrashIcon } from '../../shared/ui/icons'
 import { toast } from '../../shared/ui/toast'
 import { createUser, deleteUser, listUsers } from './users-api'
 import { USER_ROLE_OPTIONS, type User, type UserRole } from './users'
@@ -115,14 +117,14 @@ export function UsersCatalogPanel() {
               {user.handle ? ` · ${user.handle}` : ''} · perfil {user.roleLabel}
             </div>
           </div>
-          <button
-            type="button"
+          <IconButton
+            label="remover"
+            tone="danger"
             disabled={busy}
             onClick={() => void onRemove(user)}
-            className="rounded-[3px] border border-stroke px-2.5 py-1.5 text-[10.5px] text-dim uppercase hover:border-red hover:text-red disabled:opacity-50"
           >
-            remover
-          </button>
+            <TrashIcon />
+          </IconButton>
         </div>
       ))}
 

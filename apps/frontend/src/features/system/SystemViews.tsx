@@ -10,6 +10,8 @@ import {
   PassTitle,
   StubBar,
 } from '../../shared/ui/chrome'
+import { IconButton } from '../../shared/ui/IconButton'
+import { PencilIcon, TrashIcon } from '../../shared/ui/icons'
 import { AutomationsCatalogPanel } from '../automations/AutomationsCatalogPanel'
 import { CannedCatalogPanel } from '../canned/CannedCatalogPanel'
 import { RoutingRulesCatalogPanel } from '../routing/RoutingRulesCatalogPanel'
@@ -256,12 +258,12 @@ export function CatalogView() {
                   <div className="text-[10.5px] text-dim">{row.meta}</div>
                 </div>
                 <div className="flex gap-1.5">
-                  <button type="button" className="rounded-[3px] border border-stroke px-2.5 py-1.5 text-[10.5px] text-dim uppercase hover:border-amber hover:text-amber">
-                    editar
-                  </button>
-                  <button type="button" className="rounded-[3px] border border-stroke px-2.5 py-1.5 text-[10.5px] text-dim uppercase hover:border-red hover:text-red">
-                    remover
-                  </button>
+                  <IconButton label="editar" tone="accent">
+                    <PencilIcon />
+                  </IconButton>
+                  <IconButton label="remover" tone="danger">
+                    <TrashIcon />
+                  </IconButton>
                 </div>
               </div>
             ))}
@@ -342,7 +344,9 @@ export function AiRepliesView() {
         ))}
         <ActionBar>
           <ActionButton primary>aprovar e enviar</ActionButton>
-          <ActionButton>editar resposta</ActionButton>
+          <IconButton label="editar resposta" tone="accent">
+            <PencilIcon />
+          </IconButton>
         </ActionBar>
       </DetailPanel>
     </div>

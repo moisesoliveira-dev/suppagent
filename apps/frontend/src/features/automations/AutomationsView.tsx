@@ -1,5 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { ActionBar, ActionButton, PassLabel } from '../../shared/ui/chrome'
+import { IconButton } from '../../shared/ui/IconButton'
+import { PencilIcon, TrashIcon } from '../../shared/ui/icons'
 import { Toggle } from '../../shared/ui/Toggle'
 import { toast } from '../../shared/ui/toast'
 import {
@@ -321,15 +323,15 @@ export function AutomationsView() {
               </div>
             </div>
             <ActionBar>
-              <ActionButton onClick={startEdit}>
-                editar
-              </ActionButton>
+              <IconButton label="editar" tone="accent" onClick={startEdit}>
+                <PencilIcon />
+              </IconButton>
               <ActionButton onClick={() => void onRun()}>
                 registrar execução
               </ActionButton>
-              <ActionButton onClick={() => void onRemove()}>
-                remover
-              </ActionButton>
+              <IconButton label="remover" tone="danger" onClick={() => void onRemove()}>
+                <TrashIcon />
+              </IconButton>
             </ActionBar>
             <div className="mt-6 text-[10.5px] tracking-widest text-dim uppercase">
               histórico

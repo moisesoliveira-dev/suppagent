@@ -10,6 +10,8 @@ import {
   RelTicket,
   StubBar,
 } from '../../shared/ui/chrome'
+import { IconButton } from '../../shared/ui/IconButton'
+import { PencilIcon } from '../../shared/ui/icons'
 
 const CLIENTS = [
   {
@@ -205,7 +207,9 @@ export function ClientsView() {
         ))}
         <ActionBar>
           <ActionButton primary>novo chamado</ActionButton>
-          <ActionButton>editar cliente</ActionButton>
+          <IconButton label="editar cliente" tone="accent">
+            <PencilIcon />
+          </IconButton>
         </ActionBar>
       </DetailPanel>
     </div>

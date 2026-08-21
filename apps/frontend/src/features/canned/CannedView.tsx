@@ -7,6 +7,8 @@ import {
   PassLabel,
   PassTitle,
 } from '../../shared/ui/chrome'
+import { IconButton } from '../../shared/ui/IconButton'
+import { PencilIcon, TrashIcon } from '../../shared/ui/icons'
 import { toast } from '../../shared/ui/toast'
 import { categoryLabel, type CannedResponse } from './canned'
 import {
@@ -362,18 +364,16 @@ export function CannedView() {
                 <ActionButton primary onClick={() => void onUse()}>
                   usar na conversa
                 </ActionButton>
-                <ActionButton onClick={startEdit}>editar</ActionButton>
+                <IconButton label="editar" tone="accent" onClick={startEdit}>
+                  <PencilIcon />
+                </IconButton>
                 <ActionButton onClick={() => void onDuplicate()}>
                   duplicar
                 </ActionButton>
+                <IconButton label="remover" tone="danger" onClick={() => void onRemove()}>
+                  <TrashIcon />
+                </IconButton>
               </ActionBar>
-              <button
-                type="button"
-                onClick={() => void onRemove()}
-                className="mt-3 text-[10.5px] font-bold tracking-wide text-red uppercase"
-              >
-                remover
-              </button>
             </>
           ) : null}
 

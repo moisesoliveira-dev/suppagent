@@ -1,4 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { IconButton } from '../../shared/ui/IconButton'
+import { TrashIcon } from '../../shared/ui/icons'
 import { toast } from '../../shared/ui/toast'
 import {
   createTeamChat,
@@ -112,14 +114,14 @@ export function TeamChatsCatalogPanel() {
               {chat.kind === 'direct' ? 'direto' : 'canal'} · {chat.snippet}
             </div>
           </div>
-          <button
-            type="button"
+          <IconButton
+            label="remover"
+            tone="danger"
             disabled={busy}
             onClick={() => void onRemove(chat)}
-            className="text-[10.5px] tracking-wide text-dim uppercase hover:text-red disabled:opacity-50"
           >
-            remover
-          </button>
+            <TrashIcon />
+          </IconButton>
         </div>
       ))}
 
